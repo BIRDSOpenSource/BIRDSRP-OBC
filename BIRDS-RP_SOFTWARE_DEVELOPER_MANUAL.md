@@ -1,5 +1,8 @@
 
+<p align=center>
 # BIRDS-RP SATELLITE SOFTWARE DEVELOPER’S MANUAL 
+</p>
+
 
 <p align=center>
 <img src="https://birds-x.birds-project.com/wp-content/uploads/2023/01/logo_aboutus-1024x393.png" width=50%>
