@@ -44,17 +44,18 @@ The files found in the START PIC folder are detailed in Table 1 below.
 
 |  File name pattern   | Scope  |  Content    |
 |----------------------|--------|-------------|
-| STRATPIC.c |    |    |
+|  STARTPIC.c |    |    |
 |  StartPIC_Functions.c  |    |    |
 
 
 ## RESET PIC 
+The following table shows the flow chart of operation for the RESET PIC after RBF pin is removed and 30 minute after the satellite is launched for the ISS.
 
+|  After RBF removed   |  After ISS release  | 
+|----------------------|---------------------|
+| ![](Diagrams/pic_operations_ISS-RESET_PIC.png) |  ![](Diagrams/pic_operations-RESET-PIC.png)  | 
+| <a href="https://app.diagrams.net/#HBIRDSOpenSource%2FBIRDSRP-OBC%2Fmain%2FDiagrams%2Fpic_operations_ISS-RESET_PIC.png" target="_blank">Edit with draw.io</a> | <a href="https://app.diagrams.net/#HBIRDSOpenSource%2FBIRDSRP-OBC%2Fmain%2FDiagrams%2Fpic_operations-RESET-PIC.png" target="_blank">Edit with draw.io</a>  | 
 
-
-![](Diagrams/pic_operations_ISS-RESET_PIC.png)
-
-<a href="http://jgraph.github.io/drawio-github/edit-diagram.html?repo=BIRDSRP-OBC&path=pic_operations_ISS-RESET_PIC.png" target="_blank">Edit</a> | <a href="https://app.diagrams.net/#Uhttps%3A%2F%2Fraw.githubusercontent.com%2FBIRDSOpenSource%2FBIRDSRP-OBC%2Fmain%2FDiagrams%2Fpic_operations_ISS-RESET_PIC.png" target="_blank">Edit As New</a> | <a href="https://app.diagrams.net/#HBIRDSOpenSource%2FBIRDSRP-OBC%2Fmain%2FDiagrams%2Fpic_operations_ISS-RESET_PIC.png" target="_blank">Edit with draw.io</a>
 
 The files found in the RESET PIC folder are detailed in Table 1 below. 
 
@@ -65,6 +66,8 @@ The files found in the RESET PIC folder are detailed in Table 1 below.
 
 
 ## MAIN PIC 
+
+After the satellite is released to its orbit, the startpic turn on the power line to the Main PIC
 
 |  File name pattern   | Scope  |  Content    |
 |----|----|----|
