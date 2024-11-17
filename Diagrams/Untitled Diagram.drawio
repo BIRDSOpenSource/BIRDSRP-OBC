@@ -60,7 +60,7 @@
     </mxGraphModel>
   </diagram>
   <diagram name="RESET-PIC" id="jT8_f6VVq_qG7gZZXY0b">
-    <mxGraphModel dx="708" dy="957" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel grid="1" page="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="wKN9chTsW7mNMitrZWVQ-0" />
         <mxCell id="wKN9chTsW7mNMitrZWVQ-1" parent="wKN9chTsW7mNMitrZWVQ-0" />
@@ -189,7 +189,7 @@
     </mxGraphModel>
   </diagram>
   <diagram name="MAIN-PIC" id="BCb7zbmgE4lmPwmlyJaf">
-    <mxGraphModel dx="708" dy="957" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel grid="1" page="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="3_j0A4407lXGw9K5G1xE-0" />
         <mxCell id="3_j0A4407lXGw9K5G1xE-1" parent="3_j0A4407lXGw9K5G1xE-0" />
