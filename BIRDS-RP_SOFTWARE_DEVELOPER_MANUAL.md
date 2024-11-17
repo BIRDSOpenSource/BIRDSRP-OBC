@@ -44,7 +44,7 @@ The files found in the START PIC folder are detailed in Table 1 below.
 |    |    |    |
 
 
-![](Diagrams/obc_pics_operations-START_PIC.png)
+![](Diagrams/obc_pics_operation-START_PIC.png)
 
 
 ## MAIN PIC 
