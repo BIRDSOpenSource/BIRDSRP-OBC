@@ -24,6 +24,8 @@ The system block diagram of the BIRDS-RP satellite is detailed in figure 1 below
 BUS SYSTEM BLOCK DIAGRAM
   
 OBC BLOCK DIAGRAM
+
+![](Diagrams/obc-block-diagram.png) 
  
 DETAILED OBC BLOCK DIAGRAM
  
