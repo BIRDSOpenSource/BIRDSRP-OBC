@@ -32,7 +32,7 @@ The organisational file stucture of the microcontrollers in the BIRDS-RP OBC boa
 
 
 ## START PIC
-
+The following table shows the flow chart of operation for the START PIC after RBF pin is removed and 30 minutes after the satellite is launched for the ISS.
 
 |  After RBF removed |  After ISS release  | 
 |----------------------|--------|
@@ -49,7 +49,7 @@ The files found in the START PIC folder are detailed in Table 1 below.
 
 
 ## RESET PIC 
-The following table shows the flow chart of operation for the RESET PIC after RBF pin is removed and 30 minute after the satellite is launched for the ISS.
+The following table shows the flow chart of operation for the RESET PIC after RBF pin is removed and 30 minutes after the satellite is launched for the ISS.
 
 |  After RBF removed   |  After ISS release  | 
 |----------------------|---------------------|
@@ -57,7 +57,7 @@ The following table shows the flow chart of operation for the RESET PIC after RB
 | <a href="https://app.diagrams.net/#HBIRDSOpenSource%2FBIRDSRP-OBC%2Fmain%2FDiagrams%2Fpic_operations_ISS-RESET_PIC.png" target="_blank">Edit with draw.io</a> | <a href="https://app.diagrams.net/#HBIRDSOpenSource%2FBIRDSRP-OBC%2Fmain%2FDiagrams%2Fpic_operations-RESET-PIC.png" target="_blank">Edit with draw.io</a>  | 
 
 
-The files found in the RESET PIC folder are detailed in Table 1 below. 
+The files found in the RESET PIC folder are detailed in the table below. 
 
 |  File name pattern   | Scope  |  Content    |
 |----|----|----|
@@ -68,6 +68,15 @@ The files found in the RESET PIC folder are detailed in Table 1 below.
 ## MAIN PIC 
 
 After the satellite is released to its orbit, the startpic turn on the power line to the Main PIC
+
+The following table shows the flow chart of operation for the MAIN PIC 30 minutes after the satellite is launched from the ISS and in nominal operation.
+
+|  After ISS release  |  Nominal operation  | 
+|----------------------|---------------------|
+| ![](Diagrams/pic_operations-MAIN-PIC.png) |  ![](Diagrams/pic_operations-RESET-PIC.png)  | 
+| <a href="https://app.diagrams.net/#HBIRDSOpenSource%2FBIRDSRP-OBC%2Fmain%2FDiagrams%2Fpic_operations-MAIN-PIC.png" target="_blank">Edit with draw.io</a> | <a href="https://app.diagrams.net/#HBIRDSOpenSource%2FBIRDSRP-OBC%2Fmain%2FDiagrams%2Fpic_operations-MAIN-PIC.png" target="_blank">Edit with draw.io</a>  | 
+
+The files found in the MAIN PIC folder are detailed in the table below. 
 
 |  File name pattern   | Scope  |  Content    |
 |----|----|----|
