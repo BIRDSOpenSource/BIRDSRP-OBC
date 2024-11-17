@@ -45,6 +45,8 @@ The files found in the START PIC folder are detailed in Table 1 below.
 
 ![](https://viewer.diagrams.net/?tags=%7B%7D&lightbox=1&highlight=0000ff&edit=_blank&layers=1&nav=1&title=main_pic_operation.drawio#Uhttps%3A%2F%2Fraw.githubusercontent.com%2FBIRDSOpenSource%2FBIRDSRP-OBC%2Fmain%2FDiagrams%2Fmain_pic_operation.drawio)
 
+![](Diagrams/start_pic_operations.png)
+
 
 ## MAIN PIC 
 
