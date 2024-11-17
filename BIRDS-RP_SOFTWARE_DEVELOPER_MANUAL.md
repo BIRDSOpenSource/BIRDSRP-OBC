@@ -31,10 +31,13 @@ The organisational file stucture of the microcontrollers in the BIRDS-RP OBC boa
 
 The files found in the START PIC folder are detailed in Table 1 below. 
 
+![](Diagrams/obc_pics_operation-START_PIC.png)
+
 |  File name pattern   | Scope  |  Content    |
 |----------------------|--------|-------------|
 | STRATPIC.c |    |    |
 |  StartPIC_Functions.c  |    |    |
+
 
 ## RESET PIC 
 
@@ -44,7 +47,7 @@ The files found in the START PIC folder are detailed in Table 1 below.
 |    |    |    |
 
 
-![](Diagrams/obc_pics_operation-START_PIC.png)
+![](Diagrams/obc_pics_operation-RESET_PIC.png)
 
 
 ## MAIN PIC 
