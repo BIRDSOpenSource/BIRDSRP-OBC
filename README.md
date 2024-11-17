@@ -35,7 +35,7 @@ The organisational file stucture of the microcontrollers in the BIRDS-RP OBC boa
 
 The files found in the START PIC folder are detailed in Table 1 below. 
 
-![](Diagrams/obc_pics_operation-START_PIC.png)
+![](Diagrams/obc_pics_operation_ISS-START_PIC.png)
 
 <a href="http://jgraph.github.io/drawio-github/edit-diagram.html?repo=BIRDSRP-OBC&path=pic_operations_ISS-START_PIC.png" target="_blank">Edit</a> | <a href="https://app.diagrams.net/#HBIRDSOpenSource%2FBIRDSRP-OBC%2Fmain%2FDiagrams%2Fpic_operations_ISS-START_PIC.png" target="_blank">Edit with draw.io</a>
 
@@ -54,7 +54,7 @@ The files found in the START PIC folder are detailed in Table 1 below.
 |    |    |    |
 
 
-![](Diagrams/obc_pics_operation-RESET_PIC.png)
+![](Diagrams/obc_pics_operation_ISS-RESET_PIC.png)
 
 <a href="http://jgraph.github.io/drawio-github/edit-diagram.html?repo=BIRDSRP-OBC&path=pic_operations_ISS-RESET_PIC.png" target="_blank">Edit</a> | <a href="https://app.diagrams.net/#Uhttps%3A%2F%2Fraw.githubusercontent.com%2FBIRDSOpenSource%2FBIRDSRP-OBC%2Fmain%2FDiagrams%2Fpic_operations_ISS-RESET_PIC.png" target="_blank">Edit As New</a> | <a href="https://app.diagrams.net/#HBIRDSOpenSource%2FBIRDSRP-OBC%2Fmain%2FDiagrams%2Fpic_operations_ISS-RESET_PIC.png" target="_blank">Edit with draw.io</a>
 
