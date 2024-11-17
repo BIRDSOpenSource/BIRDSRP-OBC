@@ -18,17 +18,20 @@
 ### Document Purpose 
 This document is prepared to share a thorough explaination of the execution of the BIRDS-RP satellite bus software. 
 
- 
+
+## BLOCK DIAGRAMS
+
+### BUS SYSTEM BLOCK DIAGRAM
 The system block diagram of the BIRDS-RP satellite is detailed in figure 1 below. 
  
-BUS SYSTEM BLOCK DIAGRAM
-  
-OBC BLOCK DIAGRAM
+### OBC BLOCK DIAGRAM
 
 ![](Diagrams/obc-block-diagram.png) 
  
-DETAILED OBC BLOCK DIAGRAM
- 
+### DETAILED OBC BLOCK DIAGRAM
+
+![](Diagrams/obc-detailed-block-diagram.png) 
+
 The organisational file stucture of the microcontrollers in the BIRDS-RP OBC board is detailed in  figure 2 below. 
  
 
