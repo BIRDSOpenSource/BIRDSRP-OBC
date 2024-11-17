@@ -17,7 +17,7 @@
 This document is prepared to share a thorough explaination of the execution of the BIRDS-RP satellite bus software. 
 
  
-The system block diagram of the leopard satellite is detailed in figure 1 below. 
+The system block diagram of the BIRDS-RP satellite is detailed in figure 1 below. 
  
 BUS SYSTEM BLOCK DIAGRAM
   
