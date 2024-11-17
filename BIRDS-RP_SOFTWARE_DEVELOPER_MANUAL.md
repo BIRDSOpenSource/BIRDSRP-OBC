@@ -1,26 +1,40 @@
----
-title: "BIRDS-RP SATELLITE SOFTWARE DEVELOPER’S MANUAL "
-output:
-  github_document:
-    toc: true
----
+
 # BIRDS-RP SATELLITE SOFTWARE DEVELOPER’S MANUAL 
 
 ![](https://birds-x.birds-project.com/wp-content/uploads/2023/01/logo_aboutus-1024x393.png)
 
-|    |    |    |
-|----|----|----|
-|    |  Etti-Balogun Husseinat|    |
-|    |  Arnaud Kayonga  |    |
 
+| Contributors | Center-aligned | Right-aligned |
+| :---         |     :---:      |          ---: |
+| @balotofi   | git status     | git status    |
+| @     | git diff       | git diff      |
+
+## Introduction 
+ 
+### Document Purpose 
+This document is prepared to share a thorough explaination of the execution of thr BIRDS-RP satellite bus software. 
+
+ 
+The system block diagram of the leopard satellite is detailed in figure 1 below. 
+ 
+BUS SYSTEM BLOCK DIAGRAM
+  
+OBC BLOCK DIAGRAM
+ 
+DETAILED OBC BLOCK DIAGRAM
+ 
+The organisational file stucture of the microcontrollers in the BIRDS-RP OBC board is detailed in  figure 2 below. 
+ 
 
 
 ## START PIC
 
+The files found in the START PIC folder are detailed in Table 1 below. 
+
 |  File name pattern   | Scope  |  Content    |
-|----|----|----|
-|    |    |    |
-|    |    |    |
+|----------------------|--------|-------------|
+| STRATPIC.c |    |    |
+|  StartPIC_Functions.c  |    |    |
 
 ## RESET PIC 
 
