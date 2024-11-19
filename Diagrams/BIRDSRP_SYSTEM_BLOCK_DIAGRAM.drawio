@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36" version="24.8.6">
   <diagram name="BIRDSRP_SYSTEM_BLOCK_DIAGRAM" id="RyTt8miqXWO4tbNBZ-sP">
-    <mxGraphModel dx="2383" dy="965" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" math="0" shadow="0">
+    <mxGraphModel dx="2678" dy="1188" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -234,8 +234,8 @@
             <mxPoint x="352.26" y="121" as="targetPoint" />
             <Array as="points">
               <mxPoint x="195" y="167" />
-              <mxPoint x="195" y="71" />
-              <mxPoint x="515" y="71" />
+              <mxPoint x="195" y="90" />
+              <mxPoint x="515" y="90" />
             </Array>
           </mxGeometry>
         </mxCell>
