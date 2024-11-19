@@ -409,6 +409,9 @@
         <mxCell id="tYIQIL9FMzSM6Vzf6UUn-166" value="NEW&lt;div&gt;UHF TRX&lt;/div&gt;" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};verticalAlign=top;" vertex="1" parent="1">
           <mxGeometry x="270" y="920" width="80" height="80" as="geometry" />
         </mxCell>
+        <mxCell id="tYIQIL9FMzSM6Vzf6UUn-167" value="COM" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="560" y="960" width="80" height="80" as="geometry" />
+        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
