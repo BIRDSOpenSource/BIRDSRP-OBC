@@ -437,7 +437,7 @@
     </mxGraphModel>
   </diagram>
   <diagram name="1-ROW-50-PIN-ASSIGNMENT" id="Hm_1wp__LofzOMIQ1-wd">
-    <mxGraphModel dx="394" dy="685" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="594" dy="685" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="VcxqdTlDjsGMLwfOA-8J-0" />
         <mxCell id="VcxqdTlDjsGMLwfOA-8J-1" parent="VcxqdTlDjsGMLwfOA-8J-0" />
@@ -456,7 +456,7 @@
         </mxCell>
         <mxCell id="VcxqdTlDjsGMLwfOA-8J-5" value="DEV4 MCLR_RP" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=12;" vertex="1" connectable="0" parent="VcxqdTlDjsGMLwfOA-8J-4">
           <mxGeometry x="-0.3094" y="1" relative="1" as="geometry">
-            <mxPoint x="-118" y="-1" as="offset" />
+            <mxPoint x="-200" y="-1" as="offset" />
           </mxGeometry>
         </mxCell>
         <mxCell id="VcxqdTlDjsGMLwfOA-8J-6" value="PIC Kit" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};labelPosition=center;verticalLabelPosition=middle;align=center;verticalAlign=top;" vertex="1" parent="VcxqdTlDjsGMLwfOA-8J-1">
@@ -781,7 +781,7 @@
             <mxPoint x="-117" y="-1" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="VcxqdTlDjsGMLwfOA-8J-85" value="" style="html=1;verticalAlign=bottom;endArrow=block;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;startArrow=block;startFill=1;" edge="1" parent="VcxqdTlDjsGMLwfOA-8J-1" source="VcxqdTlDjsGMLwfOA-8J-10" target="VcxqdTlDjsGMLwfOA-8J-2">
+        <mxCell id="VcxqdTlDjsGMLwfOA-8J-85" value="" style="html=1;verticalAlign=bottom;endArrow=block;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;exitX=0.001;exitY=0.154;exitDx=0;exitDy=0;startArrow=block;startFill=1;exitPerimeter=0;" edge="1" parent="VcxqdTlDjsGMLwfOA-8J-1" source="VcxqdTlDjsGMLwfOA-8J-6" target="VcxqdTlDjsGMLwfOA-8J-2">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="395" y="150" as="sourcePoint" />
             <Array as="points" />
@@ -790,7 +790,7 @@
         </mxCell>
         <mxCell id="VcxqdTlDjsGMLwfOA-8J-86" value="DEV1 PGC" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=12;" vertex="1" connectable="0" parent="VcxqdTlDjsGMLwfOA-8J-85">
           <mxGeometry x="-0.0884" relative="1" as="geometry">
-            <mxPoint x="-90" as="offset" />
+            <mxPoint x="-159" as="offset" />
           </mxGeometry>
         </mxCell>
       </root>
