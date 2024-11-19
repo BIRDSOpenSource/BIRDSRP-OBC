@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36" version="24.8.6" pages="2">
   <diagram name="2-ROW-50-PIN-ASSIGNMENT" id="2YBvvXClWsGukQMizWep">
-    <mxGraphModel dx="137" dy="158" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="446" dy="514" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -10,6 +10,9 @@
         <mxCell id="tYIQIL9FMzSM6Vzf6UUn-1" value="50 Pin&lt;div&gt;Connector&lt;/div&gt;" style="rounded=0;html=1;whiteSpace=wrap;labelPosition=center;verticalLabelPosition=top;align=center;verticalAlign=bottom;" vertex="1" parent="1">
           <mxGeometry x="385" y="120" width="140" height="1010" as="geometry" />
         </mxCell>
+        <mxCell id="aM9ryv3xv72pqoxQDRHE-6" value="PIC Kit" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};labelPosition=center;verticalLabelPosition=middle;align=center;verticalAlign=top;" parent="1" vertex="1">
+          <mxGeometry x="560" y="110" width="80" height="140" as="geometry" />
+        </mxCell>
         <mxCell id="aM9ryv3xv72pqoxQDRHE-9" value="" style="html=1;verticalAlign=bottom;endArrow=block;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" parent="1" edge="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="515" y="230" as="sourcePoint" />
@@ -17,13 +20,10 @@
             <mxPoint x="560" y="230" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="tYIQIL9FMzSM6Vzf6UUn-160" value="DEV4 MCLR_MP" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=12;" vertex="1" connectable="0" parent="aM9ryv3xv72pqoxQDRHE-9">
+        <mxCell id="tYIQIL9FMzSM6Vzf6UUn-160" value="DEV6 MCLR_MP" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=12;" vertex="1" connectable="0" parent="aM9ryv3xv72pqoxQDRHE-9">
           <mxGeometry x="-0.3094" y="1" relative="1" as="geometry">
             <mxPoint x="89" y="1" as="offset" />
           </mxGeometry>
-        </mxCell>
-        <mxCell id="aM9ryv3xv72pqoxQDRHE-6" value="PIC Kit" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};labelPosition=center;verticalLabelPosition=middle;align=center;verticalAlign=top;" parent="1" vertex="1">
-          <mxGeometry x="560" y="110" width="80" height="140" as="geometry" />
         </mxCell>
         <mxCell id="aM9ryv3xv72pqoxQDRHE-7" value="" style="html=1;verticalAlign=bottom;endArrow=block;edgeStyle=elbowEdgeStyle;elbow=horizontal;curved=0;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.002;entryY=0.284;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="tYIQIL9FMzSM6Vzf6UUn-75" target="aM9ryv3xv72pqoxQDRHE-6" edge="1">
           <mxGeometry x="0.2195" y="10" relative="1" as="geometry">
@@ -378,7 +378,7 @@
             <mxPoint x="-62" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="tYIQIL9FMzSM6Vzf6UUn-152" value="UHF TRX" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};verticalAlign=top;" vertex="1" parent="1">
+        <mxCell id="tYIQIL9FMzSM6Vzf6UUn-152" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};verticalAlign=top;" vertex="1" parent="1">
           <mxGeometry x="270" y="250" width="80" height="40" as="geometry" />
         </mxCell>
         <mxCell id="tYIQIL9FMzSM6Vzf6UUn-157" value="" style="html=1;verticalAlign=bottom;endArrow=block;edgeStyle=elbowEdgeStyle;elbow=horizontal;curved=0;rounded=0;exitX=1.001;exitY=0.06;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.002;entryY=0.567;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="tYIQIL9FMzSM6Vzf6UUn-74" target="aM9ryv3xv72pqoxQDRHE-6">
@@ -389,7 +389,7 @@
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="tYIQIL9FMzSM6Vzf6UUn-158" value="DEV5 MCLR_CP" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=12;" vertex="1" connectable="0" parent="tYIQIL9FMzSM6Vzf6UUn-157">
+        <mxCell id="tYIQIL9FMzSM6Vzf6UUn-158" value="DEV4 MCLR_RP" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=12;" vertex="1" connectable="0" parent="tYIQIL9FMzSM6Vzf6UUn-157">
           <mxGeometry x="-0.9474" relative="1" as="geometry">
             <mxPoint x="104" y="1" as="offset" />
           </mxGeometry>
@@ -400,7 +400,7 @@
         <mxCell id="tYIQIL9FMzSM6Vzf6UUn-163" value="PIC Kit" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};labelPosition=center;verticalLabelPosition=middle;align=center;verticalAlign=top;" vertex="1" parent="1">
           <mxGeometry x="560" y="320" width="80" height="40" as="geometry" />
         </mxCell>
-        <mxCell id="tYIQIL9FMzSM6Vzf6UUn-164" value="UHF TRX" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};verticalAlign=top;" vertex="1" parent="1">
+        <mxCell id="tYIQIL9FMzSM6Vzf6UUn-164" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};verticalAlign=top;" vertex="1" parent="1">
           <mxGeometry x="560" y="250" width="80" height="40" as="geometry" />
         </mxCell>
         <mxCell id="tYIQIL9FMzSM6Vzf6UUn-165" value="NEW&lt;div&gt;UHF TRX&lt;/div&gt;" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};verticalAlign=top;" vertex="1" parent="1">
@@ -428,7 +428,7 @@
             <mxPoint x="350" y="230" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="tYIQIL9FMzSM6Vzf6UUn-173" value="DEV6 MCLR_MP" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=12;" vertex="1" connectable="0" parent="tYIQIL9FMzSM6Vzf6UUn-172">
+        <mxCell id="tYIQIL9FMzSM6Vzf6UUn-173" value="DEV5 MCLR_CP" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=12;" vertex="1" connectable="0" parent="tYIQIL9FMzSM6Vzf6UUn-172">
           <mxGeometry x="-0.3094" y="1" relative="1" as="geometry">
             <mxPoint x="-80" y="-1" as="offset" />
           </mxGeometry>
@@ -438,6 +438,30 @@
         </mxCell>
         <mxCell id="bvYonb6-Ao3rK0f30JlV-2" value="GND SYS" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};labelPosition=center;verticalLabelPosition=middle;align=center;verticalAlign=top;fillColor=#647687;strokeColor=#314354;fontColor=#ffffff;" vertex="1" parent="1">
           <mxGeometry x="270" y="290" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="bvYonb6-Ao3rK0f30JlV-3" value="" style="html=1;verticalAlign=bottom;endArrow=block;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;exitX=-0.003;exitY=0.101;exitDx=0;exitDy=0;exitPerimeter=0;entryX=1.003;entryY=0.856;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="395" y="269.94" as="sourcePoint" />
+            <Array as="points" />
+            <mxPoint x="350" y="269.94" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="bvYonb6-Ao3rK0f30JlV-4" value="UHF TRX" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=12;" vertex="1" connectable="0" parent="bvYonb6-Ao3rK0f30JlV-3">
+          <mxGeometry x="-0.3094" y="1" relative="1" as="geometry">
+            <mxPoint x="-70" y="-1" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="bvYonb6-Ao3rK0f30JlV-5" value="" style="html=1;verticalAlign=bottom;endArrow=block;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="515" y="269.94" as="sourcePoint" />
+            <Array as="points" />
+            <mxPoint x="560" y="269.94" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="bvYonb6-Ao3rK0f30JlV-6" value="UHF TRX" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=12;" vertex="1" connectable="0" parent="bvYonb6-Ao3rK0f30JlV-5">
+          <mxGeometry x="-0.3094" y="1" relative="1" as="geometry">
+            <mxPoint x="70" y="1" as="offset" />
+          </mxGeometry>
         </mxCell>
       </root>
     </mxGraphModel>
