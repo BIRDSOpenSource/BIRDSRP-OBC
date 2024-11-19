@@ -5,7 +5,7 @@
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
         <mxCell id="8Y4_HuB13osn8gQd0_Ju-176" value="&lt;font style=&quot;font-size: 30px;&quot;&gt;BPB&lt;/font&gt;" style="whiteSpace=wrap;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=left;labelPosition=right;verticalLabelPosition=bottom;verticalAlign=top;spacing=-50;spacingTop=12;spacingLeft=-21;" vertex="1" parent="1">
-          <mxGeometry x="-540" y="40.93" width="570" height="520" as="geometry" />
+          <mxGeometry x="-140" y="40.93" width="170" height="219.07" as="geometry" />
         </mxCell>
         <mxCell id="8Y4_HuB13osn8gQd0_Ju-1" value="&lt;font style=&quot;font-size: 30px;&quot;&gt;OBC/EPS&lt;/font&gt;" style="whiteSpace=wrap;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=left;labelPosition=right;verticalLabelPosition=bottom;verticalAlign=top;spacing=-50;spacingTop=12;spacingLeft=-96;" vertex="1" parent="1">
           <mxGeometry x="250" y="100.93" width="570" height="520" as="geometry" />
@@ -200,7 +200,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="8Y4_HuB13osn8gQd0_Ju-67" value="MSN BOSS" style="shape=rect;dashed=0;shadow=0;html=1;whiteSpace=wrap;rotation=0;rounded=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
-          <mxGeometry x="120" y="154.31" width="100" height="50" as="geometry" />
+          <mxGeometry x="-100" y="154.31" width="100" height="50" as="geometry" />
         </mxCell>
         <mxCell id="8Y4_HuB13osn8gQd0_Ju-72" value="" style="endArrow=classic;html=1;rounded=0;fontSize=12;startSize=8;endSize=8;curved=1;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0;entryY=0.75;entryDx=0;entryDy=0;startArrow=classic;startFill=1;" edge="1" parent="1" source="8Y4_HuB13osn8gQd0_Ju-11" target="8Y4_HuB13osn8gQd0_Ju-3">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
@@ -217,20 +217,25 @@
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="230" y="298.93" as="sourcePoint" />
             <mxPoint x="350" y="298.93" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="240" y="179" />
+              <mxPoint x="240" y="276" />
+            </Array>
           </mxGeometry>
         </mxCell>
         <mxCell id="8Y4_HuB13osn8gQd0_Ju-75" value="UART" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=12;" vertex="1" connectable="0" parent="8Y4_HuB13osn8gQd0_Ju-74">
           <mxGeometry x="0.2091" relative="1" as="geometry">
-            <mxPoint as="offset" />
+            <mxPoint x="-40" y="-12" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="8Y4_HuB13osn8gQd0_Ju-76" value="" style="endArrow=classic;html=1;rounded=0;fontSize=12;startSize=8;endSize=8;exitX=0.75;exitY=0;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;startArrow=classic;startFill=1;edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="8Y4_HuB13osn8gQd0_Ju-67" target="8Y4_HuB13osn8gQd0_Ju-10">
+        <mxCell id="8Y4_HuB13osn8gQd0_Ju-76" value="" style="endArrow=classic;html=1;rounded=0;fontSize=12;startSize=8;endSize=8;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;startArrow=classic;startFill=1;edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="8Y4_HuB13osn8gQd0_Ju-67" target="8Y4_HuB13osn8gQd0_Ju-10">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="327.26" y="61" as="sourcePoint" />
             <mxPoint x="352.26" y="121" as="targetPoint" />
             <Array as="points">
-              <mxPoint x="195" y="70.93" />
-              <mxPoint x="515" y="70.93" />
+              <mxPoint x="195" y="167" />
+              <mxPoint x="195" y="71" />
+              <mxPoint x="515" y="71" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -250,7 +255,7 @@
         </mxCell>
         <mxCell id="8Y4_HuB13osn8gQd0_Ju-80" value="UART" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=12;" vertex="1" connectable="0" parent="8Y4_HuB13osn8gQd0_Ju-79">
           <mxGeometry x="0.2091" relative="1" as="geometry">
-            <mxPoint x="-14" as="offset" />
+            <mxPoint x="20" as="offset" />
           </mxGeometry>
         </mxCell>
         <mxCell id="8Y4_HuB13osn8gQd0_Ju-161" value="" style="group" vertex="1" connectable="0" parent="1">
