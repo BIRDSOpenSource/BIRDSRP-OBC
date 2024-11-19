@@ -462,7 +462,7 @@
         <mxCell id="VcxqdTlDjsGMLwfOA-8J-6" value="PIC Kit" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};labelPosition=center;verticalLabelPosition=middle;align=center;verticalAlign=top;" vertex="1" parent="VcxqdTlDjsGMLwfOA-8J-1">
           <mxGeometry x="560" y="110" width="120" height="260" as="geometry" />
         </mxCell>
-        <mxCell id="VcxqdTlDjsGMLwfOA-8J-7" value="" style="html=1;verticalAlign=bottom;endArrow=block;edgeStyle=elbowEdgeStyle;elbow=horizontal;curved=0;rounded=0;" edge="1" parent="VcxqdTlDjsGMLwfOA-8J-1">
+        <mxCell id="VcxqdTlDjsGMLwfOA-8J-7" value="" style="html=1;verticalAlign=bottom;endArrow=block;edgeStyle=elbowEdgeStyle;elbow=horizontal;curved=0;rounded=0;startArrow=block;startFill=1;" edge="1" parent="VcxqdTlDjsGMLwfOA-8J-1">
           <mxGeometry x="0.2195" y="10" relative="1" as="geometry">
             <mxPoint x="393.22" y="279.96" as="sourcePoint" />
             <Array as="points" />
@@ -742,7 +742,7 @@
             <mxRectangle width="60" height="40" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="VcxqdTlDjsGMLwfOA-8J-88" value="" style="html=1;verticalAlign=bottom;endArrow=block;edgeStyle=elbowEdgeStyle;elbow=horizontal;curved=0;rounded=0;" edge="1" parent="VcxqdTlDjsGMLwfOA-8J-1">
+        <mxCell id="VcxqdTlDjsGMLwfOA-8J-88" value="" style="html=1;verticalAlign=bottom;endArrow=block;edgeStyle=elbowEdgeStyle;elbow=horizontal;curved=0;rounded=0;startArrow=block;startFill=1;" edge="1" parent="VcxqdTlDjsGMLwfOA-8J-1">
           <mxGeometry x="0.2195" y="10" relative="1" as="geometry">
             <mxPoint x="370" y="320" as="sourcePoint" />
             <Array as="points" />
@@ -767,13 +767,13 @@
         <mxCell id="VcxqdTlDjsGMLwfOA-8J-95" value="COM" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};verticalAlign=top;" vertex="1" parent="VcxqdTlDjsGMLwfOA-8J-1">
           <mxGeometry x="560" y="910" width="80" height="120" as="geometry" />
         </mxCell>
-        <mxCell id="VcxqdTlDjsGMLwfOA-8J-99" value="" style="html=1;verticalAlign=bottom;endArrow=block;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.996;entryY=0.057;entryDx=0;entryDy=0;entryPerimeter=0;startArrow=block;startFill=1;" edge="1" parent="VcxqdTlDjsGMLwfOA-8J-1" source="5WeMV0Ao450fLC5GHZ1C-0" target="VcxqdTlDjsGMLwfOA-8J-2">
+        <mxCell id="VcxqdTlDjsGMLwfOA-8J-99" value="" style="html=1;verticalAlign=bottom;endArrow=block;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.996;entryY=0.057;entryDx=0;entryDy=0;entryPerimeter=0;startArrow=block;startFill=1;" edge="1" parent="VcxqdTlDjsGMLwfOA-8J-1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="395" y="190" as="sourcePoint" />
+            <mxPoint x="433.06" y="360" as="sourcePoint" />
             <Array as="points">
-              <mxPoint x="380" y="190" />
+              <mxPoint x="380.56" y="360" />
             </Array>
-            <mxPoint x="350" y="190" as="targetPoint" />
+            <mxPoint x="359.99999999999994" y="360.93999999999994" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="VcxqdTlDjsGMLwfOA-8J-100" value="DEV6 MCLR_MP" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=12;" vertex="1" connectable="0" parent="VcxqdTlDjsGMLwfOA-8J-99">
@@ -792,6 +792,9 @@
           <mxGeometry x="-0.0884" relative="1" as="geometry">
             <mxPoint x="-159" as="offset" />
           </mxGeometry>
+        </mxCell>
+        <mxCell id="5WeMV0Ao450fLC5GHZ1C-21" style="edgeStyle=none;curved=1;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.998;exitY=0.056;exitDx=0;exitDy=0;entryX=0.012;entryY=0.308;entryDx=0;entryDy=0;entryPerimeter=0;fontSize=12;startSize=8;endSize=8;exitPerimeter=0;startArrow=block;startFill=1;" edge="1" parent="VcxqdTlDjsGMLwfOA-8J-1" source="VcxqdTlDjsGMLwfOA-8J-2" target="VcxqdTlDjsGMLwfOA-8J-6">
+          <mxGeometry relative="1" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
