@@ -27,11 +27,12 @@ The system block diagram of the BIRDS-RP satellite is detailed in figure 1 below
 ### OBC BLOCK DIAGRAM
 
 ![](Diagrams/obc-block-diagram.png) 
- 
+<a href="https://app.diagrams.net/#HBIRDSOpenSource%2FBIRDSRP-OBC%2Fmain%2FDiagrams%2Fobc-block-diagram.png" target="_blank">Edit with draw.io</a> 
+
 ### DETAILED OBC BLOCK DIAGRAM
 
 ![](Diagrams/obc-detailed-block-diagram.png) 
-
+<a href="https://app.diagrams.net/#HBIRDSOpenSource%2FBIRDSRP-OBC%2Fmain%2FDiagrams%2Fobc-detailed-block-diagram.png" target="_blank">Edit with draw.io</a> 
 The organisational file stucture of the microcontrollers in the BIRDS-RP OBC board is detailed in  figure 2 below. 
  
 
