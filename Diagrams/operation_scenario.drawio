@@ -657,7 +657,7 @@
             <mxPoint x="1315" y="360" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="JKXl0PU2Zc8XGw6-iWee-23" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=11;endArrow=block;endFill=0;endSize=8;strokeWidth=1;shadow=0;labelBackgroundColor=none;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="wsq8zbEwRPyE87_ABFTD-1" source="JKXl0PU2Zc8XGw6-iWee-19" target="JKXl0PU2Zc8XGw6-iWee-21">
+        <mxCell id="JKXl0PU2Zc8XGw6-iWee-23" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=11;endArrow=block;endFill=0;endSize=8;strokeWidth=1;shadow=0;labelBackgroundColor=none;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="wsq8zbEwRPyE87_ABFTD-1" source="JKXl0PU2Zc8XGw6-iWee-33" target="JKXl0PU2Zc8XGw6-iWee-27">
           <mxGeometry y="10" relative="1" as="geometry">
             <mxPoint as="offset" />
             <mxPoint x="1265" y="460" as="sourcePoint" />
@@ -669,7 +669,7 @@
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="JKXl0PU2Zc8XGw6-iWee-25" value="&lt;div&gt;Turn on Main, Com, Unreg1, Unreg2 power lines&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;glass=0;strokeWidth=1;shadow=0;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="wsq8zbEwRPyE87_ABFTD-1">
+        <mxCell id="JKXl0PU2Zc8XGw6-iWee-25" value="&lt;div&gt;Turn off Main, Com, Unreg1, Unreg2 power lines&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;glass=0;strokeWidth=1;shadow=0;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="wsq8zbEwRPyE87_ABFTD-1">
           <mxGeometry x="925" y="370" width="120" height="50" as="geometry" />
         </mxCell>
         <mxCell id="JKXl0PU2Zc8XGw6-iWee-26" value="&lt;div&gt;Check 1hr FLAG&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;glass=0;strokeWidth=1;shadow=0;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="wsq8zbEwRPyE87_ABFTD-1">
@@ -685,10 +685,10 @@
           <mxGeometry x="1060" y="660" width="120" height="50" as="geometry" />
         </mxCell>
         <mxCell id="JKXl0PU2Zc8XGw6-iWee-30" value="&lt;div&gt;Increase MLC by 1&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;glass=0;strokeWidth=1;shadow=0;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="wsq8zbEwRPyE87_ABFTD-1">
-          <mxGeometry x="800" y="720" width="120" height="50" as="geometry" />
+          <mxGeometry x="800" y="740" width="120" height="50" as="geometry" />
         </mxCell>
-        <mxCell id="JKXl0PU2Zc8XGw6-iWee-31" value="&lt;div&gt;Set counters to zero - start counting time&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;glass=0;strokeWidth=1;shadow=0;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="wsq8zbEwRPyE87_ABFTD-1">
-          <mxGeometry x="800" y="780" width="120" height="50" as="geometry" />
+        <mxCell id="JKXl0PU2Zc8XGw6-iWee-31" value="&lt;div&gt;power line status = on&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;glass=0;strokeWidth=1;shadow=0;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="wsq8zbEwRPyE87_ABFTD-1">
+          <mxGeometry x="860" y="830" width="120" height="50" as="geometry" />
         </mxCell>
         <mxCell id="JKXl0PU2Zc8XGw6-iWee-32" value="&lt;div&gt;Check response from RPIC&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;glass=0;strokeWidth=1;shadow=0;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="wsq8zbEwRPyE87_ABFTD-1">
           <mxGeometry x="1060" y="780" width="120" height="50" as="geometry" />
@@ -698,6 +698,29 @@
         </mxCell>
         <mxCell id="JKXl0PU2Zc8XGw6-iWee-34" value="&lt;div&gt;Check UART coming from RPIC&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;glass=0;strokeWidth=1;shadow=0;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="wsq8zbEwRPyE87_ABFTD-1">
           <mxGeometry x="925" y="440" width="120" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="JKXl0PU2Zc8XGw6-iWee-35" value="True" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=11;endArrow=block;endFill=0;endSize=8;strokeWidth=1;shadow=0;labelBackgroundColor=none;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="wsq8zbEwRPyE87_ABFTD-1" source="JKXl0PU2Zc8XGw6-iWee-28" target="JKXl0PU2Zc8XGw6-iWee-30">
+          <mxGeometry y="10" relative="1" as="geometry">
+            <mxPoint as="offset" />
+            <mxPoint x="1265" y="460" as="sourcePoint" />
+            <mxPoint x="1315" y="460" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="JKXl0PU2Zc8XGw6-iWee-36" value="True" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=11;endArrow=block;endFill=0;endSize=8;strokeWidth=1;shadow=0;labelBackgroundColor=none;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="wsq8zbEwRPyE87_ABFTD-1" source="JKXl0PU2Zc8XGw6-iWee-30" target="JKXl0PU2Zc8XGw6-iWee-28">
+          <mxGeometry y="10" relative="1" as="geometry">
+            <mxPoint as="offset" />
+            <mxPoint x="1275" y="470" as="sourcePoint" />
+            <mxPoint x="1325" y="470" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="JKXl0PU2Zc8XGw6-iWee-37" value="&lt;div&gt;no response from reset pic in 3 mins&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;glass=0;strokeWidth=1;shadow=0;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="wsq8zbEwRPyE87_ABFTD-1">
+          <mxGeometry x="995" y="900" width="120" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="JKXl0PU2Zc8XGw6-iWee-38" value="Turn on Main, Com, Unreg1, Unreg2 power lines" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;glass=0;strokeWidth=1;shadow=0;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="wsq8zbEwRPyE87_ABFTD-1">
+          <mxGeometry x="820" y="990" width="120" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="JKXl0PU2Zc8XGw6-iWee-39" value="Turn off Main, Com, Unreg1, Unreg2 power lines" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;glass=0;strokeWidth=1;shadow=0;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="wsq8zbEwRPyE87_ABFTD-1">
+          <mxGeometry x="710" y="920" width="120" height="50" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
