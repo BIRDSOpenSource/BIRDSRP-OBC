@@ -546,7 +546,7 @@
     </mxGraphModel>
   </diagram>
   <diagram name="RESET-PIC-1.1" id="H-HzrV1q7QoHT7t4_hOA">
-    <mxGraphModel dx="630" dy="1028" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="388" dy="632" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="wsq8zbEwRPyE87_ABFTD-0" />
         <mxCell id="wsq8zbEwRPyE87_ABFTD-1" parent="wsq8zbEwRPyE87_ABFTD-0" />
@@ -648,7 +648,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="JKXl0PU2Zc8XGw6-iWee-21" value="Start counters" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;glass=0;strokeWidth=1;shadow=0;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="wsq8zbEwRPyE87_ABFTD-1">
-          <mxGeometry x="890" y="710" width="120" height="40" as="geometry" />
+          <mxGeometry x="610" y="740" width="120" height="40" as="geometry" />
         </mxCell>
         <mxCell id="JKXl0PU2Zc8XGw6-iWee-22" value="True" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=11;endArrow=block;endFill=0;endSize=8;strokeWidth=1;shadow=0;labelBackgroundColor=none;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="wsq8zbEwRPyE87_ABFTD-1" source="JKXl0PU2Zc8XGw6-iWee-18">
           <mxGeometry y="10" relative="1" as="geometry">
@@ -662,6 +662,10 @@
             <mxPoint as="offset" />
             <mxPoint x="1265" y="460" as="sourcePoint" />
             <mxPoint x="1375" y="490" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="990" y="745" />
+              <mxPoint x="990" y="620" />
+            </Array>
           </mxGeometry>
         </mxCell>
         <mxCell id="JKXl0PU2Zc8XGw6-iWee-24" value="True" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="JKXl0PU2Zc8XGw6-iWee-23">
@@ -676,19 +680,25 @@
           <mxGeometry x="925" y="500" width="120" height="50" as="geometry" />
         </mxCell>
         <mxCell id="JKXl0PU2Zc8XGw6-iWee-27" value="&lt;div&gt;1hr FLAG = 0xAA&lt;/div&gt;" style="rhombus;whiteSpace=wrap;html=1;shadow=0;fontFamily=Helvetica;fontSize=12;align=center;strokeWidth=1;spacing=6;spacingTop=-4;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="wsq8zbEwRPyE87_ABFTD-1">
-          <mxGeometry x="810" y="560" width="100" height="80" as="geometry" />
+          <mxGeometry x="540" y="580" width="100" height="80" as="geometry" />
         </mxCell>
         <mxCell id="JKXl0PU2Zc8XGw6-iWee-28" value="&lt;div&gt;Check response from RPIC&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;glass=0;strokeWidth=1;shadow=0;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="wsq8zbEwRPyE87_ABFTD-1">
-          <mxGeometry x="800" y="660" width="120" height="50" as="geometry" />
+          <mxGeometry x="530" y="675" width="120" height="50" as="geometry" />
         </mxCell>
         <mxCell id="JKXl0PU2Zc8XGw6-iWee-29" value="&lt;div&gt;Increase sec counter&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;glass=0;strokeWidth=1;shadow=0;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="wsq8zbEwRPyE87_ABFTD-1">
           <mxGeometry x="1060" y="660" width="120" height="50" as="geometry" />
         </mxCell>
         <mxCell id="JKXl0PU2Zc8XGw6-iWee-30" value="&lt;div&gt;Increase MLC by 1&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;glass=0;strokeWidth=1;shadow=0;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="wsq8zbEwRPyE87_ABFTD-1">
-          <mxGeometry x="800" y="740" width="120" height="50" as="geometry" />
+          <mxGeometry x="800" y="860" width="120" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="JKXl0PU2Zc8XGw6-iWee-40" style="edgeStyle=none;curved=1;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;startSize=8;endSize=8;" edge="1" parent="wsq8zbEwRPyE87_ABFTD-1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="730" y="850" as="targetPoint" />
+            <mxPoint x="680" y="860" as="sourcePoint" />
+          </mxGeometry>
         </mxCell>
         <mxCell id="JKXl0PU2Zc8XGw6-iWee-31" value="&lt;div&gt;power line status = on&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;glass=0;strokeWidth=1;shadow=0;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="wsq8zbEwRPyE87_ABFTD-1">
-          <mxGeometry x="860" y="830" width="120" height="50" as="geometry" />
+          <mxGeometry x="550" y="790" width="120" height="50" as="geometry" />
         </mxCell>
         <mxCell id="JKXl0PU2Zc8XGw6-iWee-32" value="&lt;div&gt;Check response from RPIC&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;glass=0;strokeWidth=1;shadow=0;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="wsq8zbEwRPyE87_ABFTD-1">
           <mxGeometry x="1060" y="780" width="120" height="50" as="geometry" />
