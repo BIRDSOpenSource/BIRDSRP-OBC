@@ -355,7 +355,7 @@ void TURN_ON_ALL_POWER_LINES()
 - ```output_High(PIN_C2)```; and ```output_High(PIN_C5)```;
 Enables the OCP switches for the unregulated power lines "Unreg #1" and "Unreg #2," with 50 ms delays in between.
 - ```POWER_LINE_STATUS = ON```; Updates the POWER_LINE_STATUS variable to the predefined constant ON (likely 0x69).
-- ```fprintf(PC, "Turned ON Power lines\n\r"); Sends a confirmation message to a PC or debugging terminal.
+- ```fprintf(PC, "Turned ON Power lines\n\r")```; Sends a confirmation message to a PC or debugging terminal.
 
 **CLEAR_RPIC_TO_SPIC_ARRAY()**
 This function resets the ```RPIC_TO_SPIC_ARRAY``` to all zeros. This is used to clear stale or invalid data from the communication array.
