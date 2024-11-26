@@ -59,7 +59,7 @@ Let's break it down line by line:
  
 ### STARTPIC_FUNCTIONS.C 
 
-#### Hardware Register and Bit Definitions:
+#### Hardware Register and Bit Definitions
 
 ``` c
 #byte T1CON = 0x018
@@ -109,7 +109,7 @@ Maps TMR1CS0 to bit position 6. This bit is part of the configuration for the Ti
 Maps TMR1CS1 to bit position 7. Along with TMR1CS0, this sets the clock source for Timer 1.
 
 
-#### Variable and Macro Definitions:
+#### Variable and Macro Definitions
 
 ``` c
 unsigned int8 RPIC_TO_SPIC_ARRAY[10];
@@ -130,7 +130,7 @@ char POWER_LINE_STATUS;
 Declares a char variable to store the status of a power line,  representing whether the power is on or off.
 
 
-#### UART Configuration and Buffer Variables:
+#### UART Configuration and Buffer Variables
 
 ``` c
 #define RP_BFR_SIZE 10
@@ -180,8 +180,9 @@ unsigned int8 RP_Temp_byte = 0;
 Declares an 8-bit unsigned integer RP_Temp_byte initialized to 0. This is a temporary variable for storing a single byte during processing.
 
 
-#### Interrupt Service Routine (ISR) for UART:
-ISR (SERIAL_ISR1()): Handles incoming UART data efficiently, storing it in a buffer.
+#### Interrupt Service Routine (ISR) for UART
+
+ISR (```SERIAL_ISR1()```): Handles incoming UART data efficiently, storing it in a buffer.
 
 ``` c
 #INT_RDA
@@ -207,7 +208,8 @@ The byte counter (```RP_Byte_Counter```) increments.
 - If the buffer is full:
 The received byte is discarded by reading it (```fgetc(RPIC)```), and the overflow flag (```RP_Overflow```) is set. This prevents the UART hardware from getting stuck.
 
-#### Function to Check Available Bytes:
+#### Function to Check Available Bytes
+
 ``` c
 RPic_Available()
 ```
@@ -221,7 +223,7 @@ unsigned int8 RPic_Available()
 ```
 This function checks if there is data available to read from the buffer and returns the number of bytes currently in the buffer (```RP_Byte_Counter```).
 
-#### Function to Read a Byte:
+#### Function to Read a Byte
 
 ``` c
 RPic_Read()
@@ -254,7 +256,8 @@ unsigned int8 RPic_Read()
 2. If no data is available:
 - Resets the read index and returns 0x00 as a default.
 
-#### Function to Process Incoming UART Data:
+#### Function to Process Incoming UART Data
+
 ``` c
 CHECK_UART_INCOMING_FROM_RESET_PIC()
 ```
@@ -286,26 +289,30 @@ void CHECK_UART_INCOMING_FROM_RESET_PIC()
    }
 }
 ```
-Checks if data is available:
-1. Calls ```Rpic_Available()``` to see if the buffer has any bytes.
-2. Waits briefly: Introduces a 10 ms delay (delay_ms(10)). This might allow more data to arrive if the system is processing a multi-byte message.
-3. Searches for a synchronization byte (0xAA):
-4. Loops up to 8 times, reading bytes using RPIC_Read().
-If it finds 0xAA, it stores it in the first position of the RPIC_TO_SPIC_ARRAY array and exits the loop.
-Reads remaining data:
-Fills the rest of the RPIC_TO_SPIC_ARRAY array with the next 9 bytes from the buffer.
-Prints the first three bytes to the PC:
-Sends the first three bytes from RPIC_TO_SPIC_ARRAY to a PC via another UART (fprintf(PC, "%X ", ...)).
-Ends the output with a newline and carriage return.
+1.Checks if data is available:
+- Calls ```Rpic_Available()``` to see if the buffer has any bytes.
+2. Waits briefly:
+  - Introduces a 10 ms delay (```delay_ms(10)```). This might allow more data to arrive if the system is processing a multi-byte message.
+3. Searches for a synchronization byte (```0xAA```):
+- Loops up to 8 times, reading bytes using ```RPIC_Read()```.
+- If it finds ```0xAA```, it stores it in the first position of the ```RPIC_TO_SPIC_ARRAY``` array and exits the loop.
+4. Reads remaining data:
+- Fills the rest of the ```RPIC_TO_SPIC_ARRAY``` array with the next 9 bytes from the buffer.
+5. Prints the first three bytes to the PC:
+- Sends the first three bytes from ```RPIC_TO_SPIC_ARRAY``` to a PC via another UART (```fprintf(PC, "%X ", ...)```).
+- Ends the output with a newline and carriage return.
+
+#### Initial power management
+The next code defines three utility functions for managing power lines and clearing a communication array. These functions manage the power lines by controlling GPIO pins. A "low" state turns off the power, while a "high" state turns it on. Delays ensure stable transitions. Clearing the ```RPIC_TO_SPIC_ARRAY``` is essential for ensuring the integrity of data in UART-based communication. The ```POWER_LINE_STATUS``` variable is used to track whether power lines are on (ON) or off (OFF), which can be helpful for debugging or program logic.
+
+``` c
+TURN_OFF_ALL_POWER_LINES()
+```
+This function disables power to all connected components by setting specific control pins to a "low" state (0V).
 
 
-The next code defines three utility functions for managing power lines and clearing a communication array. These functions manage the power lines by controlling GPIO pins. A "low" state turns off the power, while a "high" state turns it on. Delays ensure stable transitions. Clearing the RPIC_TO_SPIC_ARRAY is essential for ensuring the integrity of data in UART-based communication. The POWER_LINE_STATUS variable is used to track whether power lines are on (ON) or off (OFF), which can be helpful for debugging or program logic.
-
-
-TURN_OFF_ALL_POWER_LINES(): This function disables power to all connected components by setting specific control pins to a "low" state (0V).
-
-
-``` void TURN_OFF_ALL_POWER_LINES()
+``` c
+void TURN_OFF_ALL_POWER_LINES()
 {
    output_Low(PIN_D6); // Switch enable for COM PIC
    output_Low(PIN_D7); // Switch enable for Main PIC   
@@ -314,27 +321,24 @@ TURN_OFF_ALL_POWER_LINES(): This function disables power to all connected compon
    
    POWER_LINE_STATUS = OFF;
    fprintf(PC, "Turned OFF Power lines\n\r");
-} ```
+}
+```
+
+- ```output_Low(PIN_D6)```; Sets the voltage of PIN_D6 to low, disabling the power line for the COM PIC.
+- ```output_Low(PIN_D7)```; Sets the voltage of PIN_D7 to low, disabling the power line for the Main PIC.
+- ```output_Low(PIN_C2)```; Disables the Over-Current Protection (OCP) switch for an unregulated power line labeled "Unreg #1".
+- ```output_Low(PIN_C5)```; Disables the OCP switch for "Unreg #2".
+- ```POWER_LINE_STATUS = OFF```; Updates the ```POWER_LINE_STATUS``` variable to the predefined constant OFF (0x96).
+- ```fprintf(PC, "Turned OFF Power lines\n\r")```; Sends a message over a serial connection (to a PC or debugging terminal) to confirm the action.
 
 
-output_Low(PIN_D6);
-Sets the voltage of PIN_D6 to low, disabling the power line for the COM PIC.
-output_Low(PIN_D7);
-Sets the voltage of PIN_D7 to low, disabling the power line for the Main PIC.
-output_Low(PIN_C2);
-Disables the Over-Current Protection (OCP) switch for an unregulated power line labeled "Unreg #1".
-output_Low(PIN_C5);
-Disables the OCP switch for "Unreg #2".
-POWER_LINE_STATUS = OFF;
-Updates the POWER_LINE_STATUS variable to the predefined constant OFF (0x96).
-fprintf(PC, "Turned OFF Power lines\n\r");
-Sends a message over a serial connection (to a PC or debugging terminal) to confirm the action.
+``` c
+TURN_ON_ALL_POWER_LINES()
+```
+This function enables power to all connected components by setting specific control pins to a "high" state (e.g., 3.3V or 5V).
 
-
-TURN_ON_ALL_POWER_LINES(): This function enables power to all connected components by setting specific control pins to a "high" state (e.g., 3.3V or 5V).
-
-
-``` void TURN_ON_ALL_POWER_LINES()
+``` c
+void TURN_ON_ALL_POWER_LINES()
 {
    output_High(PIN_D6);                                                         
    Delay_ms(50);
@@ -347,46 +351,41 @@ TURN_ON_ALL_POWER_LINES(): This function enables power to all connected componen
    
    POWER_LINE_STATUS = ON;
    fprintf(PC, "Turned ON Power lines\n\r");
-} ```
+}
+```
 
-
-output_High(PIN_D6);
-Sets the voltage of PIN_D6 to high, enabling the power line for the COM PIC.
-Delay_ms(50);
-Waits for 50 milliseconds to stabilize the power line.
-output_High(PIN_D7);
-Enables the power line for the Main PIC.
-Another 50 ms delay is added for stability.
-output_High(PIN_C2); and output_High(PIN_C5);
+- ```output_High(PIN_D6)```; Sets the voltage of PIN_D6 to high, enabling the power line for the COM PIC.
+- ```Delay_ms(50)```; Waits for 50 milliseconds to stabilize the power line.
+- ```output_High(PIN_D7)```; Enables the power line for the Main PIC. Another 50 ms delay is added for stability.
+- ```output_High(PIN_C2)```; and ```output_High(PIN_C5)```;
 Enables the OCP switches for the unregulated power lines "Unreg #1" and "Unreg #2," with 50 ms delays in between.
-POWER_LINE_STATUS = ON;
-Updates the POWER_LINE_STATUS variable to the predefined constant ON (likely 0x69).
-fprintf(PC, "Turned ON Power lines\n\r");
-Sends a confirmation message to a PC or debugging terminal.
-CLEAR_RPIC_TO_SPIC_ARRAY(): This function resets the RPIC_TO_SPIC_ARRAY to all zeros. This might be used to clear stale or invalid data from the communication array.
+- ```POWER_LINE_STATUS = ON```; Updates the POWER_LINE_STATUS variable to the predefined constant ON (likely 0x69).
+- ```fprintf(PC, "Turned ON Power lines\n\r"); Sends a confirmation message to a PC or debugging terminal.
 
+``` c
+  CLEAR_RPIC_TO_SPIC_ARRAY()
+```
+This function resets the ```RPIC_TO_SPIC_ARRAY``` to all zeros. Thisis used to clear stale or invalid data from the communication array.
 
-``` void CLEAR_RPIC_TO_SPIC_ARRAY()
+``` c
+void CLEAR_RPIC_TO_SPIC_ARRAY()
 {
    for( int i = 0; i<10; i++ ) RPIC_TO_SPIC_ARRAY[i] = 0;
-} ```
-
-
-for( int i = 0; i<10; i++ ): Iterates through the 10 elements of the RPIC_TO_SPIC_ARRAY.
-RPIC_TO_SPIC_ARRAY[i] = 0: Sets each element of the array to 0, effectively clearing it.
-
+}
+```
+- ```for( int i = 0; i<10; i++ )```: Iterates through the 10 elements of the ```RPIC_TO_SPIC_ARRAY```.
+- ```RPIC_TO_SPIC_ARRAY[i] = 0```: Sets each element of the array to 0, effectively clearing it.
 
 
 ### STARTPIC.C
 
-
 This is the main code for the Start PIC MCU that manages power lines and checks for responses from another microcontroller (Reset PIC).
 
+#### Headers and Configuration
 
-**Headers and Configuration**
-
-
-``` #include <16F1789.h> ```
+``` c
+#include <16F1789.h>
+```
 Includes the device-specific header file for the PIC16F1789 microcontroller. This provides access to hardware-specific definitions like registers, pins, and peripherals.
 
 
