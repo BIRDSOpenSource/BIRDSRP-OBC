@@ -305,11 +305,8 @@ void CHECK_UART_INCOMING_FROM_RESET_PIC()
 #### Initial power management
 The next code defines three utility functions for managing power lines and clearing a communication array. These functions manage the power lines by controlling GPIO pins. A "low" state turns off the power, while a "high" state turns it on. Delays ensure stable transitions. Clearing the ```RPIC_TO_SPIC_ARRAY``` is essential for ensuring the integrity of data in UART-based communication. The ```POWER_LINE_STATUS``` variable is used to track whether power lines are on (ON) or off (OFF), which can be helpful for debugging or program logic.
 
-``` c
-TURN_OFF_ALL_POWER_LINES()
-```
+**TURN_OFF_ALL_POWER_LINES()**
 This function disables power to all connected components by setting specific control pins to a "low" state (0V).
-
 
 ``` c
 void TURN_OFF_ALL_POWER_LINES()
@@ -332,9 +329,7 @@ void TURN_OFF_ALL_POWER_LINES()
 - ```fprintf(PC, "Turned OFF Power lines\n\r")```; Sends a message over a serial connection (to a PC or debugging terminal) to confirm the action.
 
 
-``` c
-TURN_ON_ALL_POWER_LINES()
-```
+**TURN_ON_ALL_POWER_LINES()**
 This function enables power to all connected components by setting specific control pins to a "high" state (e.g., 3.3V or 5V).
 
 ``` c
@@ -362,10 +357,8 @@ Enables the OCP switches for the unregulated power lines "Unreg #1" and "Unreg #
 - ```POWER_LINE_STATUS = ON```; Updates the POWER_LINE_STATUS variable to the predefined constant ON (likely 0x69).
 - ```fprintf(PC, "Turned ON Power lines\n\r"); Sends a confirmation message to a PC or debugging terminal.
 
-``` c
-  CLEAR_RPIC_TO_SPIC_ARRAY()
-```
-This function resets the ```RPIC_TO_SPIC_ARRAY``` to all zeros. Thisis used to clear stale or invalid data from the communication array.
+**CLEAR_RPIC_TO_SPIC_ARRAY()**
+This function resets the ```RPIC_TO_SPIC_ARRAY``` to all zeros. This is used to clear stale or invalid data from the communication array.
 
 ``` c
 void CLEAR_RPIC_TO_SPIC_ARRAY()
@@ -373,6 +366,7 @@ void CLEAR_RPIC_TO_SPIC_ARRAY()
    for( int i = 0; i<10; i++ ) RPIC_TO_SPIC_ARRAY[i] = 0;
 }
 ```
+
 - ```for( int i = 0; i<10; i++ )```: Iterates through the 10 elements of the ```RPIC_TO_SPIC_ARRAY```.
 - ```RPIC_TO_SPIC_ARRAY[i] = 0```: Sets each element of the array to 0, effectively clearing it.
 
@@ -388,57 +382,104 @@ This is the main code for the Start PIC MCU that manages power lines and checks 
 ```
 Includes the device-specific header file for the PIC16F1789 microcontroller. This provides access to hardware-specific definitions like registers, pins, and peripherals.
 
+``` c
+#fuses NOWDT, MCLR, NOBROWNOUT
+```
+- NOWDT: Disables the Watchdog Timer (WDT).
+- MCLR: Enables the Master Clear Reset pin for manual reset.
+- NOBROWNOUT: Disables the Brown-Out Reset feature, which would reset the MCU if the supply voltage drops below a threshold.
 
-``` #fuses NOWDT, MCLR, NOBROWNOUT ```
-NOWDT: Disables the Watchdog Timer (WDT).
-MCLR: Enables the Master Clear Reset pin for manual reset.
-NOBROWNOUT: Disables the Brown-Out Reset feature, which would reset the MCU if the supply voltage drops below a threshold.
 
-
-``` #use delay(Crystal = 16MHz, clock = 16MHz) ```
+``` c
+#use delay(Crystal = 16MHz, clock = 16MHz)
+```
 Specifies that the system uses a 16 MHz crystal oscillator.
 
-``` #use rs232(baud=38400, parity=N, xmit=PIN_D3, bits=8, stream=PC, force_sw) ```
+``` c
+#use rs232(baud=38400, parity=N, xmit=PIN_D3, bits=8, stream=PC, force_sw)
+```
 Configures a UART communication stream on PIN_D3 for transmitting data at 38,400 baud. The force_sw option enforces software-based serial communication.
 
 
 **Global Variables**
 
-``` unsigned int16 RPIC_RESPOND_SEC_COUNTER = 0;
+``` c
+unsigned int16 RPIC_RESPOND_SEC_COUNTER = 0;
 unsigned int16 MLC = 0;
 
 unsigned int16 SEC_COUNT = 0;
-unsigned int8 ONEHOUR_FLAG = 0x00; ```
+unsigned int8 ONEHOUR_FLAG = 0x00;
+```
 
+- ```RPIC_RESPOND_SEC_COUNTER```: Tracks how long the Reset PIC takes to respond.
+- ```MLC```: A secondary counter used in the main loop.
+- ```SEC_COUNT```: A timer counter incrementing every 100 ms to track one-hour periods.
+- ```ONEHOUR_FLAG```: A flag indicating whether one hour has elapsed. 0xAA means one hour has passed.
 
-RPIC_RESPOND_SEC_COUNTER: Tracks how long the Reset PIC takes to respond.
-MLC: A secondary counter used in the main loop.
-SEC_COUNT: A timer counter incrementing every 100 ms to track one-hour periods.
-ONEHOUR_FLAG: A flag indicating whether one hour has elapsed. 0xAA means one hour has passed.
-
-
-``` char BB, CC; ```
+``` c
+char BB, CC;
+```
 Temporary variables to read inputs from pins.
 
 
-**Main Function**
+#### Main Function
+
 **Initialization**
 
-
-``` void main()
+``` c
+void main()
 {
    Delay_ms(500);
-   fprintf(PC, "Start PIC booting...........\n\r"); ```
+   fprintf(PC, "Start PIC booting...........\n\r");
+```
+- Delays startup by 500 ms to allow system stabilization.
+- Sends a message over the UART (serial) indicating that the Start PIC is booting.
 
+``` c
+enable_interrupts(INT_RDA);
+enable_interrupts(GLOBAL);
+```
+- Enables the Receive Data Available (RDA) interrupt for UART communication.
+- Enables global interrupts for the system.
 
-Delays startup by 500 ms to allow system stabilization.
-Sends a message over the UART (serial) indicating that the Start PIC is booting.
+``` c
+   TURN_ON_ALL_POWER_LINES();
+```
+Powers on all connected components by calling the function ```TURN_ON_ALL_POWER_LINES```.
 
-```   enable_interrupts(INT_RDA);
-   enable_interrupts(GLOBAL); ```
+``` c
+   CC = input(PIN_B6);
+   BB = input(PIN_B7);
+```
+Reads the digital state of pins PIN_B6 and PIN_B7 into variables CC and BB.
 
-Enables the Receive Data Available (RDA) interrupt for UART communication.
-Enables global interrupts for the system.
+**Main Loop**
+``` c
+   while(TRUE)
+   {
+      CHECK_UART_INCOMING_FROM_RESET_PIC();
+```
+
+- Infinite Loop: Continuously executes system tasks.
+- ```CHECK_UART_INCOMING_FROM_RESET_PIC```: Checks for data from the Reset PIC and processes it.
+
+``` c
+      if( ONEHOUR_FLAG == 0xAA )
+      {
+         if( (RPIC_TO_SPIC_ARRAY[0] == 0xAA) && (RPIC_TO_SPIC_ARRAY[1] == 0xBB) && (RPIC_TO_SPIC_ARRAY[2] == 0xCC) )
+         {
+            RPIC_RESPOND_SEC_COUNTER = 0;
+            MLC = 0;
+            if( POWER_LINE_STATUS == ON ) TURN_OFF_ALL_POWER_LINES();
+            CLEAR_RPIC_TO_SPIC_ARRAY();
+         }
+```
+
+- Checks if one hour has passed (```ONEHOUR_FLAG == 0xAA``).
+- If the Reset PIC has sent a valid response (RPIC_TO_SPIC_ARRAY[0..2] match expected values), it:
+  - Resets the response counter.
+  - Turns off power lines if they are ON.
+  - Clears the response buffer.
 
 
 ## RESET PIC 
