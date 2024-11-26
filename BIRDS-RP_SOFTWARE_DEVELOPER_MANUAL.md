@@ -423,6 +423,13 @@ Temporary variables to read inputs from pins.
 
 
 #### Main Function
+The main function manages the system by checking for responses from the Reset PIC, turning power lines ON/OFF based on conditions and handling a 1-hour timer and ensuring the system doesn't stall.
+
+*Key Tasks:*
+- Use UART communication to interact with another microcontroller.
+- Track time for system stability and response.
+- Control power lines for external components.
+- Manage external Watchdog Timer toggling.
 
 **Initialization**
 
@@ -475,11 +482,55 @@ Reads the digital state of pins PIN_B6 and PIN_B7 into variables CC and BB.
          }
 ```
 
-- Checks if one hour has passed (```ONEHOUR_FLAG == 0xAA``).
+- Checks if one hour has passed (```ONEHOUR_FLAG == 0xAA```).
 - If the Reset PIC has sent a valid response (RPIC_TO_SPIC_ARRAY[0..2] match expected values), it:
   - Resets the response counter.
   - Turns off power lines if they are ON.
   - Clears the response buffer.
+
+``` c
+         if( MLC >= 50 )
+         {
+            MLC = 0;
+            RPIC_RESPOND_SEC_COUNTER++;
+         }
+```
+If MLC reaches 50 iterations, increment the response counter.
+
+``` c
+         if( RPIC_RESPOND_SEC_COUNTER >= 36 )
+         {
+            fprintf(PC, "Reset pic did not respond for three minute\n\r");
+            RPIC_RESPOND_SEC_COUNTER = 0;
+            TURN_ON_ALL_POWER_LINES();
+         }
+```
+If no valid response from the Reset PIC after 3 minutes (36 counts), log a message and turn the power lines back on.
+
+***Hourly Timer***
+
+``` c
+      if( ONEHOUR_FLAG == 0x00 )
+      {
+         SEC_COUNT++;
+         if(SEC_COUNT >= 36000)     // one hour 36000
+         {
+            ONEHOUR_FLAG = 0xAA;
+         }
+      }
+```
+
+- If one hour hasn't passed (```ONEHOUR_FLAG == 0x00```), increment ```SEC_COUNT``` every 100 ms.
+- Once ```SEC_COUNT``` reaches 36,000 (1 hour), set ```ONEHOUR_FLAG``` to ```0xAA```.
+
+**Watchdog Toggle**
+``` c
+      delay_ms(100);
+      Output_Toggle(PIN_B2);
+```
+- Delays 100 ms in each iteration.
+- Toggles the state of PIN_B2 to reset an external Watchdog Timer.
+
 
 
 ## RESET PIC 
