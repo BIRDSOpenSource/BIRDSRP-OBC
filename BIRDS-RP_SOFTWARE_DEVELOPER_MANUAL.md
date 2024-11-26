@@ -34,12 +34,9 @@ The organisational file stucture of the microcontrollers in the BIRDS-RP OBC boa
 
 ## START PIC
 
-The files found in the START PIC folder are detailed in Table 1 below. 
-
 ![](Diagrams/pics_operation-START-PIC.png)
 
-<a href="http://jgraph.github.io/drawio-github/edit-diagram.html?repo=BIRDSRP-OBC&path=obc_pics_operation-START_PIC.png" target="_blank">Edit</a> | <a href="https://app.diagrams.net/#HBIRDSOpenSource%2FBIRDSRP-OBC%2Fmain%2FDiagrams%2Fobc_pics_operation-START_PIC.png" target="_blank">Edit with draw.io</a>
-
+The files found in the START PIC folder are detailed in Table 1 below. 
 
 |  File name pattern   | Scope  |  Content    |
 |----------------------|--------|-------------|
@@ -47,15 +44,6 @@ The files found in the START PIC folder are detailed in Table 1 below.
 |  StartPIC_Functions.c  |    |    |
 
 
-
-## START PIC 
-
-|  File name pattern   | Scope  |  Content    |
-|----|----|----|
-|    |    |    |
-|    |    |    |
-
-### START PIC 
 This is a system where data arrives asynchronously and must be processed in real-time without losing bytes. It uses a mix of hardware register mappings and UART (Universal Asynchronous Receiver-Transmitter) configuration to handle communication and operations. This code sets up a hardware abstraction layer for:
 Timer 1 Configuration: Provides named access to specific bits in the T1CON register for controlling and configuring the Timer 1 peripheral.
 Data Communication: Configures a UART interface and declares variables and buffers for handling incoming and outgoing data.
@@ -64,19 +52,19 @@ It uses interrupts to receive data, buffers it, and provides functions to read f
 
 Let's break it down line by line:
  
-STARTPIC_FUNCTIONS.C 
+### STARTPIC_FUNCTIONS.C 
 
 
 Hardware Register and Bit Definitions:
 
 
-#byte T1CON = 0x018 
+``` #byte T1CON = 0x018 ```
 
 
 This line declares a byte (8-bit value) variable T1CON mapped to the hardware memory address 0x018. This address typically corresponds to the T1CON register in a microcontroller, which is used to control Timer 1. The register allows configuration of timer settings, such as prescaling, synchronization, and enabling the timer.
 
 
-#bit    TMR1ON = T1CON.0
+``` #bit    TMR1ON = T1CON.0 ```
 
 
 Declares TMR1ON as a bit within the T1CON register at bit position 0. TMR1ON is used to enable or disable Timer 1.
