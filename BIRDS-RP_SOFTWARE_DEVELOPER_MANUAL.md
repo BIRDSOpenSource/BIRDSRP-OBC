@@ -82,110 +82,109 @@ Maps T1SYNC to bit position 2 of the T1CON register. This bit controls the synch
 ``` c
 #bit    T1OSCEN = T1CON.3
 ```
-
-
 Maps T1OSCEN to bit position 3. This bit enables or disables the Timer 1 oscillator.
 
 
-``` #bit    T1CKPS0 = T1CON.4 ```
-
-
+``` c
+#bit    T1CKPS0 = T1CON.4
+```
 Maps T1CKPS0 to bit position 4. This bit is part of the prescaler configuration for Timer 1.
 
 
-``` #bit    T1CKPS1 = T1CON.5 ```
-
-
+``` c
+#bit    T1CKPS1 = T1CON.5
+```
 Maps T1CKPS1 to bit position 5. This works in combination with T1CKPS0 to set the prescaler value.
 
 
-``` #bit    TMR1CS0 = T1CON.6 ```
-
-
+``` c
+#bit    TMR1CS0 = T1CON.6
+```
 Maps TMR1CS0 to bit position 6. This bit is part of the configuration for the Timer 1 clock source.
 
 
-``` #bit    TMR1CS1 = T1CON.7 ```
-
-
+``` c
+#bit    TMR1CS1 = T1CON.7
+```
 Maps TMR1CS1 to bit position 7. Along with TMR1CS0, this sets the clock source for Timer 1.
 
 
 **Variable and Macro Definitions:**
 
-``` unsigned int8 RPIC_TO_SPIC_ARRAY[10]; ```
+``` c
+unsigned int8 RPIC_TO_SPIC_ARRAY[10];
+```
 Declares an 8-bit unsigned integer array of size 10. This is used to store data being exchanged between two communication interfaces,  RPIC (Reset PIC) and SPIC (Start PIC).
 
 
-```#define ON   0x69
-#define OFF  0x96 ```
-
-
+```c
+#define ON   0x69
+#define OFF  0x96
+```
 Defines two macros: ON and OFF, with hexadecimal values 0x69 and 0x96. These represent status codes for controlling hardware.
 
 
-``` char POWER_LINE_STATUS; ```
-
-
+``` c
+char POWER_LINE_STATUS;
+```
 Declares a char variable to store the status of a power line,  representing whether the power is on or off.
 
 
 **UART Configuration and Buffer Variables:**
 
-
-``` #define RP_BFR_SIZE 10 ```
-
-
+``` c
+#define RP_BFR_SIZE 10
+```
 Defines the size of the RP_Buffer as 10 bytes,  for storing UART data
 
 
-``` #use rs232(UART1, baud=38400, parity=N, bits=8, stream=RPIC, ERRORS) ```
-
-
+``` c
+#use rs232(UART1, baud=38400, parity=N, bits=8, stream=RPIC, ERRORS)
+```
 Configures a UART communication interface:
-UART1: Uses UART1 hardware module.
-baud=38400: Sets the baud rate to 38,400 bits per second.
-parity=N: No parity bit is used.
-bits=8: 8 data bits per frame.
-stream=RPIC: Associates the UART stream with the name RPIC.
-ERRORS: Enables automatic handling of UART errors.
+- UART1: Uses UART1 hardware module.
+- baud=38400: Sets the baud rate to 38,400 bits per second.
+- parity=N: No parity bit is used.
+- bits=8: 8 data bits per frame.
+- stream=RPIC: Associates the UART stream with the name RPIC.
+- ERRORS: Enables automatic handling of UART errors.
 
 
-``` unsigned int8 RP_Buffer[RP_BFR_SIZE]; ```
-
-
+``` c
+unsigned int8 RP_Buffer[RP_BFR_SIZE];
+```
 Declares an 8-bit unsigned integer array RP_Buffer of size RP_BFR_SIZE (10). This buffer stores incoming UART data.
 
 
-``` unsigned int16 RP_Byte_Counter = 0; ```
-
-
+``` c
+unsigned int16 RP_Byte_Counter = 0;
+```
 Declares a 16-bit unsigned integer RP_Byte_Counter initialized to 0. It counts the number of bytes received or transmitted.
 
 
-``` unsigned int8 RP_Overflow = 0; ```
-
-
+``` c
+unsigned int8 RP_Overflow = 0;
+```
 Declares an 8-bit unsigned integer RP_Overflow initialized to 0. It indicates whether the RP_Buffer has overflowed.
 
 
-``` unsigned int16 RP_Read_Byte_counter = 0; ```
-
-
+``` c
+unsigned int16 RP_Read_Byte_counter = 0;
+```
 Declares a 16-bit unsigned integer RP_Read_Byte_counter initialized to 0. It tracks the number of bytes read from the RP_Buffer.
 
 
-``` unsigned int8 RP_Temp_byte = 0; ```
-
-
+``` c
+unsigned int8 RP_Temp_byte = 0;
+```
 Declares an 8-bit unsigned integer RP_Temp_byte initialized to 0. This is a temporary variable for storing a single byte during processing.
 
 
-Interrupt Service Routine (ISR) for UART:
+**Interrupt Service Routine (ISR) for UART:**
 ISR (SERIAL_ISR1()): Handles incoming UART data efficiently, storing it in a buffer.
 
-
-``` #INT_RDA
+``` c
+#INT_RDA
 Void SERIAL_ISR1() // MAIN PIC UART interrupt loop
 {
    if( RP_Byte_Counter < RP_BFR_SIZE )
@@ -194,17 +193,17 @@ Void SERIAL_ISR1() // MAIN PIC UART interrupt loop
       RP_Byte_Counter++;
    }
    else RP_Overflow = fgetc(RPIC);
-} ```
+}
+```
 
-
-#INT_RDA: This is the interrupt identifier for UART receive data available. It triggers whenever the UART hardware receives a byte.
-SERIAL_ISR1(): The interrupt handler (ISR) for the UART.
+```INT_RDA```: This is the interrupt identifier for UART receive data available. It triggers whenever the UART hardware receives a byte.
+```SERIAL_ISR1()```: The interrupt handler (ISR) for the UART.
 Operation:
-If the buffer (RP_Buffer) has space:
-The received byte is read from the UART (fgetc(RPIC)) and stored in the buffer at the current position (RP_Byte_Counter).
-The byte counter (RP_Byte_Counter) increments.
-If the buffer is full:
-The received byte is discarded by reading it (fgetc(RPIC)), and the overflow flag (RP_Overflow) is set. This prevents the UART hardware from getting stuck.
+- If the buffer (```RP_Buffer```) has space:
+The received byte is read from the UART (```fgetc(RPIC)```) and stored in the buffer at the current position (```RP_Byte_Counter```).
+The byte counter (```RP_Byte_Counter```) increments.
+- If the buffer is full:
+The received byte is discarded by reading it (```fgetc(RPIC)```), and the overflow flag (```RP_Overflow```) is set. This prevents the UART hardware from getting stuck.
 Function to Check Available Bytes:
 RPic_Available(): Checks buffer status.
 
