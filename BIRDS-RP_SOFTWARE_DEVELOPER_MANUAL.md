@@ -59,7 +59,7 @@ Let's break it down line by line:
  
 ### STARTPIC_FUNCTIONS.C 
 
-**Hardware Register and Bit Definitions:**
+#### Hardware Register and Bit Definitions:
 
 ``` c
 #byte T1CON = 0x018
@@ -109,7 +109,7 @@ Maps TMR1CS0 to bit position 6. This bit is part of the configuration for the Ti
 Maps TMR1CS1 to bit position 7. Along with TMR1CS0, this sets the clock source for Timer 1.
 
 
-**Variable and Macro Definitions:**
+#### Variable and Macro Definitions:
 
 ``` c
 unsigned int8 RPIC_TO_SPIC_ARRAY[10];
@@ -130,7 +130,7 @@ char POWER_LINE_STATUS;
 Declares a char variable to store the status of a power line,  representing whether the power is on or off.
 
 
-**UART Configuration and Buffer Variables:**
+#### UART Configuration and Buffer Variables:
 
 ``` c
 #define RP_BFR_SIZE 10
@@ -180,7 +180,7 @@ unsigned int8 RP_Temp_byte = 0;
 Declares an 8-bit unsigned integer RP_Temp_byte initialized to 0. This is a temporary variable for storing a single byte during processing.
 
 
-**Interrupt Service Routine (ISR) for UART:**
+#### Interrupt Service Routine (ISR) for UART:
 ISR (SERIAL_ISR1()): Handles incoming UART data efficiently, storing it in a buffer.
 
 ``` c
@@ -197,28 +197,32 @@ Void SERIAL_ISR1() // MAIN PIC UART interrupt loop
 ```
 
 ```INT_RDA```: This is the interrupt identifier for UART receive data available. It triggers whenever the UART hardware receives a byte.
+
 ```SERIAL_ISR1()```: The interrupt handler (ISR) for the UART.
+
 Operation:
 - If the buffer (```RP_Buffer```) has space:
 The received byte is read from the UART (```fgetc(RPIC)```) and stored in the buffer at the current position (```RP_Byte_Counter```).
 The byte counter (```RP_Byte_Counter```) increments.
 - If the buffer is full:
 The received byte is discarded by reading it (```fgetc(RPIC)```), and the overflow flag (```RP_Overflow```) is set. This prevents the UART hardware from getting stuck.
-Function to Check Available Bytes:
-RPic_Available(): Checks buffer status.
 
+#### Function to Check Available Bytes:
+``` c
+RPic_Available()
+```: Checks buffer status.
 
-``` unsigned int8 RPic_Available()
+``` c
+unsigned int8 RPic_Available()
 {
    return RP_Byte_Counter;
-} ```
+}
+```
+This function checks if there is data available to read from the buffer and returns the number of bytes currently in the buffer (```RP_Byte_Counter```).
 
 
-This function checks if there is data available to read from the buffer and returns the number of bytes currently in the buffer (RP_Byte_Counter).
-
-
-Function to Read a Byte:
-RPic_Read(): Safely reads from the buffer, maintaining counters and avoiding overflow.
+**Function to Read a Byte:**
+```RPic_Read()```: Safely reads from the buffer, maintaining counters and avoiding overflow.
 
 
 ``` unsigned int8 RPic_Read()
