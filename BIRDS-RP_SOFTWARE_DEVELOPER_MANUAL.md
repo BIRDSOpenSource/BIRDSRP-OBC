@@ -70,18 +70,18 @@ This line declares a byte (8-bit value) variable T1CON mapped to the hardware me
 ``` c
 #bit    TMR1ON = T1CON.0
 ```
-
-
 Declares TMR1ON as a bit within the T1CON register at bit position 0. TMR1ON is used to enable or disable Timer 1.
 
 
-``` #bit    T1SYNC = T1CON.2 ```
-
-
+``` c
+#bit    T1SYNC = T1CON.2
+```
 Maps T1SYNC to bit position 2 of the T1CON register. This bit controls the synchronization of Timer 1 with an external clock source.
 
 
-``` #bit    T1OSCEN = T1CON.3 ```
+``` c
+#bit    T1OSCEN = T1CON.3
+```
 
 
 Maps T1OSCEN to bit position 3. This bit enables or disables the Timer 1 oscillator.
