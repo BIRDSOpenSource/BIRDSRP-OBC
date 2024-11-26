@@ -16,12 +16,11 @@
 ### Document Purpose 
 This document is prepared to share a thorough explaination of the execution of the BIRDS-RP satellite bus software. 
 
- 
 The system block diagram of the BIRDS-RP satellite is detailed in figure 1 below. 
  
 BUS SYSTEM BLOCK DIAGRAM
 
-![](Diagrams/BIRDSRP-SYSTEM-BLOCK-DIAGRAM.png)
+![](Diagrams/BIRDSRP_SYSTEM_BLOCK_DIAGRAM.png)
 
 OBC BLOCK DIAGRAM
 
@@ -37,7 +36,7 @@ The organisational file stucture of the microcontrollers in the BIRDS-RP OBC boa
 
 The files found in the START PIC folder are detailed in Table 1 below. 
 
-![](Diagrams/obc_pics_operation-START_PIC.png)
+![](Diagrams/pics_operation-START-PIC.png)
 
 <a href="http://jgraph.github.io/drawio-github/edit-diagram.html?repo=BIRDSRP-OBC&path=obc_pics_operation-START_PIC.png" target="_blank">Edit</a> | <a href="https://app.diagrams.net/#HBIRDSOpenSource%2FBIRDSRP-OBC%2Fmain%2FDiagrams%2Fobc_pics_operation-START_PIC.png" target="_blank">Edit with draw.io</a>
 
