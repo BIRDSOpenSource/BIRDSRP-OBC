@@ -460,76 +460,6 @@ Powers on all connected components by calling the function ```TURN_ON_ALL_POWER_
 ```
 Reads the digital state of pins PIN_B6 and PIN_B7 into variables CC and BB.
 
-**Main Loop**
-``` c
-   while(TRUE)
-   {
-      CHECK_UART_INCOMING_FROM_RESET_PIC();
-```
-
-- Infinite Loop: Continuously executes system tasks.
-- ```CHECK_UART_INCOMING_FROM_RESET_PIC```: Checks for data from the Reset PIC and processes it.
-
-``` c
-      if( ONEHOUR_FLAG == 0xAA )
-      {
-         if( (RPIC_TO_SPIC_ARRAY[0] == 0xAA) && (RPIC_TO_SPIC_ARRAY[1] == 0xBB) && (RPIC_TO_SPIC_ARRAY[2] == 0xCC) )
-         {
-            RPIC_RESPOND_SEC_COUNTER = 0;
-            MLC = 0;
-            if( POWER_LINE_STATUS == ON ) TURN_OFF_ALL_POWER_LINES();
-            CLEAR_RPIC_TO_SPIC_ARRAY();
-         }
-```
-
-- Checks if one hour has passed (```ONEHOUR_FLAG == 0xAA```).
-- If the Reset PIC has sent a valid response (RPIC_TO_SPIC_ARRAY[0..2] match expected values), it:
-  - Resets the response counter.
-  - Turns off power lines if they are ON.
-  - Clears the response buffer.
-
-``` c
-         if( MLC >= 50 )
-         {
-            MLC = 0;
-            RPIC_RESPOND_SEC_COUNTER++;
-         }
-```
-If MLC reaches 50 iterations, increment the response counter.
-
-``` c
-         if( RPIC_RESPOND_SEC_COUNTER >= 36 )
-         {
-            fprintf(PC, "Reset pic did not respond for three minute\n\r");
-            RPIC_RESPOND_SEC_COUNTER = 0;
-            TURN_ON_ALL_POWER_LINES();
-         }
-```
-If no valid response from the Reset PIC after 3 minutes (36 counts), log a message and turn the power lines back on.
-
-***Hourly Timer***
-
-``` c
-      if( ONEHOUR_FLAG == 0x00 )
-      {
-         SEC_COUNT++;
-         if(SEC_COUNT >= 36000)     // one hour 36000
-         {
-            ONEHOUR_FLAG = 0xAA;
-         }
-      }
-```
-
-- If one hour hasn't passed (```ONEHOUR_FLAG == 0x00```), increment ```SEC_COUNT``` every 100 ms.
-- Once ```SEC_COUNT``` reaches 36,000 (1 hour), set ```ONEHOUR_FLAG``` to ```0xAA```.
-
-**Watchdog Toggle**
-``` c
-      delay_ms(100);
-      Output_Toggle(PIN_B2);
-```
-- Delays 100 ms in each iteration.
-- Toggles the state of PIN_B2 to reset an external Watchdog Timer.
 
 Here's the flow diagram illustrating the operation of the microcontroller system based on the code. Each step is represented to show the system's initialization, main loop, and decision-making processes. 
 
@@ -604,6 +534,144 @@ START
  V
 Loop Back to Main Loop
 ```
+
+Let us delve further into the main loop itself to see how it works.
+**Main Loop**
+``` c
+   while(TRUE)
+   {
+      CHECK_UART_INCOMING_FROM_RESET_PIC();
+```
+
+- Infinite Loop: Continuously executes system tasks.
+- ```CHECK_UART_INCOMING_FROM_RESET_PIC```: Checks for data from the Reset PIC and processes it.
+
+``` c
+      if( ONEHOUR_FLAG == 0xAA )
+      {
+         if( (RPIC_TO_SPIC_ARRAY[0] == 0xAA) && (RPIC_TO_SPIC_ARRAY[1] == 0xBB) && (RPIC_TO_SPIC_ARRAY[2] == 0xCC) )
+         {
+            RPIC_RESPOND_SEC_COUNTER = 0;
+            MLC = 0;
+            if( POWER_LINE_STATUS == ON ) TURN_OFF_ALL_POWER_LINES();
+            CLEAR_RPIC_TO_SPIC_ARRAY();
+         }
+```
+
+- Checks if one hour has passed (```ONEHOUR_FLAG == 0xAA```).
+- If the Reset PIC has sent a valid response (RPIC_TO_SPIC_ARRAY[0..2] match expected values), it:
+  - Resets the response counter.
+  - Turns off power lines if they are ON.
+  - Clears the response buffer.
+
+``` c
+         if( MLC >= 50 )
+         {
+            MLC = 0;
+            RPIC_RESPOND_SEC_COUNTER++;
+         }
+```
+If MLC reaches 50 iterations, increment the response counter.
+
+``` c
+         if( RPIC_RESPOND_SEC_COUNTER >= 36 )
+         {
+            fprintf(PC, "Reset pic did not respond for three minute\n\r");
+            RPIC_RESPOND_SEC_COUNTER = 0;
+            TURN_ON_ALL_POWER_LINES();
+         }
+```
+If no valid response from the Reset PIC after 3 minutes (36 counts), log a message and turn the power lines back on.
+
+***Hourly Timer***
+
+``` c
+      if( ONEHOUR_FLAG == 0x00 )
+      {
+         SEC_COUNT++;
+         if(SEC_COUNT >= 36000)     // one hour 36000
+         {
+            ONEHOUR_FLAG = 0xAA;
+         }
+      }
+```
+
+- If one hour hasn't passed (```ONEHOUR_FLAG == 0x00```), increment ```SEC_COUNT``` every 100 ms.
+- Once ```SEC_COUNT``` reaches 36,000 (1 hour), set ```ONEHOUR_FLAG``` to ```0xAA```.
+
+**Watchdog Toggle**
+``` c
+      delay_ms(100);
+      Output_Toggle(PIN_B2);
+```
+- Delays 100 ms in each iteration.
+- Toggles the state of PIN_B2 to reset an external Watchdog Timer.
+
+Here's the flow diagram illustrating the operation of the microcontroller system based on the code. Each step is represented to show the system's initialization, main loop, and decision-making processes. 
+
+Here is a flow diagram focused on the main loop
+
+``` sql
+MAIN LOOP
+   |
+   V
++-----------------------------+
+| Check UART Incoming Data    |
+| - Look for 0xAA byte        |
+| - Store in RPIC array       |
+| - Print first 3 bytes       |
++-----------------------------+
+   |
+   +-------------------------+
+   | Is ONEHOUR_FLAG == 0xAA?|
+   +-------------------------+
+   |               |
+  NO               YES
+   |                |
+   V                V
++----------------+   +--------------------------------------+
+| Increment SEC_ |   | Check RPIC Array for Valid Response  |
+| COUNT          |   | - Is RPIC_TO_SPIC_ARRAY[0] == 0xAA? |
+|                |   | - Is RPIC_TO_SPIC_ARRAY[1] == 0xBB? |
+|                |   | - Is RPIC_TO_SPIC_ARRAY[2] == 0xCC? |
++----------------+   +--------------------------------------+
+   |                |              |
+   |                |          Valid? 
+   |                |           YES
+   |                |            |
+   |                |            V
+   |                |   +----------------------------+
+   |                |   | Reset RPIC Counters and    |
+   |                |   | Turn OFF Power Lines       |
+   |                |   +----------------------------+
+   |                |            |
+   |                |            V
+   |                |   +---------------------------+
+   |                |   | Increment Response Timer  |
+   |                |   +---------------------------+
+   |                |            |
+   |                +------------+
+   |                |
+  SEC_COUNT >= 36000?
+   |                |
+  NO               YES
+   |                |
+   V                V
+   |     +---------------------------+
+   |     | Set ONEHOUR_FLAG = 0xAA   |
+   |     +---------------------------+
+   |
+   V
++-----------------------------+
+| Toggle Watchdog Timer (PIN)|
++-----------------------------+
+   |
+   V
+ Loop Back to Start of Main Loop
+```
+
+
+
 
 ## RESET PIC 
 
