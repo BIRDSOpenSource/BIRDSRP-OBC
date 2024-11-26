@@ -464,72 +464,84 @@ Reads the digital state of pins PIN_B6 and PIN_B7 into variables CC and BB.
 Here's the flow diagram illustrating the operation of the microcontroller system based on the code. Each step is represented to show the system's initialization, main loop, and decision-making processes. 
 
 ``` sql
-START
- |
- V
-+-----------------------+
-| Initialize System     |
-| - Delay for boot time |
-| - Enable interrupts   |
-| - Turn on power lines |
-| - Set inputs for CC,  |
-|   BB                  |
-+-----------------------+
- |
- | < ------------------------------------------------------------------------------------------
- V                                                                                            |
-+-----------------------+                                                                     |
-| Check UART Incoming   |                                                                     |
-| - Look for 0xAA       |                                                                     |
-| - Store in RPIC array |                                                                     |
-| - Print first 3 bytes |                                                                     |
-+-----------------------+                                                                     |
- |                                                                                            |
- +--------------------------+                                                                 |
- | Is ONEHOUR_FLAG == 0xAA? |-----> NO -----> Increment SEC_COUNT                             |
- +--------------------------+                        |                                        |
-           |                                         V                            +----------------------------+
-           YES                                Is SEC_COUNT >= 36000? ---- NO -->  | Toggle Watchdog Timer (PIN)|
-           |                                        |                             +----------------------------+
-           V                                        |
-+-----------------------------+                     |
-| Process Hourly Tasks        |                     V
-| - Check RPIC array for      |<-------------------YES
-|   0xAA, 0xBB, 0xCC          |
-| - Reset counters if valid   |
-| - Turn off power if ON      |
-+-----------------------------+
+          START
            |
            V
-+-----------------------------+
-| Increment MLC              |
-| Is RPIC Respond Counter    |
-| >= 36?                     |
-+-----------------------------+
-           | NO
-           V
-    +-------------+
-    | Continue    |
-    | Loop        |
-    +-------------+
+          +-----------------------+
+          | Initialize System     |
+          | - Delay for boot time |
+          | - Enable interrupts   |
+          | - Turn on power lines |
+          | - Set inputs for CC,  |
+          |   BB                  |
+          +-----------------------+
            |
-           V
-       YES
-           |
-           V
-+-----------------------------+
-| No RPIC response: Turn ON   |
-| power lines, reset counter  |
-+-----------------------------+
- |
- V
-+-----------------------+
-| Toggle Watchdog Timer |
-| PIN_B2               |
-+-----------------------+
- |
- V
-Loop Back to Main Loop
+           | < ------------------------------------------------------------------------------------------
+           V                                                                                            |
+          +-----------------------+                                                                     |
+          | Check UART Incoming   |                                                                     |
+          | - Look for 0xAA       |                                                                     |
+          | - Store in RPIC array |                                                                     |
+          | - Print first 3 bytes |                                                                     |
+          +-----------------------+                                                                     |
+           |                                                                                            |
+           +--------------------------+                                                                 |
+           | Is ONEHOUR_FLAG == 0xAA? |-----> NO -----> Increment SEC_COUNT                             |
+           +--------------------------+                        |                                        |
+|  |                   |                                         V                            +----------------------------+
+|  |                 YES                                Is SEC_COUNT >= 36000? ---- NO -->  | Toggle Watchdog Timer (PIN)|
+|  |                  |                                        |                             +----------------------------+
+|  |                 V                                        |
+|  |      +-----------------------------+                     |
+|  |      | Process Hourly Tasks        |                     V
+|  |      | - Check RPIC array for      |<-------------------YES
+|  |      |   0xAA, 0xBB, 0xCC          |
+|  |      | - Reset counters if valid   |
+|  |      | - Turn off power if ON      |
+|  |      +-----------------------------+
+|  |                 |
+|  |           Response VALID
+|  |                 |
+|  |                 |
+|  |            Reset counters
+|  |      Turn OFF power lines if ON
+|  |                 |
+|  |                 |
+|  |                 V
+|  |       +-------------------------------+
+|  |       | Is Main Loop Counter >= 50?   |
+|  |       +-------------------------------+     
+|  |                 |
+|  |                YES
+|  |                 |
+|  |                 V
+|  |      +-----------------------------------+
+|  |      |           Reset MLC               |
+|  |      | Increment RPIC Response Counter   |
+|  |      +-----------------------------------+
+|  |                 |
+|  |                 |
+|  |                 V
+|  |      +-------------------------------+
+|  NO ----| Is RPIC Response Counter>= 36? | 
+|         +-------------------------------+
+|                  | 
+|                 YES
+|                  |
+|                  V
+|         +-----------------------------+
+|         | No RPIC response: Turn ON   |
+|         | power lines, reset counter  |
+|          +-----------------------------+
+|                    |
+|                    |
+|               Increment MLC
+|                    |
+|                    |
++---------<----------+
+
+
+
 ```
 
 Let us delve further into the main loop itself to see how it works.
