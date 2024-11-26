@@ -32,7 +32,7 @@ The organisational file stucture of the microcontrollers in the BIRDS-RP OBC boa
 
 ![](Diagrams/obc-detailed-block-diagram.png)
 
-## START PIC
+## 1. START PIC
 
 ![](Diagrams/pics_operation-START-PIC.png)
 
@@ -673,7 +673,7 @@ MAIN LOOP
 
 
 
-## RESET PIC 
+## 2. RESET PIC 
 
 |  File name pattern   | Scope  |  Content    |
 |----|----|----|
@@ -681,7 +681,7 @@ MAIN LOOP
 |    |    |    |
 
 
-![](Diagrams/obc_pics_operation-RESET_PIC.png)
+![](Diagrams/obc_pics_operation-RESET-PIC.png)
 
 <a href="http://jgraph.github.io/drawio-github/edit-diagram.html?repo=BIRDSRP-OBC&path=obc_pics_operation-RESET_PIC.png" target="_blank">Edit</a> | <a href="https://app.diagrams.net/#Uhttps%3A%2F%2Fraw.githubusercontent.com%2FBIRDSRP-OBC%2Fmain%2FDiagrams%2Fobc_pics_operation-RESET_PIC.png" target="_blank">Edit As New</a> | <a href="https://app.diagrams.net/#HBIRDSOpenSource%2FBIRDSRP-OBC%2Fmain%2FDiagrams%2Fobc_pics_operation-RESET_PIC.png" target="_blank">Edit with draw.io</a>
 
