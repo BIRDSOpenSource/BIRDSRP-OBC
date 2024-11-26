@@ -476,7 +476,7 @@ Here's the flow diagram illustrating the operation of the microcontroller system
           |   BB                  |
           +-----------------------+
            |
-           | < ------------------------------------------------------------------------------------------
+           | < -----------------------------------------------------------------------------------------+
            V                                                                                            |
           +-----------------------+                                                                     |
           | Check UART Incoming   |                                                                     |
@@ -486,11 +486,11 @@ Here's the flow diagram illustrating the operation of the microcontroller system
           +-----------------------+                                                                     |
            |                                                                                            |
            +--------------------------+                                                                 |
-           | Is ONEHOUR_FLAG == 0xAA? |-----> NO -----> Increment SEC_COUNT                             |
-           +--------------------------+                        |                                        |
-|  |                   |                                         V                            +----------------------------+
++->+---->  | Is ONEHOUR_FLAG == 0xAA? |-----> NO -----> Increment SEC_COUNT                             |
+|  |       +--------------------------+                        |                                        |
+|  |                   |                                       V                            +----------------------------+
 |  |                 YES                                Is SEC_COUNT >= 36000? ---- NO -->  | Toggle Watchdog Timer (PIN)|
-|  |                  |                                        |                             +----------------------------+
+|  |                 |                                        |                             +----------------------------+
 |  |                 V                                        |
 |  |      +-----------------------------+                     |
 |  |      | Process Hourly Tasks        |                     V
