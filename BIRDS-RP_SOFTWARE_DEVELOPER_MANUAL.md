@@ -44,27 +44,32 @@ The files found in the START PIC folder are detailed in Table 1 below.
 |  StartPIC_Functions.c  |    |    |
 
 
-This is a system where data arrives asynchronously and must be processed in real-time without losing bytes. It uses a mix of hardware register mappings and UART (Universal Asynchronous Receiver-Transmitter) configuration to handle communication and operations. This code sets up a hardware abstraction layer for:
-Timer 1 Configuration: Provides named access to specific bits in the T1CON register for controlling and configuring the Timer 1 peripheral.
-Data Communication: Configures a UART interface and declares variables and buffers for handling incoming and outgoing data.
+This is a system where data arrives asynchronously and must be processed in real-time without losing bytes. 
+
+It uses a mix of hardware register mappings and UART (Universal Asynchronous Receiver-Transmitter) configuration to handle communication and operations. 
+
+This code sets up a hardware abstraction layer for:
+- Timer 1 Configuration: Provides named access to specific bits in the T1CON register for controlling and configuring the Timer 1 peripheral.
+- Data Communication: Configures a UART interface and declares variables and buffers for handling incoming and outgoing data.
+  
 It uses interrupts to receive data, buffers it, and provides functions to read from the buffer and process incoming data. 
 
-
 Let's break it down line by line:
+
  
 ### STARTPIC_FUNCTIONS.C 
 
+**Hardware Register and Bit Definitions:**
 
-Hardware Register and Bit Definitions:
-
-
-``` #byte T1CON = 0x018 ```
-
-
+``` c
+#byte T1CON = 0x018
+```
 This line declares a byte (8-bit value) variable T1CON mapped to the hardware memory address 0x018. This address typically corresponds to the T1CON register in a microcontroller, which is used to control Timer 1. The register allows configuration of timer settings, such as prescaling, synchronization, and enabling the timer.
 
 
-``` #bit    TMR1ON = T1CON.0 ```
+``` c
+#bit    TMR1ON = T1CON.0
+```
 
 
 Declares TMR1ON as a bit within the T1CON register at bit position 0. TMR1ON is used to enable or disable Timer 1.
@@ -106,10 +111,9 @@ Maps TMR1CS0 to bit position 6. This bit is part of the configuration for the Ti
 Maps TMR1CS1 to bit position 7. Along with TMR1CS0, this sets the clock source for Timer 1.
 
 
-Variable and Macro Definitions:
+**Variable and Macro Definitions:**
+
 ``` unsigned int8 RPIC_TO_SPIC_ARRAY[10]; ```
-
-
 Declares an 8-bit unsigned integer array of size 10. This is used to store data being exchanged between two communication interfaces,  RPIC (Reset PIC) and SPIC (Start PIC).
 
 
