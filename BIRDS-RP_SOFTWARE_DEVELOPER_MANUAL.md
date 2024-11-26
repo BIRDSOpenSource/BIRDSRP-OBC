@@ -531,7 +531,79 @@ If no valid response from the Reset PIC after 3 minutes (36 counts), log a messa
 - Delays 100 ms in each iteration.
 - Toggles the state of PIN_B2 to reset an external Watchdog Timer.
 
+Here's the flow diagram illustrating the operation of the microcontroller system based on the code. Each step is represented to show the system's initialization, main loop, and decision-making processes. 
 
+``` sql
+START
+ |
+ V
++-----------------------+
+| Initialize System     |
+| - Delay for boot time |
+| - Enable interrupts   |
+| - Turn on power lines |
+| - Set inputs for CC,  |
+|   BB                  |
++-----------------------+
+ |
+ V
++-----------------------+
+| Main Loop             |
++-----------------------+
+ |
+ V
++-----------------------+
+| Check UART Incoming   |
+| - Look for 0xAA       |
+| - Store in RPIC array |
+| - Print first 3 bytes |
++-----------------------+
+ |
+ +-----------------+
+ | Is ONEHOUR_FLAG |-----> NO -----> Increment SEC_COUNT
+ | == 0xAA?        |                                |
+ +-----------------+                                V
+           |                                Is SEC_COUNT >= 36000?
+           V                                        |
++-----------------------------+                     |
+| Process Hourly Tasks        |                     V
+| - Check RPIC array for      |<-------------------YES
+|   0xAA, 0xBB, 0xCC          |
+| - Reset counters if valid   |
+| - Turn off power if ON      |
++-----------------------------+
+           |
+           V
++-----------------------------+
+| Increment MLC              |
+| Is RPIC Respond Counter    |
+| >= 36?                     |
++-----------------------------+
+           | NO
+           V
+    +-------------+
+    | Continue    |
+    | Loop        |
+    +-------------+
+           |
+           V
+       YES
+           |
+           V
++-----------------------------+
+| No RPIC response: Turn ON   |
+| power lines, reset counter  |
++-----------------------------+
+ |
+ V
++-----------------------+
+| Toggle Watchdog Timer |
+| PIN_B2               |
++-----------------------+
+ |
+ V
+Loop Back to Main Loop
+```
 
 ## RESET PIC 
 
