@@ -476,24 +476,21 @@ START
 |   BB                  |
 +-----------------------+
  |
- V
-+-----------------------+
-| Main Loop             |
-+-----------------------+
- |
- V
-+-----------------------+
-| Check UART Incoming   |
-| - Look for 0xAA       |
-| - Store in RPIC array |
-| - Print first 3 bytes |
-+-----------------------+
- |
- +-----------------+
- | Is ONEHOUR_FLAG |-----> NO -----> Increment SEC_COUNT
- | == 0xAA?        |                                |
- +-----------------+                                V
-           |                                Is SEC_COUNT >= 36000?
+ | < ------------------------------------------------------------------------------------------
+ V                                                                                            |
++-----------------------+                                                                     |
+| Check UART Incoming   |                                                                     |
+| - Look for 0xAA       |                                                                     |
+| - Store in RPIC array |                                                                     |
+| - Print first 3 bytes |                                                                     |
++-----------------------+                                                                     |
+ |                                                                                            |
+ +--------------------------+                                                                 |
+ | Is ONEHOUR_FLAG == 0xAA? |-----> NO -----> Increment SEC_COUNT                             |
+ +--------------------------+                        |                                        |
+           |                                         V                            +----------------------------+
+           YES                                Is SEC_COUNT >= 36000? ---- NO -->  | Toggle Watchdog Timer (PIN)|
+           |                                        |                             +----------------------------+
            V                                        |
 +-----------------------------+                     |
 | Process Hourly Tasks        |                     V
