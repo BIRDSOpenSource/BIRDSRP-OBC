@@ -126,7 +126,7 @@ Defines two macros: ON and OFF, with hexadecimal values 0x69 and 0x96. These rep
 Declares a char variable to store the status of a power line,  representing whether the power is on or off.
 
 
-UART Configuration and Buffer Variables:
+**UART Configuration and Buffer Variables:**
 
 
 ``` #define RP_BFR_SIZE 10 ```
@@ -373,44 +373,33 @@ RPIC_TO_SPIC_ARRAY[i] = 0: Sets each element of the array to 0, effectively clea
 This is the main code for the Start PIC MCU that manages power lines and checks for responses from another microcontroller (Reset PIC).
 
 
-## Headers and Configuration
+**Headers and Configuration**
 
 
-#include <16F1789.h>
-
-
+``` #include <16F1789.h> ```
 Includes the device-specific header file for the PIC16F1789 microcontroller. This provides access to hardware-specific definitions like registers, pins, and peripherals.
 
 
-#fuses NOWDT, MCLR, NOBROWNOUT
-
-
+``` #fuses NOWDT, MCLR, NOBROWNOUT ```
 NOWDT: Disables the Watchdog Timer (WDT).
 MCLR: Enables the Master Clear Reset pin for manual reset.
 NOBROWNOUT: Disables the Brown-Out Reset feature, which would reset the MCU if the supply voltage drops below a threshold.
 
 
-#use delay(Crystal = 16MHz, clock = 16MHz)
-
-
+``` #use delay(Crystal = 16MHz, clock = 16MHz) ```
 Specifies that the system uses a 16 MHz crystal oscillator.
 
-
-#use rs232(baud=38400, parity=N, xmit=PIN_D3, bits=8, stream=PC, force_sw)
-
-
+``` #use rs232(baud=38400, parity=N, xmit=PIN_D3, bits=8, stream=PC, force_sw) ```
 Configures a UART communication stream on PIN_D3 for transmitting data at 38,400 baud. The force_sw option enforces software-based serial communication.
 
 
-Global Variables
+**Global Variables**
 
-
-unsigned int16 RPIC_RESPOND_SEC_COUNTER = 0;
+``` unsigned int16 RPIC_RESPOND_SEC_COUNTER = 0;
 unsigned int16 MLC = 0;
 
-
 unsigned int16 SEC_COUNT = 0;
-unsigned int8 ONEHOUR_FLAG = 0x00;
+unsigned int8 ONEHOUR_FLAG = 0x00; ```
 
 
 RPIC_RESPOND_SEC_COUNTER: Tracks how long the Reset PIC takes to respond.
@@ -419,14 +408,12 @@ SEC_COUNT: A timer counter incrementing every 100 ms to track one-hour periods.
 ONEHOUR_FLAG: A flag indicating whether one hour has elapsed. 0xAA means one hour has passed.
 
 
-
-
 ``` char BB, CC; ```
 Temporary variables to read inputs from pins.
 
 
-Main Function
-Initialization
+**Main Function**
+**Initialization**
 
 
 ``` void main()
@@ -438,18 +425,11 @@ Initialization
 Delays startup by 500 ms to allow system stabilization.
 Sends a message over the UART (serial) indicating that the Start PIC is booting.
 
-
 ```   enable_interrupts(INT_RDA);
    enable_interrupts(GLOBAL); ```
 
-
 Enables the Receive Data Available (RDA) interrupt for UART communication.
 Enables global interrupts for the system.
-
-
-
-
-
 
 
 ## RESET PIC 
