@@ -70,57 +70,57 @@ This line declares a byte (8-bit value) variable T1CON mapped to the hardware me
 Declares TMR1ON as a bit within the T1CON register at bit position 0. TMR1ON is used to enable or disable Timer 1.
 
 
-#bit    T1SYNC = T1CON.2
+``` #bit    T1SYNC = T1CON.2 ```
 
 
 Maps T1SYNC to bit position 2 of the T1CON register. This bit controls the synchronization of Timer 1 with an external clock source.
 
 
-#bit    T1OSCEN = T1CON.3
+``` #bit    T1OSCEN = T1CON.3 ```
 
 
 Maps T1OSCEN to bit position 3. This bit enables or disables the Timer 1 oscillator.
 
 
-#bit    T1CKPS0 = T1CON.4
+``` #bit    T1CKPS0 = T1CON.4 ```
 
 
 Maps T1CKPS0 to bit position 4. This bit is part of the prescaler configuration for Timer 1.
 
 
-#bit    T1CKPS1 = T1CON.5
+``` #bit    T1CKPS1 = T1CON.5 ```
 
 
 Maps T1CKPS1 to bit position 5. This works in combination with T1CKPS0 to set the prescaler value.
 
 
-#bit    TMR1CS0 = T1CON.6
+``` #bit    TMR1CS0 = T1CON.6 ```
 
 
 Maps TMR1CS0 to bit position 6. This bit is part of the configuration for the Timer 1 clock source.
 
 
-#bit    TMR1CS1 = T1CON.7
+``` #bit    TMR1CS1 = T1CON.7 ```
 
 
 Maps TMR1CS1 to bit position 7. Along with TMR1CS0, this sets the clock source for Timer 1.
 
 
 Variable and Macro Definitions:
-unsigned int8 RPIC_TO_SPIC_ARRAY[10];
+``` unsigned int8 RPIC_TO_SPIC_ARRAY[10]; ```
 
 
 Declares an 8-bit unsigned integer array of size 10. This is used to store data being exchanged between two communication interfaces,  RPIC (Reset PIC) and SPIC (Start PIC).
 
 
-#define ON   0x69
-#define OFF  0x96
+```#define ON   0x69
+#define OFF  0x96 ```
 
 
 Defines two macros: ON and OFF, with hexadecimal values 0x69 and 0x96. These represent status codes for controlling hardware.
 
 
-char POWER_LINE_STATUS;
+``` char POWER_LINE_STATUS; ```
 
 
 Declares a char variable to store the status of a power line,  representing whether the power is on or off.
@@ -129,13 +129,13 @@ Declares a char variable to store the status of a power line,  representing whet
 UART Configuration and Buffer Variables:
 
 
-#define RP_BFR_SIZE 10
+``` #define RP_BFR_SIZE 10 ```
 
 
 Defines the size of the RP_Buffer as 10 bytes,  for storing UART data
 
 
-#use rs232(UART1, baud=38400, parity=N, bits=8, stream=RPIC, ERRORS)
+``` #use rs232(UART1, baud=38400, parity=N, bits=8, stream=RPIC, ERRORS) ```
 
 
 Configures a UART communication interface:
@@ -147,31 +147,31 @@ stream=RPIC: Associates the UART stream with the name RPIC.
 ERRORS: Enables automatic handling of UART errors.
 
 
-unsigned int8 RP_Buffer[RP_BFR_SIZE];
+``` unsigned int8 RP_Buffer[RP_BFR_SIZE]; ```
 
 
 Declares an 8-bit unsigned integer array RP_Buffer of size RP_BFR_SIZE (10). This buffer stores incoming UART data.
 
 
-unsigned int16 RP_Byte_Counter = 0;
+``` unsigned int16 RP_Byte_Counter = 0; ```
 
 
 Declares a 16-bit unsigned integer RP_Byte_Counter initialized to 0. It counts the number of bytes received or transmitted.
 
 
-unsigned int8 RP_Overflow = 0;
+``` unsigned int8 RP_Overflow = 0; ```
 
 
 Declares an 8-bit unsigned integer RP_Overflow initialized to 0. It indicates whether the RP_Buffer has overflowed.
 
 
-unsigned int16 RP_Read_Byte_counter = 0;
+``` unsigned int16 RP_Read_Byte_counter = 0; ```
 
 
 Declares a 16-bit unsigned integer RP_Read_Byte_counter initialized to 0. It tracks the number of bytes read from the RP_Buffer.
 
 
-unsigned int8 RP_Temp_byte = 0;
+``` unsigned int8 RP_Temp_byte = 0; ```
 
 
 Declares an 8-bit unsigned integer RP_Temp_byte initialized to 0. This is a temporary variable for storing a single byte during processing.
@@ -181,7 +181,7 @@ Interrupt Service Routine (ISR) for UART:
 ISR (SERIAL_ISR1()): Handles incoming UART data efficiently, storing it in a buffer.
 
 
-#INT_RDA
+``` #INT_RDA
 Void SERIAL_ISR1() // MAIN PIC UART interrupt loop
 {
    if( RP_Byte_Counter < RP_BFR_SIZE )
@@ -190,9 +190,7 @@ Void SERIAL_ISR1() // MAIN PIC UART interrupt loop
       RP_Byte_Counter++;
    }
    else RP_Overflow = fgetc(RPIC);
-}
-
-
+} ```
 
 
 #INT_RDA: This is the interrupt identifier for UART receive data available. It triggers whenever the UART hardware receives a byte.
@@ -207,10 +205,10 @@ Function to Check Available Bytes:
 RPic_Available(): Checks buffer status.
 
 
-unsigned int8 RPic_Available()
+``` unsigned int8 RPic_Available()
 {
    return RP_Byte_Counter;
-}
+} ```
 
 
 This function checks if there is data available to read from the buffer and returns the number of bytes currently in the buffer (RP_Byte_Counter).
@@ -220,7 +218,7 @@ Function to Read a Byte:
 RPic_Read(): Safely reads from the buffer, maintaining counters and avoiding overflow.
 
 
-unsigned int8 RPic_Read()
+``` unsigned int8 RPic_Read()
 {
    if (RP_Byte_Counter > 0)
    {    
@@ -236,7 +234,7 @@ unsigned int8 RPic_Read()
       RP_Temp_byte = 0x00;
       return RP_Temp_byte; 
    }
-}
+} ```
 
 
 Checks if there are bytes available (RP_Byte_Counter > 0):
@@ -251,7 +249,7 @@ Function to Process Incoming UART Data:
 CHECK_UART_INCOMING_FROM_RESET_PIC(): Processes incoming messages, searches for a synchronization byte (0xAA), and stores the message in an array. It also sends part of the data to a PC for debugging or monitoring.
 
 
-void CHECK_UART_INCOMING_FROM_RESET_PIC()
+``` void CHECK_UART_INCOMING_FROM_RESET_PIC()
 {
    if( Rpic_Available() )
    {
@@ -274,7 +272,7 @@ void CHECK_UART_INCOMING_FROM_RESET_PIC()
       }
       fprintf(PC, "\n\r");
    }
-}
+} ```
 
 
 Checks if data is available:
@@ -297,7 +295,7 @@ The next code defines three utility functions for managing power lines and clear
 TURN_OFF_ALL_POWER_LINES(): This function disables power to all connected components by setting specific control pins to a "low" state (0V).
 
 
-void TURN_OFF_ALL_POWER_LINES()
+``` void TURN_OFF_ALL_POWER_LINES()
 {
    output_Low(PIN_D6); // Switch enable for COM PIC
    output_Low(PIN_D7); // Switch enable for Main PIC   
@@ -306,7 +304,7 @@ void TURN_OFF_ALL_POWER_LINES()
    
    POWER_LINE_STATUS = OFF;
    fprintf(PC, "Turned OFF Power lines\n\r");
-}
+} ```
 
 
 output_Low(PIN_D6);
@@ -326,7 +324,7 @@ Sends a message over a serial connection (to a PC or debugging terminal) to conf
 TURN_ON_ALL_POWER_LINES(): This function enables power to all connected components by setting specific control pins to a "high" state (e.g., 3.3V or 5V).
 
 
-void TURN_ON_ALL_POWER_LINES()
+``` void TURN_ON_ALL_POWER_LINES()
 {
    output_High(PIN_D6);                                                         
    Delay_ms(50);
@@ -339,7 +337,7 @@ void TURN_ON_ALL_POWER_LINES()
    
    POWER_LINE_STATUS = ON;
    fprintf(PC, "Turned ON Power lines\n\r");
-}
+} ```
 
 
 output_High(PIN_D6);
@@ -358,30 +356,24 @@ Sends a confirmation message to a PC or debugging terminal.
 CLEAR_RPIC_TO_SPIC_ARRAY(): This function resets the RPIC_TO_SPIC_ARRAY to all zeros. This might be used to clear stale or invalid data from the communication array.
 
 
-void CLEAR_RPIC_TO_SPIC_ARRAY()
+``` void CLEAR_RPIC_TO_SPIC_ARRAY()
 {
    for( int i = 0; i<10; i++ ) RPIC_TO_SPIC_ARRAY[i] = 0;
-}
+} ```
 
 
-for( int i = 0; i<10; i++ )
-Iterates through the 10 elements of the RPIC_TO_SPIC_ARRAY.
-RPIC_TO_SPIC_ARRAY[i] = 0;
-Sets each element of the array to 0, effectively clearing it.
-
+for( int i = 0; i<10; i++ ): Iterates through the 10 elements of the RPIC_TO_SPIC_ARRAY.
+RPIC_TO_SPIC_ARRAY[i] = 0: Sets each element of the array to 0, effectively clearing it.
 
 
 
-
-
- 
-STARTPIC.C
+### STARTPIC.C
 
 
 This is the main code for the Start PIC MCU that manages power lines and checks for responses from another microcontroller (Reset PIC).
 
 
-Headers and Configuration
+## Headers and Configuration
 
 
 #include <16F1789.h>
