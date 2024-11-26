@@ -210,7 +210,8 @@ The received byte is discarded by reading it (```fgetc(RPIC)```), and the overfl
 #### Function to Check Available Bytes:
 ``` c
 RPic_Available()
-```: Checks buffer status.
+```
+Checks buffer status.
 
 ``` c
 unsigned int8 RPic_Available()
@@ -220,12 +221,15 @@ unsigned int8 RPic_Available()
 ```
 This function checks if there is data available to read from the buffer and returns the number of bytes currently in the buffer (```RP_Byte_Counter```).
 
+#### Function to Read a Byte:
 
-**Function to Read a Byte:**
-```RPic_Read()```: Safely reads from the buffer, maintaining counters and avoiding overflow.
+``` c
+RPic_Read()
+```
+Safely reads from the buffer, maintaining counters and avoiding overflow.
 
-
-``` unsigned int8 RPic_Read()
+``` c
+unsigned int8 RPic_Read()
 {
    if (RP_Byte_Counter > 0)
    {    
@@ -241,22 +245,23 @@ This function checks if there is data available to read from the buffer and retu
       RP_Temp_byte = 0x00;
       return RP_Temp_byte; 
    }
-} ```
+}
+```
+1. Checks if there are bytes available (```RP_Byte_Counter > 0```):
+- Reads the byte from RP_Buffer at the position of RP_Read_Byte_counter.
+- Decreases the byte counter(```RP_Byte_Counter```) and increments the read index (```RP_Read_Byte_counter```).
+- If the buffer is now empty (```RP_Byte_Counter == 0```), resets the read index (```RP_Read_Byte_counter = 0```).
+2. If no data is available:
+- Resets the read index and returns 0x00 as a default.
 
+#### Function to Process Incoming UART Data:
+``` c
+CHECK_UART_INCOMING_FROM_RESET_PIC()
+```
+Processes incoming messages, searches for a synchronization byte (0xAA), and stores the message in an array. It also sends part of the data to a PC for debugging or monitoring.
 
-Checks if there are bytes available (RP_Byte_Counter > 0):
-Reads the byte from RP_Buffer at the position of RP_Read_Byte_counter.
-Decreases the byte counter (RP_Byte_Counter) and increments the read index (RP_Read_Byte_counter).
-If the buffer is now empty (RP_Byte_Counter == 0), resets the read index (RP_Read_Byte_counter = 0).
-If no data is available:
-Resets the read index and returns 0x00 as a default.
-
-
-Function to Process Incoming UART Data:
-CHECK_UART_INCOMING_FROM_RESET_PIC(): Processes incoming messages, searches for a synchronization byte (0xAA), and stores the message in an array. It also sends part of the data to a PC for debugging or monitoring.
-
-
-``` void CHECK_UART_INCOMING_FROM_RESET_PIC()
+``` c
+void CHECK_UART_INCOMING_FROM_RESET_PIC()
 {
    if( Rpic_Available() )
    {
@@ -279,15 +284,13 @@ CHECK_UART_INCOMING_FROM_RESET_PIC(): Processes incoming messages, searches for 
       }
       fprintf(PC, "\n\r");
    }
-} ```
-
-
+}
+```
 Checks if data is available:
-Calls Rpic_Available() to see if the buffer has any bytes.
-Waits briefly:
-Introduces a 10 ms delay (delay_ms(10)). This might allow more data to arrive if the system is processing a multi-byte message.
-Searches for a synchronization byte (0xAA):
-Loops up to 8 times, reading bytes using RPIC_Read().
+1. Calls ```Rpic_Available()``` to see if the buffer has any bytes.
+2. Waits briefly: Introduces a 10 ms delay (delay_ms(10)). This might allow more data to arrive if the system is processing a multi-byte message.
+3. Searches for a synchronization byte (0xAA):
+4. Loops up to 8 times, reading bytes using RPIC_Read().
 If it finds 0xAA, it stores it in the first position of the RPIC_TO_SPIC_ARRAY array and exits the loop.
 Reads remaining data:
 Fills the rest of the RPIC_TO_SPIC_ARRAY array with the next 9 bytes from the buffer.
