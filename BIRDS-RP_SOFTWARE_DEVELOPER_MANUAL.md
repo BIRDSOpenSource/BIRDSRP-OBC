@@ -625,7 +625,7 @@ The files found in the RESET PIC folder are detailed in Table 2 below.
 
 |     File name pattern       | Scope  |  Content    |
 |-----------------------------|--------|-------------|
-| ADC_Power_Lines_Control.c   |        |             |
+| ADC_Power_Lines_Control.c   |  satellite power management and monitoring; it controls various power lines, monitors voltages and currents, and performs periodic resets.       |             |
 | PIC18F67J94_registers.h     |        |             |
 | RPIC_CPIC.c                 |        |             |
 | RPIC_MPIC.c                 |        |             |
@@ -635,8 +635,6 @@ The files found in the RESET PIC folder are detailed in Table 2 below.
 | ResetPIC_Functions.c        |        |             |
 
 ###  ADC_Power_Lines_Control.c 
-
-This code is for satellite power management and monitoring; it controls various power lines, monitors voltages and currents, and performs periodic resets. 
 
 This code manages power lines, resets the system, and monitors current and voltage using ADC. Each function is modular and updates ```POWER_LINE_STATUS``` to track the state of the system. Functions like ```SYSTEM_RESET``` and ```SYSTEM_RESET_24H``` ensure operational stability through scheduled or manual resets.
 
