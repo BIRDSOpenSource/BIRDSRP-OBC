@@ -667,121 +667,238 @@ unsigned int8 RESET_TIME = 0;
 
 #### Functions for System Components
 
-MP_CP_BuckBoost(int1 status): Controls a buck-boost converter
+MP_CP_BuckBoost(): This function controls the Main PIC <-> Com PIC buck-boost converter.
 
 ``` c
-if (status == ON) { output_LOW(PIN_C4); }
-if (status == OFF) { output_HIGH(PIN_C4); }
-RST_EXT_WDT();
+void MP_CP_BuckBoost(int1 status)
+{
+    if (status == ON)
+    {
+      output_LOW(PIN_C4);
+    }
+    if (status == OFF)
+    {
+      output_HIGH(PIN_C4);
+    }
+    RST_EXT_WDT();
+}
 ```
 - Turns the converter ON/OFF by controlling ```PIN_C4```.
 - Calls ```RST_EXT_WDT()``` to reset an external watchdog timer (prevents system reset due to inactivity).
 
-MainPic_Power(int1 status): Manages power for the main microcontroller (Main PIC)
+MainPic_Power(): This function manages power for the main microcontroller (Main PIC)
+
 ``` c
-if (status == 1) {
-    output_high(PIN_F5);
-    BIT_SET(POWER_LINE_STATUS,7);
+void MainPic_Power(int1 status)
+{
+    if (status == 1)
+    {
+       output_high(PIN_F5);
+       BIT_SET(POWER_LINE_STATUS,7);
+    }
+    if (status == 0)
+    {
+       output_low(PIN_F5);
+       BIT_CLEAR(POWER_LINE_STATUS,7);
+    }
+    delay_ms(50);
+    RST_EXT_WDT();
 }
-if (status == 0) {
-    output_low(PIN_F5);
-    BIT_CLEAR(POWER_LINE_STATUS,7);
-}
-delay_ms(50);
-RST_EXT_WDT();
 ```
 - Activates/deactivates power to Main PIC via ```PIN_F5```.
 - Updates bit 7 of ```POWER_LINE_STATUS``` to reflect the Main PIC's state.
 - Adds a delay (debouncing) and resets the watchdog timer.
 
-ComPic_Power(int1 status): Manages power for the communication microcontroller (Com PIC)
+ComPic_Power(): This function manages power for the communication microcontroller (Com PIC)
+
 ``` c
-if (status == 1) {
-    output_high(PIN_F6);
-    BIT_SET(POWER_LINE_STATUS,6);
+void ComPic_Power(int1 status)
+{
+    if (status == 1)
+    {
+       output_high(PIN_F6);
+       BIT_SET(POWER_LINE_STATUS,6);
+    }
+    if (status == 0)
+    {
+       output_low(PIN_F6);
+       BIT_CLEAR(POWER_LINE_STATUS,6);
+    }
+    delay_ms(50);
+    RST_EXT_WDT();
 }
-if (status == 0) {
-    output_low(PIN_F6);
-    BIT_CLEAR(POWER_LINE_STATUS,6);
-}
-delay_ms(50);
-RST_EXT_WDT();
 ```
-Similar to ```MainPic_Power```, but controls ```PIN_F6``` and updates bit 6 of ```POWER_LINE_STATUS```.
+- Similar to ```MainPic_Power```, but controls ```PIN_F6``` and updates bit 6 of ```POWER_LINE_STATUS```.
+- Adds a delay (debouncing) and resets the watchdog timer.
 
-_3V3Power_Line1(int1 status): Controls a 3.3V power line with overcurrent protection
+_3V3Power_Line1(): This function controls a 3.3V#1 power line with overcurrent protection
 
 ``` c
-if (status == BB_ON_OCP_ON) {
-    output_high(PIN_D1);
-    Delay_ms(50);
-    output_high(PIN_D4);
-    BIT_SET(POWER_LINE_STATUS,5);
+void _3V3Power_Line1(int1 status )
+{
+    if (status == BB_ON_OCP_ON)
+    {
+       output_high(PIN_D1);
+       Delay_ms(50);
+       output_high(PIN_D4);
+       BIT_SET(POWER_LINE_STATUS,5);
+    }
+
+    if (status == BB_ON_OCP_OFF)
+    {
+       output_high(PIN_D1);
+       output_low(PIN_D4);
+       BIT_CLEAR(POWER_LINE_STATUS,5);
+    }
+
+    if (status == BB_OFF_OCP_OFF)
+    {
+       output_low(PIN_D1);
+       output_low(PIN_D4);
+       BIT_CLEAR(POWER_LINE_STATUS,5);
+    }
+    delay_ms(50);
+    RST_EXT_WDT();
 }
-if (status == BB_ON_OCP_OFF) {
-    output_high(PIN_D1);
-    output_low(PIN_D4);
-    BIT_CLEAR(POWER_LINE_STATUS,5);
-}
-if (status == BB_OFF_OCP_OFF) {
-    output_low(PIN_D1);
-    output_low(PIN_D4);
-    BIT_CLEAR(POWER_LINE_STATUS,5);
-}
-delay_ms(50);
-RST_EXT_WDT();
 ```
 - Uses ```PIN_D1``` to control the buck-boost converter and ```PIN_D4``` to control OCP.
-- Updates bit 5 of ```POWER_LINE_STATUS``` to reflect the line state.
+- Updates bit 5 of ```POWER_LINE_STATUS``` to reflect the 3.3V#1 power line state.
+- Adds a delay (debouncing) and resets the watchdog timer.
 
 #### Other Line-Control Functions
-```_3V3Power_Line2```, ```_5V0Power_Line```, ```Unreg1_Line```, ```Unreg2_Line```:
-- Similar structure to ```_3V3Power_Line1```.
-- Control additional power lines and update respective bits in ```POWER_LINE_STATUS```.
+
+- ```_3V3Power_Line2```
+  - Uses ```PIN_D2``` to control the buck-boost converter and ```PIN_D5``` to control OCP.
+  - Updates bit 4 of ```POWER_LINE_STATUS``` to reflect the 3.3V#2 power line state.
+  - Adds a delay (debouncing) and resets the watchdog timer.
+ 
+- ```_5V0Power_Line```, 
+  - Uses ```PIN_D3``` to control the buck-boost converter and ```PIN_D6``` to control OCP.
+  - Updates bit 3 of ```POWER_LINE_STATUS``` to reflect the 5.0V power line state.
+  - Adds a delay (debouncing) and resets the watchdog timer.
+  
+- ```Unreg1_Line```, 
+  - Uses ```PIN_D7``` to control OCP.
+  - Updates bit 2 of ```POWER_LINE_STATUS``` to reflect the Unreg1 power line state.
+  - Adds a delay (debouncing) and resets the watchdog timer.
+ 
+- ```Unreg2_Line```:
+  - Uses ```PIN_D0``` to control OCP.
+  - Updates bit 1 of ```POWER_LINE_STATUS``` to reflect the Unreg2 power line state.
+  - Adds a delay (debouncing) and resets the watchdog timer.
 
 #### System Reset Functions
 
-SYSTEM_RESET(): Performs a manual system reset
-``` c
-MainPic_Power(OFF);
-ComPic_Power(OFF);
-_3V3Power_Line1(BB_OFF_OCP_OFF);
-_3V3Power_Line2(BB_OFF_OCP_OFF);
-_5V0Power_Line(BB_OFF_OCP_OFF);
-Unreg1_Line(OFF);
-Unreg2_Line(OFF);
-```
-
-Sequentially turns off all components.
+SYSTEM_RESET(): Performs a manual system reset of the satellite by command from PC or GS
 
 ``` c
-for (int i = 0; i < 10; i++) {
-    Delay_ms(500);
-    RST_EXT_WDT();
-    Fprintf(PC, "Waiting to turn on system again %02d Sec\n\r", sec_c);
+void SYSTEM_RESET()
+{  
+   int sec_c = 0;
+   Fprintf(PC,"system reset by command \n\r");
+   // turn off system
+   MainPic_Power(OFF)                ;  Delay_ms(250) ; 
+   ComPic_Power(OFF);Delay_ms(250)   ;  Delay_ms(250) ; 
+   _3V3Power_Line1(BB_OFF_OCP_OFF)   ;  Delay_ms(250) ; 
+   _3V3Power_Line2(BB_OFF_OCP_OFF)   ;  Delay_ms(250) ; 
+   _5V0Power_Line(BB_OFF_OCP_OFF)    ;  Delay_ms(250) ; 
+   Unreg1_Line(OFF);Delay_ms(250)    ;  Delay_ms(250) ; 
+   Unreg2_Line(OFF);Delay_ms(250)    ;  Delay_ms(250) ;
+
+   RESET_TIME = hour;
+
+   for (int i = 0; i < 10; i++)
+   {
+       Delay_ms(500);
+       RST_EXT_WDT();
+       Delay_ms(500);
+       RST_EXT_WDT();
+       sec_c++;
+       Fprintf(PC, "Waiting to turn on system again %02d Sec\n\r", sec_c);
+   }
+
+   // turn on system
+   MainPic_Power(ON)                ;    Delay_ms(250) ;      
+   ComPic_Power(ON)                 ;    Delay_ms(250) ;      
+   _3V3Power_Line1(BB_ON_OCP_ON)    ;    Delay_ms(250) ;     
+   _3V3Power_Line2(BB_ON_OCP_ON)    ;    Delay_ms(250) ;       
+   _5V0Power_Line(BB_ON_OCP_ON)     ;    Delay_ms(250) ;      
+   Unreg1_Line(ON)                  ;    Delay_ms(250) ;     
+   Unreg2_Line(OFF)                 ;    Delay_ms(250) ;
 }
 ```
+- Sequentially turns off all components.
+- Set reset time to 1 hour
+- Waits 10 seconds, resetting the watchdog timer periodically (every  half second).
+- Turns all components back on after the delay.
 
-Waits 10 seconds, resetting the watchdog timer periodically.
-
-``` c
-MainPic_Power(ON);
-ComPic_Power(ON);
-_3V3Power_Line1(BB_ON_OCP_ON);
-_3V3Power_Line2(BB_ON_OCP_ON);
-_5V0Power_Line(BB_ON_OCP_ON);
-Unreg1_Line(ON);
-Unreg2_Line(OFF);
-```
-
-Turns all components back on after the delay.
-
-SYSTEM_RESET_24H(): Automates a daily reset at a specific time
-- Similar to SYSTEM_RESET(), but triggered when hour, minute, and second match predefined values.
+SYSTEM_RESET_24H(): This function automates a daily reset at a specific time. Similar to SYSTEM_RESET(), but triggered when hour, minute, and second match predefined values.
 
 #### ADC Measurement Functions
 
-Measure_*(): Measures voltages and currents for different lines
+Each power rail or unregulated line has a sensor (e.g., a current sensor or voltage divider) connected to the analog input of the microcontroller. The microcontroller reads these analog signals and converts them into digital values using its ADC module.
+
+The ADC readings are stored in the corresponding variables (```_Raw_power_ADC_val```, ```_3V3_1_current_ADC_val```, etc.) for further processing or monitoring.
+
+These values are used for:
+- Power system diagnostics (e.g., detecting overcurrent conditions).
+- Monitoring power health in real-time.
+- Logging and telemetry 
+
+**Commented Section**
+
+The commented code below describes how certain hardware signals are being monitored and measured using analog-to-digital conversion.
+
+``` c
+// C3 = Raw power monitor enable
+// A2 (AN2) = Raw voltage measure
+// A1 (AN1) = 3V3-1 current measure
+// A0 (AN0) = 3V3-2 current measure
+// A5 (AN4) = 5V0 current measure
+// A4 (AN6) = UNREG-1 current measure
+// C2 (AN9) = UNREG-2 current measure
+```
+
+Each signal is mapped to a specific pin (or port) on the microcontroller, and the purpose of that pin is described:
+
+1. ```C3 = Raw power monitor enable```
+- This pin (```C3```) controls a pin used to enable or disable monitoring of the raw power input. It is toggled as needed to save power and/or isolate specific circuits.
+2. ```A2 (AN2) = Raw voltage measure```
+- Analog channel 2 (```AN2```) is used to measure the raw voltage level. This represents the voltage coming directly from the power source before regulation.
+3. ```A1 (AN1) = 3V3-1 current measure```
+- Analog channel 1 (```AN1```) measures the current flowing through the 3.3V#1 power rail (```3V3-1```).
+4. ```A0 (AN0) = 3V3-2 current measure```
+- Analog channel 0 (```AN0```) measures the current flowing through the 3.3V#2 power rail (```3V3-2```).
+5. ```A5 (AN4) = 5V0 current measure```
+- Analog channel 4 (```AN4```) measures the current on the 5V power line.
+6. ```A4 (AN6) = UNREG-1 current measure```
+- Analog channel 6 (```AN6```) measures the current for an unregulated power line labeled UNREG-1.
+7. ```C2 (AN9) = UNREG-2 current measure```
+- Analog channel 9 (```AN9```) measures the current for another unregulated power line labeled UNREG-2.
+
+``` c
+unsigned int16 _Raw_power_ADC_val       = 0 ;          
+unsigned int16 _3V3_1_current_ADC_val   = 0 ;          
+unsigned int16 _3V3_2_current_ADC_val   = 0 ;          
+unsigned int16 _5V0_current_ADC_val     = 0 ;          
+unsigned int16 _UNREG_1_current_ADC_val = 0 ;      
+unsigned int16 _UNREG_2_current_ADC_val = 0 ;
+```
+
+**Variables**
+
+The variables declared are used to store the ADC (Analog-to-Digital Conversion) readings for the respective signals.
+
+- ```unsigned int16 _Raw_power_ADC_val = 0```; Holds the ADC result for the raw power voltage measurement (from AN2).
+- ```unsigned int16 _3V3_1_current_ADC_val = 0```; Stores the ADC result for the current measurement of 3V3-1 (from AN1).
+- ```unsigned int16 _3V3_2_current_ADC_val = 0```; Stores the ADC result for the current measurement of 3V3-2 (from AN0).
+- ```unsigned int16 _5V0_current_ADC_val = 0```; Holds the ADC result for the current measurement of the 5V power line (from AN4).
+- ```unsigned int16 _UNREG_1_current_ADC_val = 0```; Stores the ADC result for the current measurement of the unregulated power line UNREG-1 (from AN6).
+- ```unsigned int16 _UNREG_2_current_ADC_val = 0```; Stores the ADC result for the current measurement of the unregulated power line UNREG-2 (from AN9).
+
+
+
+Measure_*(): This function measures voltages and currents for different lines
 
 ``` c
 unsigned int16 Measure_Raw_voltage() {
