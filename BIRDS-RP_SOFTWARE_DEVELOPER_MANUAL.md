@@ -636,7 +636,7 @@ The files found in the RESET PIC folder are detailed in Table 2 below.
 
 ###  ADC_Power_Lines_Control.c 
 
-This code manages power lines, resets the system, and monitors current and voltage using ADC. Each function is modular and updates ```POWER_LINE_STATUS``` to track the state of the system. Functions like ```SYSTEM_RESET``` and ```SYSTEM_RESET_24H``` ensure operational stability through scheduled or manual resets.
+This code manages power lines, resets the system, and monitors current and voltage using analog-to-digital converter (ADC). Each function is modular and updates ```POWER_LINE_STATUS``` to track the state of the system. Functions like ```SYSTEM_RESET``` and ```SYSTEM_RESET_24H``` ensure operational stability through scheduled or manual resets.
 
 Here is a detailed breakdown of the functionality:
 
