@@ -619,6 +619,10 @@ Here's the flow diagram illustrating the operation of the microcontroller system
 
 ## 2. RESET PIC 
 
+![](Diagrams/pic_operations-RESET-PIC.png)
+
+The files found in the RESET PIC folder are detailed in Table 2 below. 
+
 |     File name pattern       | Scope  |  Content    |
 |-----------------------------|--------|-------------|
 | ADC_Power_Lines_Control.c   |        |             |
@@ -630,9 +634,5 @@ Here's the flow diagram illustrating the operation of the microcontroller system
 | ResetMain.c                 |        |             |
 | ResetPIC_Functions.c        |        |             |
 
-![](Diagrams/obc_pics_operation-RESET-PIC.png)
-
-<a href="http://jgraph.github.io/drawio-github/edit-diagram.html?repo=BIRDSRP-OBC&path=obc_pics_operation-RESET_PIC.png" target="_blank">Edit</a> | <a href="https://app.diagrams.net/#Uhttps%3A%2F%2Fraw.githubusercontent.com%2FBIRDSRP-OBC%2Fmain%2FDiagrams%2Fobc_pics_operation-RESET_PIC.png" target="_blank">Edit As New</a> | <a href="https://app.diagrams.net/#HBIRDSOpenSource%2FBIRDSRP-OBC%2Fmain%2FDiagrams%2Fobc_pics_operation-RESET_PIC.png" target="_blank">Edit with draw.io</a>
-
-####  ADC_Power_Lines_Control.c 
+###  ADC_Power_Lines_Control.c 
 
