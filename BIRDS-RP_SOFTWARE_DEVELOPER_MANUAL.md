@@ -665,16 +665,121 @@ unsigned int8 RESET_TIME = 0;
 - ```POWER_LINE_STATUS```: 8-bit variable where each bit indicates the status of different power lines or components.
 - ```RESET_TIME```: Tracks the time when a system reset occurred.
 
+#### Functions for System Components
 
+MP_CP_BuckBoost(int1 status): Controls a buck-boost converter
 
+``` c
+if (status == ON) { output_LOW(PIN_C4); }
+if (status == OFF) { output_HIGH(PIN_C4); }
+RST_EXT_WDT();
+```
+- Turns the converter ON/OFF by controlling ```PIN_C4```.
+- Calls ```RST_EXT_WDT()``` to reset an external watchdog timer (prevents system reset due to inactivity).
 
+MainPic_Power(int1 status): Manages power for the main microcontroller (Main PIC)
+``` c
+if (status == 1) {
+    output_high(PIN_F5);
+    BIT_SET(POWER_LINE_STATUS,7);
+}
+if (status == 0) {
+    output_low(PIN_F5);
+    BIT_CLEAR(POWER_LINE_STATUS,7);
+}
+delay_ms(50);
+RST_EXT_WDT();
+```
+- Activates/deactivates power to Main PIC via ```PIN_F5```.
+- Updates bit 7 of ```POWER_LINE_STATUS``` to reflect the Main PIC's state.
+- Adds a delay (debouncing) and resets the watchdog timer.
 
+ComPic_Power(int1 status): Manages power for the communication microcontroller (Com PIC)
+``` c
+if (status == 1) {
+    output_high(PIN_F6);
+    BIT_SET(POWER_LINE_STATUS,6);
+}
+if (status == 0) {
+    output_low(PIN_F6);
+    BIT_CLEAR(POWER_LINE_STATUS,6);
+}
+delay_ms(50);
+RST_EXT_WDT();
+```
+Similar to ```MainPic_Power```, but controls ```PIN_F6``` and updates bit 6 of ```POWER_LINE_STATUS```.
 
+_3V3Power_Line1(int1 status): Controls a 3.3V power line with overcurrent protection
 
+``` c
+if (status == BB_ON_OCP_ON) {
+    output_high(PIN_D1);
+    Delay_ms(50);
+    output_high(PIN_D4);
+    BIT_SET(POWER_LINE_STATUS,5);
+}
+if (status == BB_ON_OCP_OFF) {
+    output_high(PIN_D1);
+    output_low(PIN_D4);
+    BIT_CLEAR(POWER_LINE_STATUS,5);
+}
+if (status == BB_OFF_OCP_OFF) {
+    output_low(PIN_D1);
+    output_low(PIN_D4);
+    BIT_CLEAR(POWER_LINE_STATUS,5);
+}
+delay_ms(50);
+RST_EXT_WDT();
+```
+- Uses ```PIN_D1``` to control the buck-boost converter and ```PIN_D4``` to control OCP.
+- Updates bit 5 of ```POWER_LINE_STATUS``` to reflect the line state.
 
+#### Other Line-Control Functions
+```_3V3Power_Line2```, ```_5V0Power_Line```, ```Unreg1_Line```, ```Unreg2_Line```:
+- Similar structure to ```_3V3Power_Line1```.
+- Control additional power lines and update respective bits in ```POWER_LINE_STATUS```.
 
+#### System Reset Functions
 
+SYSTEM_RESET(): Performs a manual system reset
+``` c
+MainPic_Power(OFF);
+ComPic_Power(OFF);
+_3V3Power_Line1(BB_OFF_OCP_OFF);
+_3V3Power_Line2(BB_OFF_OCP_OFF);
+_5V0Power_Line(BB_OFF_OCP_OFF);
+Unreg1_Line(OFF);
+Unreg2_Line(OFF);
+```
 
+Sequentially turns off all components.
+
+``` c
+for (int i = 0; i < 10; i++) {
+    Delay_ms(500);
+    RST_EXT_WDT();
+    Fprintf(PC, "Waiting to turn on system again %02d Sec\n\r", sec_c);
+}
+```
+
+Waits 10 seconds, resetting the watchdog timer periodically.
+
+``` c
+MainPic_Power(ON);
+ComPic_Power(ON);
+_3V3Power_Line1(BB_ON_OCP_ON);
+_3V3Power_Line2(BB_ON_OCP_ON);
+_5V0Power_Line(BB_ON_OCP_ON);
+Unreg1_Line(ON);
+Unreg2_Line(OFF);
+```
+
+Turns all components back on after the delay.
+
+SYSTEM_RESET_24H(): Automates a daily reset at a specific time
+- Similar to SYSTEM_RESET(), but triggered when hour, minute, and second match predefined values.
+
+#### ADC Measurement Functions
 
 
 
