@@ -949,7 +949,7 @@ The remaining functions do not toggle pin outputs, they only set the ADC channel
    - Introduces a small delay (20 microseconds) to allow the ADC hardware to stabilize after switching channels.
    - Performs an ADC conversion and returns the digital value representing the measured unreg-2 voltage.
 
-#### PIC18F67J94_registers.h 
+### PIC18F67J94_registers.h 
 
 This block of code is a series of register and bit definitions for working with the Reset PIC microcontroller. It sets up low-level hardware access by mapping the microcontroller's memory-mapped registers and specific bits to easy-to-use variable names. It allows developers to:
 1. Configure pin directions (TRIS registers).
