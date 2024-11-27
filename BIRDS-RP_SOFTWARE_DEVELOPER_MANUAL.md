@@ -636,3 +636,48 @@ The files found in the RESET PIC folder are detailed in Table 2 below.
 
 ###  ADC_Power_Lines_Control.c 
 
+This code is for satellite power management and monitoring; it controls various power lines, monitors voltages and currents, and performs periodic resets. 
+
+Here is a detailed breakdown of the functionality:
+
+#### Global Definitions and Variables
+
+``` c
+#define ON  1
+#define OFF 0
+```
+Defines symbolic constants ```ON``` and ```OFF``` for readability, representing ```1``` (ON) and ```0``` (OFF) states.
+
+``` c
+#define BB_ON_OCP_ON   1
+#define BB_ON_OCP_OFF  2
+#define BB_OFF_OCP_OFF 3
+```
+Defines states for a buck-boost converter and overcurrent protection (OCP):
+- ```BB_ON_OCP_ON```: Buck-boost ON, OCP ON.
+- ```BB_ON_OCP_OFF```: Buck-boost ON, OCP OFF.
+- ```BB_OFF_OCP_OFF```: Buck-boost OFF, OCP OFF.
+
+``` c
+unsigned int8 POWER_LINE_STATUS = 0;
+unsigned int8 RESET_TIME = 0;
+```
+- ```POWER_LINE_STATUS```: 8-bit variable where each bit indicates the status of different power lines or components.
+- ```RESET_TIME```: Tracks the time when a system reset occurred.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
