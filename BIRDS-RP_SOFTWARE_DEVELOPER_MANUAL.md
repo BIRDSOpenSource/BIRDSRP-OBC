@@ -949,11 +949,237 @@ The remaining functions do not toggle pin outputs, they only set the ADC channel
    - Introduces a small delay (20 microseconds) to allow the ADC hardware to stabilize after switching channels.
    - Performs an ADC conversion and returns the digital value representing the measured unreg-2 voltage.
 
-
-
-
-
-
 #### PIC18F67J94_registers.h 
+
+This block of code is a series of register and bit definitions for working with the Reset PIC microcontroller. It sets up low-level hardware access by mapping the microcontroller's memory-mapped registers and specific bits to easy-to-use variable names. It allows developers to:
+1. Configure pin directions (TRIS registers).
+2. Control output states (LAT registers).
+3. Read or write pin states (PORT registers).
+4. Manage peripherals like RTCs, timers, and interrupts.
+
+Here's a line-by-line explanation:
+
+#### Byte Definitions for TRIS Registers
+
+A TRIS register, or tri-state register, is a control register in Microchip PIC microcontrollers that configures the direction of data flow through a port's I/O pins.
+
+``` c
+#byte TRISG = 0xF98
+#byte TRISF = 0xF97
+#byte TRISE = 0xF96
+#byte TRISD = 0xF95
+#byte TRISC = 0xF94
+#byte TRISB = 0xF93
+#byte TRISA = 0xF92
+```
+- TRIS Registers are used to configure the direction of pins (input or output) for each port (```A``` to ```G```).
+- Setting a TRIS bit to ```1``` makes the corresponding pin an **input**; setting it to ```0``` makes it an **output**.
+- These definitions map the TRIS registers to their respective memory addresses (hex values starting at ```0xF92```).
+
+#### Byte Definitions for LAT Registers
+
+``` c
+#byte LATG = 0xF8F
+#byte LATF = 0xF8E
+#byte LATE = 0xF8D
+#byte LATD = 0xF8C
+#byte LATC = 0xF8B
+#byte LATB = 0xF8A
+#byte LATA = 0xF89
+```
+- LAT Registers (LATCH) control the output state of pins.
+- Writing to a LAT register sets the state of the corresponding port pins (```1``` = HIGH, ```0``` = LOW).
+- These definitions link LAT registers to their specific memory locations.
+
+#### Bit-Level Access to TRIS Registers
+
+``` c
+#bit TRISE0 = TRISE.0
+#bit TRISE1 = TRISE.1
+#bit TRISE2 = TRISE.2
+#bit TRISC4 = TRISC.4
+#bit TRISB3 = TRISB.3
+#bit TRISA0 = TRISA.0
+#bit TRISA1 = TRISA.1
+#bit TRISA2 = TRISA.2
+#bit TRISA5 = TRISA.5
+```
+- Individual bits within the TRIS registers are defined for ease of access.
+- Example: ```TRISE0``` refers to bit 0 of the ```TRISE``` register (controls direction for pin ```E0```).
+
+#### Bit-Level Access to LAT Registers
+
+``` c
+#bit LATA0 = LATA.0
+#bit LATA1 = LATA.1
+#bit LATA2 = LATA.2
+#bit LATA3 = LATA.3
+```
+- Defines specific bits in the LAT registers, corresponding to individual pins on port A.
+- Example: ```LATA0``` controls the state of pin ```A0```.
+
+#### Byte Definitions for PORT Registers
+
+``` c
+#byte PORTG = 0xF86
+#byte PORTF = 0xF85
+#byte PORTE = 0xF84
+#byte PORTD = 0xF83
+#byte PORTC = 0xF82
+#byte PORTB = 0xF81
+#byte PORTA = 0xF80
+```
+**PORT Registers** hold the current state of pins on each port. Reading a PORT register retrieves the pin states, and writing to a PORT register directly changes output levels (if configured as outputs).
+
+#### Bit-Level Access to PORT Registers
+
+``` c
+#bit RG0 = PORTG.0
+#bit RG1 = PORTG.1
+#bit RG2 = PORTG.2
+#bit RG3 = PORTG.3
+#bit RF2 = PORTF.2
+#bit RE2 = PORTE.2
+#bit RC0 = PORTC.0
+#bit RB3 = PORTB.3
+#bit RA0 = PORTA.0
+```
+- Bit-level definitions for individual pins on ports.
+- Example: ```RG0``` refers to bit 0 of PORTG, representing the state of pin ```G0```.
+
+#### Real-Time Clock Control and Alarm
+
+The RTC (Real-Time Clock) section defines control registers and bits for managing the clock and alarms.
+
+``` c
+#byte RTCCON1 = 0xF5F
+#bit RTCPTR0 = RTCCON1.0
+#bit RTCPTR1 = RTCCON1.1
+#bit RTCOE = RTCCON1.2
+#bit HALFSEC = RTCCON1.3
+#bit RTCSYNC = RTCCON1.4
+#bit RTCWREN = RTCCON1.5
+#bit RTCEN = RTCCON1.7
+```
+- ```RTCCON1``` is the control register for the RTC.
+   - ```RTCPTR0``` and ```RTCPTR1``` are specific bits within this register, for configuring the pointer to RTC data.
+   - ```RTCOE ```
+   - ```HALFSEC```
+   - ```RTCSYNC```
+   - ```RTCWREN```
+   - ```RTCEN```
+
+``` c
+#byte RTCCAL = 0xF5E
+#byte RTCVALH = 0xF5D
+#bit    WAITE0 = RTCVALH.0
+#bit    WAITE1 = RTCVALH.1
+#bit    WAITM0 = RTCVALH.2
+#bit    WAITM1 = RTCVALH.3
+#bit    WAITM2 = RTCVALH.4
+#bit    WAITM3 = RTCVALH.5
+#bit    WAITB0 = RTCVALH.6
+#bit    WAITB1 = RTCVALH.7
+```
+- ```RTCCAL``` is the ... register for the RTC.
+- ```RTCVALH``` is the ... register for the RTC.
+   - ```WAITE0``` is a specific bit within the RTCVALH register, for configuring the ...
+   - ```WAITE1```
+   - ```WAITM0```
+   - ```WAITM1```
+   - ```WAITM2```
+   - ```WAITM3```
+   - ```WAITB0```
+   - ```WAITB1```
+ 
+``` c
+#byte RTCVALL = 0xF5C
+#byte ALRMCFG = 0xF5B
+#bit    ALRMPTR0 = ALRMCFG.0
+#bit    ALRMPTR1 = ALRMCFG.1
+#bit    AMASK0 = ALRMCFG.2
+#bit    AMASK1 = ALRMCFG.3
+#bit    AMASK2 = ALRMCFG.4
+#bit    AMASK3 = ALRMCFG.5
+#bit    CHIME = ALRMCFG.6
+#bit    ALRMEN = ALRMCFG.7
+```
+- ```RTCVALL``` is the ... register for the RTC.
+- ```ALRMCFG``` is the ... register for the Alarm.
+   - ```ALRMPTR0``` is a specific bit within the RTCVALH register, for configuring the ...
+   - ```ALRMPTR1```
+   - ```AMASK0```
+   - ```AMASK1```
+   - ```AMASK2```
+   - ```AMASK3```
+   - ```CHIME```
+   - ```ALRMEN```
+ 
+``` c
+#byte ALRMRPT = 0xF5A
+#byte ALRMVALH = 0xF59
+#byte ALRMVALL = 0xF58
+#byte RTCCON2 = 0xF57
+#bit    RTCSECSEL0 = RTCCON2.0
+#bit    RTCSECSEL1 = RTCCON2.1
+#bit    RTCCLKSEL0 = RTCCON2.2
+#bit    RTCCLKSEL1 = RTCCON2.3
+#bit    PWCSPRE = RTCCON2.4
+#bit    PWCCPRE = RTCCON2.5
+#bit    PWCPOL = RTCCON2.6
+#bit    PWCEN = RTCCON2.7
+```
+- ```ALRMRPT``` is the ... register for the RTC.
+- ```ALRMVALH``` is the ... register for the RTC.
+- ```ALRMVALL``` is the ... register for the RTC.
+- ```RTCCON2``` is the ... register for the Alarm.
+   - ```RTCSECSEL0``` is a specific bit within the RTCCON2 register, for configuring the ...
+   - ```RTCSECSEL1```
+   - ```RTCCLKSEL0```
+   - ```RTCCLKSEL1```
+   - ```PWCSPRE```
+   - ```PWCCPRE```
+   - ```PWCPOL```
+   - ```PWCEN```
+
+#### Other Control Registers
+
+``` c
+#byte EECON2 = 0xF7E
+#byte OSCCON = 0xFD3
+#byte T1CON = 0xFCD
+#bit  T1CON7 = T1CON.7
+#bit  T1CON6 = T1CON.6
+#bit  SOSCEN1 = T1CON.3
+#bit  TMR1ON = T1CON.0
+#byte T3CON = 0xFB1
+#bit  SOSCEN3 = T3CON.3
+```
+- These are control registers for various peripherals:
+   - ```EECON2```: 
+   - ```OSCCON```: Oscillator control.
+   - ```T1CON```: Timer 1 control.
+     - ```T1CON7``` refers to bit 7 of T1CON, enabling ...
+     - ```T1CON6``` refers to bit 6 of T1CON, enabling ...
+     - ```SOSCEN1``` refers to bit 3 of T1CON, enabling ...
+     - ```TMR1ON``` refers to bit 0 of T1CON, enabling ... 
+   - ```T3CON```: Timer 3 control.
+     - ```SOSCEN3``` refers to bit 3 of T3CON, enabling ... 
+
+#### Interrupt and Miscellaneous Registers
+
+``` c
+#byte PIE3 = 0xFA3
+#bit RC2IE = PIE3.5
+```
+- ```PIE3```` is an interrupt enable register for specific peripherals.
+  - ```RC2IE``` refers to bit 5 of PIE3, enabling an interrupt for the RC2 peripheral.
+
+
+
+
+
+
+
 
 
