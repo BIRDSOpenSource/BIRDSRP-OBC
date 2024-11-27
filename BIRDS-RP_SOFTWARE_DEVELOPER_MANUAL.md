@@ -795,6 +795,118 @@ unsigned int16 Measure_Raw_voltage() {
 ```
 Activates an ADC pin, sets the channel, and reads the voltage or current.
 
+Below is an ASCII flowchart for the main logical components and functions:
 
+``` sql
+START
+  |
+  v
++---------------------+
+| Define Constants    |
+| (ON, OFF, etc.)     |
++---------------------+
+  |
+  v
++---------------------+
+| Initialize Variables|
+| (POWER_LINE_STATUS, |
+| RESET_TIME, etc.)   |
++---------------------+
+  |
+  v
++---------------------+
+| Power Control       |
++---------------------+
+  |         |         |
+  v         v         v
++-----------+---------+---------------------+
+| MainPic   | ComPic  | Other Components    |
+| Power     | Power   | (_3V3Power, 5V, etc)|
++-----------+---------+---------------------+
+  |
+  v
++---------------------+
+| ADC Functions       |
+| (Current Measurement|
+|  and Voltage Reads) |
++---------------------+
+  |
+  v
++---------------------+
+| System Reset Logic  |
++---------------------+
+  |
+  v
++---------------------+
+| Main Reset          |
+| (SYSTEM_RESET)      |
++---------------------+
+  |
+  v
++---------------------+
+| 24-Hour Reset       |
+| (SYSTEM_RESET_24H)  |
++---------------------+
+  |
+  v
++---------------------+
+| End of Logic        |
++---------------------+
+```
+
+**SYSTEM_RESET Function Detailed Flow**
+
+``` sql
+SYSTEM_RESET()
+   |
+   v
++---------------------+
+| Turn Off Components |
++---------------------+
+   |
+   v
++-----------------------------+
+| Wait for Reset Delay Loop   |
+| (10 iterations, 500ms each) |
++-----------------------------+
+   |
+   v
++---------------------+
+| Turn On Components  |
++---------------------+
+   |
+   v
+END
+```
+
+**MainPic_Power Function**
+
+``` sql
+MainPic_Power(status)
+   |
+   v
++---------------------------+
+| IF status == ON           |
+|   Set PIN_F5 High         |
+|   Set Bit 7 of POWER_LINE |
++---------------------------+
+   |
+   v
++---------------------------+
+| ELSE (status == OFF)      |
+|   Set PIN_F5 Low          |
+|   Clear Bit 7 of POWER_LINE|
++---------------------------+
+   |
+   v
+END
+```
+
+
+
+
+
+
+#### PIC18F67J94_registers.h 
 
 
