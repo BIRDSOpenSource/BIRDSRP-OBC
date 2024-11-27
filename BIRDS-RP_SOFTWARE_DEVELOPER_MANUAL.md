@@ -1172,7 +1172,7 @@ The RTC (Real-Time Clock) section defines control registers and bits for managin
 #byte PIE3 = 0xFA3
 #bit RC2IE = PIE3.5
 ```
-- ```PIE3```` is an interrupt enable register for specific peripherals.
+- ```PIE3``` is an interrupt enable register for specific peripherals.
   - ```RC2IE``` refers to bit 5 of PIE3, enabling an interrupt for the RC2 peripheral.
 
 
