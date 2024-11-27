@@ -638,6 +638,8 @@ The files found in the RESET PIC folder are detailed in Table 2 below.
 
 This code is for satellite power management and monitoring; it controls various power lines, monitors voltages and currents, and performs periodic resets. 
 
+This code manages power lines, resets the system, and monitors current and voltage using ADC. Each function is modular and updates ```POWER_LINE_STATUS``` to track the state of the system. Functions like ```SYSTEM_RESET``` and ```SYSTEM_RESET_24H``` ensure operational stability through scheduled or manual resets.
+
 Here is a detailed breakdown of the functionality:
 
 #### Global Definitions and Variables
@@ -781,7 +783,19 @@ SYSTEM_RESET_24H(): Automates a daily reset at a specific time
 
 #### ADC Measurement Functions
 
+Measure_*(): Measures voltages and currents for different lines
 
+``` c
+unsigned int16 Measure_Raw_voltage() {
+    Output_low(PIN_C3);
+    Delay_us(100);
+    SET_ADC_CHANNEL(2);
+    delay_us(20);
+    Output_high(PIN_C3);
+    return READ_ADC();
+}
+```
+Activates an ADC pin, sets the channel, and reads the voltage or current.
 
 
 
