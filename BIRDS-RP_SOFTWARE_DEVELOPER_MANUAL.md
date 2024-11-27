@@ -896,128 +896,58 @@ The variables declared are used to store the ADC (Analog-to-Digital Conversion) 
 - ```unsigned int16 _UNREG_1_current_ADC_val = 0```; Stores the ADC result for the current measurement of the unregulated power line UNREG-1 (from AN6).
 - ```unsigned int16 _UNREG_2_current_ADC_val = 0```; Stores the ADC result for the current measurement of the unregulated power line UNREG-2 (from AN9).
 
+**Current measuring functions**
 
-
-Measure_*(): This function measures voltages and currents for different lines
+Measure_*(): These functions measure voltages and currents for different lines with '*' being replaced with;
+- Raw_voltage
+- 3V3_1_current
+- 3V3_2_current
+- 5V0_current
+- UNREG_1_current
+- UNREG_2_current
 
 ``` c
-unsigned int16 Measure_Raw_voltage() {
+unsigned int16 Measure_Raw_voltage() // A2 (AN2) = Raw voltage measure
+{
     Output_low(PIN_C3);
     Delay_us(100);
+
     SET_ADC_CHANNEL(2);
     delay_us(20);
     Output_high(PIN_C3);
     return READ_ADC();
 }
 ```
-Activates an ADC pin, sets the channel, and reads the voltage or current.
+- The function returns a ```16-bit unsigned integer```. This integer represents the digital value of the voltage measured at analog channel 2 (```AN2```), corresponding to the raw voltage.
+- Sets **PIN_C3** to a low logic level (0). In the comments, ```C3``` is described as the "Raw power monitor enable" pin. Setting it low activates the raw voltage measurement circuit (e.g., by powering on a sensor or enabling a voltage divider).
+- Introduces a delay of 100 microseconds. This allows the circuitry connected to PIN_C3 to stabilize after being activated. Stabilization is important for accurate ADC readings, especially in systems with capacitors or sensors.
+- Configures the ADC to read from channel 2 (```AN2```), which is connected to the raw voltage signal.
+- Introduces a smaller delay (20 microseconds) to allow the ADC hardware to stabilize after switching channels. This ensures the input signal is correctly sampled.
+- Sets PIN_C3 to a high logic level (1). This disables the raw voltage measurement circuit, conserving power or isolating the circuit when not in use.
+- Performs an ADC conversion and returns the digital value representing the measured raw voltage. The ```READ_ADC()``` function converts the analog signal at channel 2 into a numerical value, which corresponds to the voltage level based on the system's ADC resolution and reference voltage.
 
-Below is an ASCII flowchart for the main logical components and functions:
+The remaining functions do not toggle pin outputs, they only set the ADC channel, delay, then return the value of the READ_ADC() function.
 
-``` sql
-START
-  |
-  v
-+---------------------+
-| Define Constants    |
-| (ON, OFF, etc.)     |
-+---------------------+
-  |
-  v
-+---------------------+
-| Initialize Variables|
-| (POWER_LINE_STATUS, |
-| RESET_TIME, etc.)   |
-+---------------------+
-  |
-  v
-+---------------------+
-| Power Control       |
-+---------------------+
-  |         |         |
-  v         v         v
-+-----------+---------+---------------------+
-| MainPic   | ComPic  | Other Components    |
-| Power     | Power   | (_3V3Power, 5V, etc)|
-+-----------+---------+---------------------+
-  |
-  v
-+---------------------+
-| ADC Functions       |
-| (Current Measurement|
-|  and Voltage Reads) |
-+---------------------+
-  |
-  v
-+---------------------+
-| System Reset Logic  |
-+---------------------+
-  |
-  v
-+---------------------+
-| Main Reset          |
-| (SYSTEM_RESET)      |
-+---------------------+
-  |
-  v
-+---------------------+
-| 24-Hour Reset       |
-| (SYSTEM_RESET_24H)  |
-+---------------------+
-  |
-  v
-+---------------------+
-| End of Logic        |
-+---------------------+
-```
-
-**SYSTEM_RESET Function Detailed Flow**
-
-``` sql
-SYSTEM_RESET()
-   |
-   v
-+---------------------+
-| Turn Off Components |
-+---------------------+
-   |
-   v
-+-----------------------------+
-| Wait for Reset Delay Loop   |
-| (10 iterations, 500ms each) |
-+-----------------------------+
-   |
-   v
-+---------------------+
-| Turn On Components  |
-+---------------------+
-   |
-   v
-END
-```
-
-**MainPic_Power Function**
-
-``` sql
-MainPic_Power(status)
-   |
-   v
-+---------------------------+
-| IF status == ON           |
-|   Set PIN_F5 High         |
-|   Set Bit 7 of POWER_LINE |
-+---------------------------+
-   |
-   v
-+---------------------------+
-| ELSE (status == OFF)      |
-|   Set PIN_F5 Low          |
-|   Clear Bit 7 of POWER_LINE|
-+---------------------------+
-   |
-   v
-END
-```
+- ```unsigned int16 Measure_3V3_1_current()```
+   - Configures the ADC to read from channel 1 (```AN1```), which is connected to the 3v3-1 current measure signal.
+   - Introduces a small delay (20 microseconds) to allow the ADC hardware to stabilize after switching channels.
+   - Performs an ADC conversion and returns the digital value representing the measured 3v3-1 voltage.
+- ```unsigned int16 Measure_3V3_2_current()```
+   - Configures the ADC to read from channel 0 (```AN0```), which is connected to the 3v3-2 current measure signal.
+   - Introduces a small delay (20 microseconds) to allow the ADC hardware to stabilize after switching channels.
+   - Performs an ADC conversion and returns the digital value representing the measured 3v3-2 voltage.
+- ```unsigned int16 Measure_5V0_current()```
+   - Configures the ADC to read from channel 4 (```AN4```), which is connected to the 5v0 current measure signal.
+   - Introduces a small delay (20 microseconds) to allow the ADC hardware to stabilize after switching channels.
+   - Performs an ADC conversion and returns the digital value representing the measured 5v0 voltage.
+- ```unsigned int16 Measure_UNREG_1_current()```
+   - Configures the ADC to read from channel 6 (```AN6```), which is connected to the UNREG-1 current measure signal.
+   - Introduces a small delay (20 microseconds) to allow the ADC hardware to stabilize after switching channels.
+   - Performs an ADC conversion and returns the digital value representing the measured unreg-1 voltage.
+- ```unsigned int16 Measure_UNREG_2_current()```
+   - Configures the ADC to read from channel 9 (```AN9```), which is connected to the UNREG-2 current measure signal.
+   - Introduces a small delay (20 microseconds) to allow the ADC hardware to stabilize after switching channels.
+   - Performs an ADC conversion and returns the digital value representing the measured unreg-2 voltage.
 
 
 
