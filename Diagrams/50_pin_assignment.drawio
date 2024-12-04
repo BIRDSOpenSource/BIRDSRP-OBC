@@ -4,13 +4,13 @@
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="aM9ryv3xv72pqoxQDRHE-2" value="PIC Kit" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};verticalAlign=top;" parent="1" vertex="1">
+        <mxCell id="aM9ryv3xv72pqoxQDRHE-2" value="&lt;u&gt;PIC Kit&lt;/u&gt;" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};verticalAlign=top;" parent="1" vertex="1">
           <mxGeometry x="230" y="110" width="120" height="140" as="geometry" />
         </mxCell>
         <mxCell id="tYIQIL9FMzSM6Vzf6UUn-1" value="50 Pin&lt;div&gt;Connector&lt;/div&gt;" style="rounded=0;html=1;whiteSpace=wrap;labelPosition=center;verticalLabelPosition=top;align=center;verticalAlign=bottom;" parent="1" vertex="1">
           <mxGeometry x="385" y="120" width="140" height="1010" as="geometry" />
         </mxCell>
-        <mxCell id="aM9ryv3xv72pqoxQDRHE-6" value="PIC Kit" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};labelPosition=center;verticalLabelPosition=middle;align=center;verticalAlign=top;" parent="1" vertex="1">
+        <mxCell id="aM9ryv3xv72pqoxQDRHE-6" value="&lt;u&gt;PIC Kit&lt;/u&gt;" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};labelPosition=center;verticalLabelPosition=middle;align=center;verticalAlign=top;" parent="1" vertex="1">
           <mxGeometry x="560" y="110" width="120" height="140" as="geometry" />
         </mxCell>
         <mxCell id="aM9ryv3xv72pqoxQDRHE-9" value="" style="html=1;verticalAlign=bottom;endArrow=block;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" parent="1" edge="1">
@@ -394,7 +394,7 @@
             <mxPoint x="104" y="1" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="tYIQIL9FMzSM6Vzf6UUn-163" value="PIC Kit" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};labelPosition=center;verticalLabelPosition=middle;align=center;verticalAlign=top;spacing=-5;" parent="1" vertex="1">
+        <mxCell id="tYIQIL9FMzSM6Vzf6UUn-163" value="&lt;u&gt;PIC Kit&lt;/u&gt;" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};labelPosition=center;verticalLabelPosition=middle;align=center;verticalAlign=top;spacing=-5;" parent="1" vertex="1">
           <mxGeometry x="560" y="320" width="120" height="40" as="geometry" />
         </mxCell>
         <mxCell id="tYIQIL9FMzSM6Vzf6UUn-164" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};verticalAlign=top;" parent="1" vertex="1">
@@ -403,7 +403,7 @@
         <mxCell id="tYIQIL9FMzSM6Vzf6UUn-166" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};verticalAlign=top;" parent="1" vertex="1">
           <mxGeometry x="230" y="920" width="120" height="40" as="geometry" />
         </mxCell>
-        <mxCell id="tYIQIL9FMzSM6Vzf6UUn-169" value="MSN BOSS" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};verticalAlign=top;spacing=-5;" parent="1" vertex="1">
+        <mxCell id="tYIQIL9FMzSM6Vzf6UUn-169" value="&lt;u&gt;MSN BOSS&lt;/u&gt;" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};verticalAlign=top;spacing=-5;" parent="1" vertex="1">
           <mxGeometry x="230" y="720" width="120" height="90" as="geometry" />
         </mxCell>
         <mxCell id="tYIQIL9FMzSM6Vzf6UUn-171" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};verticalAlign=top;" parent="1" vertex="1">
@@ -475,10 +475,10 @@
         <mxCell id="bvYonb6-Ao3rK0f30JlV-12" value="5.0V SUP" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};labelPosition=center;verticalLabelPosition=middle;align=center;verticalAlign=top;fillColor=#f8cecc;strokeColor=#b85450;" parent="1" vertex="1">
           <mxGeometry x="560" y="400" width="120" height="40" as="geometry" />
         </mxCell>
-        <mxCell id="bvYonb6-Ao3rK0f30JlV-13" value="FAB" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};verticalAlign=top;spacing=-5;" parent="1" vertex="1">
+        <mxCell id="bvYonb6-Ao3rK0f30JlV-13" value="&lt;u&gt;FAB&lt;/u&gt;" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};verticalAlign=top;spacing=-5;" parent="1" vertex="1">
           <mxGeometry x="560" y="440" width="120" height="80" as="geometry" />
         </mxCell>
-        <mxCell id="bvYonb6-Ao3rK0f30JlV-14" value="FAB" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};verticalAlign=top;spacing=-5;" parent="1" vertex="1">
+        <mxCell id="bvYonb6-Ao3rK0f30JlV-14" value="&lt;u&gt;FAB&lt;/u&gt;" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};verticalAlign=top;spacing=-5;" parent="1" vertex="1">
           <mxGeometry x="230" y="440" width="120" height="80" as="geometry" />
         </mxCell>
         <mxCell id="bvYonb6-Ao3rK0f30JlV-15" value="UNREG1&lt;div&gt;SUP&lt;/div&gt;" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};labelPosition=center;verticalLabelPosition=middle;align=center;verticalAlign=top;fillColor=#f8cecc;strokeColor=#b85450;" parent="1" vertex="1">
@@ -502,7 +502,7 @@
         <mxCell id="bvYonb6-Ao3rK0f30JlV-21" value="RAW&lt;div&gt;POWER&lt;/div&gt;" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};labelPosition=center;verticalLabelPosition=middle;align=center;verticalAlign=top;fillColor=#f8cecc;strokeColor=#b85450;" parent="1" vertex="1">
           <mxGeometry x="560" y="680" width="120" height="40" as="geometry" />
         </mxCell>
-        <mxCell id="bvYonb6-Ao3rK0f30JlV-22" value="MSN BOSS" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};verticalAlign=top;spacing=-5;" parent="1" vertex="1">
+        <mxCell id="bvYonb6-Ao3rK0f30JlV-22" value="&lt;u&gt;MSN BOSS&lt;/u&gt;" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};verticalAlign=top;spacing=-5;" parent="1" vertex="1">
           <mxGeometry x="560" y="720" width="120" height="90" as="geometry" />
         </mxCell>
         <mxCell id="bvYonb6-Ao3rK0f30JlV-23" value="UNREG2&lt;div style=&quot;font-size: 10px;&quot;&gt;SUP&lt;/div&gt;" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};labelPosition=center;verticalLabelPosition=middle;align=center;verticalAlign=top;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;" parent="1" vertex="1">
