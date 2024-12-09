@@ -1353,7 +1353,129 @@ void SENDING_TIME_TO_COMPIC()
 ```
 
 
+## 3. MAIN PIC
 
 
+### Code Breakdown
+#### 1. Header Files and Configuration
+``` c
+#include <18F67J94.h>
+#FUSES NOWDT,NOBROWNOUT,SOSC_DIG
+#use delay(crystal = 16MHz, clock = 16MHz)
+#include <PIC18F67J94_REGISTERS.h>
+#include <stdio.h>
+#include <18F67J94.h>: Includes the device-specific header file.
+``` 
+FUSES: Configuration fuses set up the microcontroller's behavior:
+NOWDT: Disables the Watchdog Timer.
+NOBROWNOUT: Disables Brown-out Reset.
+SOSC_DIG: Configures the secondary oscillator for digital mode.
+``` c
+#use delay: Sets the crystal frequency and system clock.
+#include <PIC18F67J94_REGISTERS.h>: Defines registers for specific hardware components.
+``` 
+#### 2. External Files
+``` c
+#include <MainPIC_Settings.c>
+#include <RTC_functions.c>
+#include <Flash_Memory.c>
+#include <RESERVE_fun.c>
+#include <MPIC_RPIC.c>
+#include <MPIC_FAB.c>
+#include <MPIC_MBOSS.c>
+#include <MPIC_CPIC.c>
+#include <Debug.c>
+```
+These files implement modular functionalities, such as:
 
+RTC_functions.c: RTC setup and manipulation.
+Flash_Memory.c: Flash memory operations.
+Debug.c: Debugging utilities.
+#### 3. Interrupt Priority Configuration
+``` c
+#PRIORITY INT_RDA4, INT_RDA2, INT_RDA3, INT_RDA
+```
+Configures interrupt priorities for UART communication on different ports.
+#### 4. setting() Function
+``` c
+Void setting()
+{
+   enable_interrupts(INT_RDA);
+   enable_interrupts(INT_RDA2);
+   enable_interrupts(INT_RDA3);
+   enable_interrupts(INT_RDA4);
+   enable_interrupts(GLOBAL);
+   
+   Output_Low(PIN_A4);
+   SETUP_RTC(RTC_ENABLE | RTC_CLOCK_SOSC, 0);
+   Write_OBC_RTC(23, 07, 28, 00, 00, 01);
+   
+   OUTPUT_HIGH(PIN_C5);
+   OUTPUT_HIGH(PIN_A5);
+   
+   output_HIGH(MBOSS_EN);
+}
+```
+Enables UART interrupts for communication with other PICs.
+Configures the RTC and initializes its values.
+Sets up pins to enable or disable certain components like the On-Board Computer (OBC) and Mission Boss (MBOSS).
+#### 5. main() Function
+The main() function orchestrates all operations.
 
+Initialization
+``` c
+Delay_ms(1000);
+setting();
+fprintf(PC, "MainPIC booting...........\n\r");
+```
+Delays for 1 second, initializes the system, and sends a debug message to the PC.
+System Initialization and Operations
+``` c
+LOAD_ANTENNA_DEPLOYMENT_VALUES();
+LOAD_RESERVATION_COMMANDS_ON_OFF_TIME_AT_BOOT();
+LOAD_30DAY_COUNTER();
+INCREACE_30DAY_COUNTER_ONCE_PER_DAY_AND_CHECK_30DAY_CW_STATUS();
+```
+Loads settings for antenna deployment, reservation commands, and counters for monitoring system status.
+Infinite Loop
+``` c
+while(true)
+{
+   READ_MP_RTC_AND_PRINT();
+   DEPLOY_ANTENNAS_SET_1(31, 5);
+   DEPLOY_ANTENNAS_SET_2(40, 5);
+   COMUNICATION_WITH_RST_PIC_90SEC(90);
+   CHECK_RESERVATION_COMMAND_ON_TIME_AND_OFF_TIME();
+   RESTARTING_MISSIONS_AFTER_SYSTEM_RESET();
+   CHECK_UART_INCOMING_FROM_DEBUG_PORT();
+   CHECK_UART_INCOMING_FROM_COM_PIC();
+}
+```
+RTC Operations: Reads and prints the RTC values.
+Antenna Deployment: Configures antenna deployment based on time and other parameters.
+Communication: Interacts with the Reset PIC every 90 seconds and checks incoming UART commands.
+Command Handling
+Commands from COM PIC
+
+``` c
+if(CPIC_TO_MPIC_ARRAY[0] == 0xB0 && CPIC_TO_MPIC_ARRAY[39] == 0xB1)
+{
+   PRINT_RECIVED_COMMAND_FROM_COM_PIC();
+   Delay_ms(5);
+   GIVE_COMFM_ACCESS_TO_COMPIC_FOR_DATA_DOWNLOAD();
+   // Other operations...
+   CLEAR_DATA_ARRAY(CPIC_TO_MPIC_ARRAY, 32);
+}
+```
+Commands from Debug Port
+``` c
+if(DEBUG_TO_MPIC_ARRAY[0] == 0xD0 && DEBUG_TO_MPIC_ARRAY[12] == 0xD1)
+{
+   PRINT_RECIVED_COMMAND_FROM_DEBUG_PORT();
+   Delay_ms(5);
+   READ_FM_DATA_THROUGH_PC();
+   // Other operations...
+   CLEAR_DATA_ARRAY(DEBUG_TO_MPIC_ARRAY, 20);
+}
+```
+Handles specific command sequences received through UART, performs necessary tasks, and clears the command buffer.
