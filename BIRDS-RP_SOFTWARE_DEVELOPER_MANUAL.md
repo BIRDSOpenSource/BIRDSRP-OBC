@@ -1941,7 +1941,7 @@ void OBC_KILL_SWITCH(int status)
 - Kill Switch Control: The FAB and OBC kill switches allow toggling the connection between solar panels and the system.
 - Debugging: Uses fprintf to print status messages for monitoring operations.
 
-## MAIN PIC - Mission BOSS
+## 5. MPIC - Mission BOSS
 This code manages communication between a Mission Boss (MBOSS) system and an APRS (Automatic Packet Reporting System) setup. It includes functionality for sending commands, receiving responses, toggling system states, and handling APRS board numbers and flags.
 
 - Mission Boss Management: Use this code to interact with the Mission Boss system via UART communication.
@@ -2142,5 +2142,308 @@ void SEND_APRS_COMMAND_TO_MISSIONBOSS_THROUGH_MAIN()
 - Sends an APRS command to Mission Boss.
 - Grants SFM access if the command is a data transfer request.
 
+
+
+## BIRDS-X Mission (Header) 
+#### 1. Pin definition 
+``` c
+#define sel_0 PIN_C6    //CPLD(D)
+#define sel_1 PIN_C7    //CPLD(E)
+#define sel_2 PIN_C2    //CPLD(F)
+//#define sel_3 PIN_C3    //CPLD(G)
+```
+#### 2. Debugging UART
+A software UART is configured on Pin C0 with a baud rate of 19200 for debugging purposes.
+``` c
+#use rs232(baud=19200, parity=N, xmit=pin_C0,  bits=8, stream=DEBUG, ERRORS, force_sw) //Pin_B7 = PGD, Pin_B6 = PGC
+```
+
+#### 3. APRS Communication (UART2):
+``` c
+unsigned int8 APRS_RESPONSE[210];
+
+#define APRS_BFR_SIZE 200
+// UART PC functions___________________________________________________________
+#pin_select TX2 = PIN_G1   //MB1, CPLD(84)
+#pin_select RX2 = PIN_G0   //MB1, CPLD(83)                                                      
+#use rs232(baud=9600, parity=N, UART2, bits=8, stream=APRS, ERRORS)                     
+
+
+unsigned int8  APRS_Buffer[APRS_BFR_SIZE];
+unsigned int16 APRS_Byte_Counter = 0;
+unsigned int8  APRS_Overflow = 0;
+unsigned int16 APRS_Read_Byte_counter = 0;
+unsigned int8  APRS_Temp_byte = 0;
+#INT_RDA2
+Void SERIAL_ISR2()                                                             // MAIN PIC uart interupt loop
+{
+   if( APRS_Byte_Counter < APRS_BFR_SIZE )
+   {
+      APRS_Buffer[APRS_Byte_Counter] = fgetc(APRS);
+      APRS_Byte_Counter++;
+   }
+   
+   else APRS_Overflow = fgetc(APRS);
+}
+
+unsigned int8 APRS_Available()
+{
+   return APRS_Byte_Counter ;
+}
+
+unsigned int8 APRS_Read()
+{
+   if (APRS_Byte_Counter>0)
+   {    
+      APRS_Temp_byte = APRS_Buffer[APRS_Read_Byte_counter];
+      
+      APRS_Byte_Counter--;
+      APRS_Read_Byte_counter++;
+      if(APRS_Byte_Counter == 0) APRS_Read_Byte_counter = 0;
+      return APRS_Temp_byte; 
+   }
+   
+   if (APRS_Byte_Counter == 0)
+   { 
+      APRS_Read_Byte_counter = 0;
+      APRS_Temp_byte = 0x00;
+      return APRS_Temp_byte; 
+   }
+ 
+}
+
+void APRS_flush()
+{
+   while( APRS_Available() ) APRS_Read() ;
+}
+
+
+void GET_DATA_OR_ACK_FROM_APRS()
+{
+   if( APRS_Available() )
+   {
+      delay_ms(300);
+      for(int i=0; i<200; i++)
+      {
+         APRS_RESPONSE[i] = APRS_READ();
+      }
+   }
+}
+```
+Configures UART communication with an Automatic Packet Reporting System (APRS) using:
+- TX2 = PIN_G1
+- RX2 = PIN_G0
+- Baud rate = 9600.
+The APRS buffer and its ISR (#INT_RDA2) manage incoming data:
+- Stores data in a buffer (APRS_Buffer).
+- Detects and handles buffer overflow.
+Helper functions:
+- APRS_Available: Returns the number of bytes available in the buffer.
+- APRS_Read: Reads bytes from the buffer sequentially.
+- APRS_flush: Clears the buffer.
+- GET_DATA_OR_ACK_FROM_APRS: Reads and stores incoming data into the APRS_RESPONSE array after ensuring data availability.
+
+
+
+#### OBC Communication (UART3):
+```c
+char command_data[39];
+
+#define OBC_BFR_SIZE 20
+// UART PC functions___________________________________________________________
+#pin_select TX3 = PIN_E1   //RAB, CPLD(81)
+#pin_select RX3 = PIN_E0   //RAB, CPLD(82)
+#use rs232(baud=9600, parity=N, UART3, bits=8, stream=OBC, ERRORS)                  
+
+
+unsigned int8  OBC_Buffer[OBC_BFR_SIZE];
+unsigned int16 OBC_Byte_Counter = 0;
+unsigned int8  OBC_Overflow = 0;
+unsigned int16 OBC_Read_Byte_counter = 0;
+unsigned int8  OBC_Temp_byte = 0;
+
+int8 Flag_OBC = 0;
+
+#INT_RDA3
+Void SERIAL_ISR3()                                                             // MAIN PIC uart interupt loop
+{
+   if( OBC_Byte_Counter < OBC_BFR_SIZE )
+   {
+      OBC_Buffer[OBC_Byte_Counter] = fgetc(OBC);
+      OBC_Byte_Counter++;
+   }
+   
+   else OBC_Overflow = fgetc(OBC);
+}
+
+unsigned int8 OBC_Available()
+{
+   return OBC_Byte_Counter ;
+}
+
+unsigned int8 OBC_Read()
+{
+   if (OBC_Byte_Counter>0)
+   {    
+      OBC_Temp_byte = OBC_Buffer[OBC_Read_Byte_counter];
+      
+      OBC_Byte_Counter--;
+      OBC_Read_Byte_counter++;
+      if(OBC_Byte_Counter == 0) OBC_Read_Byte_counter = 0;
+      return OBC_Temp_byte; 
+   }
+   
+   if (OBC_Byte_Counter == 0)
+   { 
+      OBC_Read_Byte_counter = 0;
+      OBC_Temp_byte = 0x00;
+      return OBC_Temp_byte; 
+   }
+ 
+}
+
+void OBC_flush()
+{
+   while( OBC_Available() ) OBC_Read() ;
+}
+
+char header ;
+
+void GET_COMMANDS_FROM_OBC()
+{
+   if( OBC_Available() )
+   {
+      header = OBC_READ() ;
+      
+      if( (0xB0 <= header) && (header <= 0xB6) )
+      {    
+         delay_ms(100);
+         
+         command_data[0] = header ;
+         
+         for(int i=1; i<20; i++)
+         {
+            command_data[i] = OBC_READ();
+         }
+         Flag_OBC = 1;
+      }
+   }
+}
+```
+Configures communication with an On-Board Computer (OBC):
+- TX3 = PIN_E1
+- RX3 = PIN_E0
+- Baud rate = 9600.
+Similar to APRS, it uses a buffer and an ISR (#INT_RDA3) for data handling:
+- Stores OBC data in OBC_Buffer.
+- Implements helper functions (OBC_Available, OBC_Read, OBC_flush).
+- GET_COMMANDS_FROM_OBC: Processes specific header-based commands (0xB0 to 0xB6) and stores the command data.
+#### SPI Interface for Shared Flash Memory:
+```c
+#use spi(MASTER, CLK = PIN_A0, DI = PIN_A1, DO = PIN_A2,  BAUD = 1000000, BITS = 8, STREAM = SHARED_FM, MODE = 0)
+// CS pin = PIN_A3
+unsigned int8 address[4];
+unsigned int8 _data;
+
+
+void SHARED_FM_WRITE_ENABLE()
+{
+  Output_low(Pin_A3);
+  spi_xfer(SHARED_FM,0x06);                
+  Output_high(Pin_A3);
+  return;
+}
+
+void SHARED_FM_SECTOR_ERASE(unsigned int32 sector_address,char sector_size, unsigned int16 delay = 1000)
+{
+   
+   address[0]  = (unsigned int8)((sector_address>>24) & 0xFF);   // 0x __ 00 00 00
+   address[1]  = (unsigned int8)((sector_address>>16) & 0xFF);   // 0x 00 __ 00 00
+   address[2]  = (unsigned int8)((sector_address>>8)  & 0xFF);   // 0x 00 00 __ 00
+   address[3]  = (unsigned int8)((sector_address)     & 0xFF);   // 0x 00 00 00 __
+   
+   SHARED_FM_WRITE_ENABLE();
+   Output_low(Pin_A3);             //lower the CS PIN
+
+   ///////////////////////////////////////////////////////////////////
+
+   if( Sector_size == 4  ) spi_xfer(SHARED_FM,0x21);                    // 4KB Sector erase
+   if( Sector_size == 32 ) spi_xfer(SHARED_FM,0x5C);                    // 32KB Sector erase
+   if( Sector_size == 64 ) spi_xfer(SHARED_FM,0xDC);                    // 64KB Sector erase
+   
+   spi_xfer(SHARED_FM,address[0]);   
+   spi_xfer(SHARED_FM,address[1]);    
+   spi_xfer(SHARED_FM,address[2]);    
+   spi_xfer(SHARED_FM,address[3]);
+   //////////////////////////////////////////////////////////////////
+   Output_high(Pin_A3);           //take CS PIN higher back
+
+   delay_ms(delay); 
+   return;
+}
+
+void SHARED_FM_BYTE_WRITE(unsigned int32 byte_address, unsigned int8 data)
+{
+   
+   //Byte extraction
+   address[0]  = (unsigned int8)((byte_address>>24) & 0xFF);   // 0x __ 00 00 00
+   address[1]  = (unsigned int8)((byte_address>>16) & 0xFF);   // 0x 00 __ 00 00
+   address[2]  = (unsigned int8)((byte_address>>8)  & 0xFF);   // 0x 00 00 __ 00
+   address[3]  = (unsigned int8)((byte_address)     & 0xFF);   // 0x 00 00 00 __
+ 
+   SHARED_FM_WRITE_ENABLE();
+   Output_low(Pin_A3);             //lower the CS PIN
+   ///////////////////////////////////////////////////////////////////
+   spi_xfer(SHARED_FM,0x12);         //Byte WRITE COMAND  (0x12)
+   spi_xfer(SHARED_FM,address[0]);    
+   spi_xfer(SHARED_FM,address[1]);    
+   spi_xfer(SHARED_FM,address[2]);    
+   spi_xfer(SHARED_FM,address[3]);
+
+   spi_xfer(SHARED_FM,data); 
+   //////////////////////////////////////////////////////////////////
+   Output_high(Pin_A3);           //take CS PIN higher back 
+   
+   return;
+}
+```
+Configures SPI communication for shared flash memory:
+- SPI pins:
+  - Clock = PIN_A0
+  - Data In = PIN_A1
+  - Data Out = PIN_A2
+  - Chip Select = PIN_A3
+- Baud rate = 1 MHz.
+SPI Operations:
+  - SHARED_FM_WRITE_ENABLE: Enables writing to the flash memory.
+  - SHARED_FM_SECTOR_ERASE: Erases a specified sector (4KB, 32KB, or 64KB).
+  - SHARED_FM_BYTE_WRITE: Writes a byte to a specific address.
+  -  (Commented out) SHARED_FM_BYTE_READ: Reads a byte from a specified address.
+
+#### CPLD Configuration Table
+- Defines the selection pin logic for different CPLD configurations (R1, R2, P1-P5)
+- Uses combinations of sel_0, sel_1, and sel_2 to select specific configurations.
+
+/*
+CPLD connection configuration
+board   sel_0   sel_1   sel_2
+#R1     0       0       1
+#R2     0       1       0
+#P1     0       1       1
+#P2     1       0       0
+#P3     1       0       1
+#P4     1       1       0
+#P5     1       1       1
+*/
+
+#### Key Observations:
+1. Interrupt Handling:
+  - The SERIAL_ISR2 and SERIAL_ISR3 functions ensure efficient data collection from APRS and OBC without blocking execution.
+2. Buffer Management:
+  - Both APRS and OBC implement circular-like buffer handling to store and retrieve data.
+3. Flexibility:
+  - Uses #pin_select to dynamically assign UART pins, making it hardware-agnostic.
+4. SPI Commands:
+  - The SPI functions use standard flash memory commands for sector erasure and byte writing, ensuring compatibility with various memory chips.
 
 
