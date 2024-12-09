@@ -1354,7 +1354,9 @@ void SENDING_TIME_TO_COMPIC()
 
 
 ## 3. MAIN PIC
+This program is designed to manage and control various subsystems of BIRDS-X using the PIC18F67J94 microcontroller. It includes functionalities such as antenna deployment, real-time clock (RTC) management, communication with other PICs (microcontrollers), and handling commands through UART interfaces.
 
+The code is modular and uses external files to implement specific functionalities such as flash memory handling, RTC functions, and debugging.
 
 ### Code Breakdown
 #### 1. Header Files and Configuration
@@ -1478,3 +1480,93 @@ if(DEBUG_TO_MPIC_ARRAY[0] == 0xD0 && DEBUG_TO_MPIC_ARRAY[12] == 0xD1)
 }
 ```
 Handles specific command sequences received through UART, performs necessary tasks, and clears the command buffer.
+
+
+## MAIN PIC - Settings
+
+#### Header Definitions and Constants
+- Pin Configuration:
+  - #define MBOSS_EN PIN_D1
+  - Enables MBOSS communication pin.
+  - #define LED_PIN PIN_G2 Defines LED pin control.
+- Status Flags:
+  - #define Enabled 0xAA
+  - #define Disabled 0xBB
+- Buffer Sizes:
+  - #define PC_BFR_SIZE 50
+  - #define RP_BFR_SIZE 50
+  - #define CP_BFR_SIZE 50
+  - #define FP_BFR_SIZE 50
+#### Global Variables
+- Counters and Arrays for Communication: Arrays used for bidirectional communication with various subsystems (debug, reset PIC, communication PIC, FAB PIC, MBOSS PIC).
+``` c
+char DEBUG_TO_MPIC_ARRAY[55];
+char MPIC_TO_RPIC_ARRAY[10], RPIC_TO_MPIC_ARRAY[55];
+char MPIC_TO_CPIC_ARRAY[32], CPIC_TO_MPIC_ARRAY[55];
+char MPIC_TO_FAB_ARRAY[32], FAB_TO_MPIC_ARRAY[55];
+char MPIC_TO_MBOSS_ARRAY[40], MBOSS_TO_MPIC_ARRAY[40];
+```
+- Antenna Deployment Variables: Flags and counters for antenna deployment tracking.
+``` c
+unsigned int16 ANT_SET_1_DEP_FLAG, ANT_SET_2_DEP_FLAG;
+unsigned int16 ANTSET_1_COUNT, ANTSET_2_COUNT;
+```
+- Housekeeping Data: Communication success/failure counters for Reset PIC and FAB PIC.
+``` c
+unsigned int32 SUCCESFULL_COMUNICATION_WITH_RST_PIC, FAILED_COMUNICATION_WITH_RST_PIC;
+unsigned int32 SUCCESFULL_COMUNICATION_WITH_FAB, FAILED_COMUNICATION_WITH_FAB;
+```
+- Real-Time Clock Variables: Tracking year, month, day, hour, minute, and second for the main PIC's RTC.
+``` c
+char MP_RTC_YEAR, MP_RTC_MONTH, MP_RTC_DAY;
+char MP_RTC_HOUR, MP_RTC_MIN, MP_RTC_SEC;
+```
+- Mission Flags: Used to track the status of payloads and references.
+``` c
+unsigned int8 APRS_REFERENSE_1_FLAG, APRS_REFERENSE_2_FLAG;
+unsigned int8 APRS_PAYLOAD_1_FLAG, APRS_PAYLOAD_2_FLAG, APRS_PAYLOAD_3_FLAG, APRS_PAYLOAD_4_FLAG, APRS_PAYLOAD_5_FLAG;
+unsigned int8 MISSION_STATUS;
+```
+#### Serial Communication Configurations
+- UART Streams and Pins: Configured for various communication ports (PC, Reset PIC, COM PIC, FAB PIC).
+``` c
+#use rs232(baud=115200, parity=N, UART1, bits=8, stream=PC, errors)
+#use rs232(baud=38400, parity=N, UART4, bits=8, stream=RPic, errors)
+#use rs232(baud=38400, parity=N, UART2, bits=8, stream=cpic, errors)
+#use rs232(baud=38400, parity=N, UART3, bits=8, stream=FAB, errors)
+```
+#### Interrupt Service Routines (ISRs)
+- UART Receive Interrupts: Handles data reception for PC, Reset PIC, COM PIC, and FAB PIC communication.
+``` c
+#INT_RDA, #INT_RDA2, #INT_RDA3, #INT_RDA4
+Void SERIAL_ISR1(), SERIAL_ISR2(), SERIAL_ISR3(), SERIAL_ISR4();
+```
+#### Functions
+- Buffer Management: Functions to check available data, read data, and flush buffers for each communication channel.
+``` c
+unsigned int8 PC_Available(), PC_Read(), RPic_Available(), RPic_Read(), CPic_Available(), CPic_Read(), FABPic_Available(), FABPic_Read();
+void PC_flush(), RPic_flush(), CPic_flush(), FABPic_flush();
+```
+- Data and Debug Utilities: Printing and clearing data.
+``` c
+void printline(), printtable(unsigned int8 table[], int table_size, int column_size);
+void CLEAR_DATA_ARRAY(unsigned int8 array[], int array_size);
+```
+- Mission Communication Utilities: Placeholder for core functions related to communication and operations:
+``` c
+void COMUNICATION_WITH_FAB_PIC_AND_WAIT_FOR_RESPONE(int numof_times, int16 time_delay = 200, int16 wait_time = 70, int inc_array_length = 3);
+void GIVE_COMFM_ACCESS_TO_COMPIC_FOR_DATA_DOWNLOAD();
+```
+
+### Code Highlights
+1. Communication Handling:
+The code establishes a structured communication mechanism between the main PIC and subsystems like FAB PIC, Reset PIC, and external PCs, using UART streams and dedicated buffers.
+
+2. Antenna Deployment Logic:
+Includes deployment flags and counters to track and control antenna operations.
+
+3. Mission Status Monitoring:
+Tracks multiple payloads and reference systems, allowing detailed monitoring of mission objectives.
+
+4. Error Handling:
+Includes counters for communication failures and success rates, which can be used for diagnostics.
