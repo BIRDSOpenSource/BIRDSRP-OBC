@@ -1941,3 +1941,206 @@ void OBC_KILL_SWITCH(int status)
 - Kill Switch Control: The FAB and OBC kill switches allow toggling the connection between solar panels and the system.
 - Debugging: Uses fprintf to print status messages for monitoring operations.
 
+## MAIN PIC - Mission BOSS
+This code manages communication between a Mission Boss (MBOSS) system and an APRS (Automatic Packet Reporting System) setup. It includes functionality for sending commands, receiving responses, toggling system states, and handling APRS board numbers and flags.
+
+- Mission Boss Management: Use this code to interact with the Mission Boss system via UART communication.
+- APRS Command Handling: Ensure reliable transfer of commands and data validation.
+
+#### 1. Global Variables
+``` c
+int board_number;
+unsigned int8 MissionBoss_flag = 0;
+```
+- board_number: Stores the board identifier, configurable in Settings.c.
+- MissionBoss_flag: Tracks whether the Mission Boss is active (1) or inactive (0).
+
+#### 2. Checking Incoming Data from Mission Boss
+``` c
+void CHECK_UART_INCOMING_FROM_MBOSS_PIC(unsigned int32 looping = 100000)
+{
+   int MBC = 0;
+   
+   for (unsigned int32 i = 0; i < looping; i++)
+   {
+      if (kbhit(MBOSS) && MissionBoss_flag == 1)
+      {
+         MBOSS_TO_MPIC_ARRAY[MBC] = fgetc(MBOSS);
+         MBC++;
+         if (MBC >= 13) break;
+      }
+   }
+   
+   fprintf(PC, "CHECK_UART_INCOMING_FROM_MBOSS_PIC\r\n");
+   fprintf(PC, "Data from MBOSS:");
+   
+   for (int i = 0; i < 13; i++)
+   {
+      fprintf(PC, "%X ", MBOSS_TO_MPIC_ARRAY[i]);
+   }
+   printline();
+}
+```
+- Purpose: Reads incoming UART data from MBOSS into MBOSS_TO_MPIC_ARRAY.
+- Loops for a specified count (looping) or until 13 bytes are read.
+- Prints received data to the debug interface.
+#### 2. Printing Commands from Mission Boss
+
+``` c
+void PRINT_RECIVED_COMMAND_FROM_MISSION_BOSS()
+{
+   fprintf(PC, "Received command from Mission Boss >> ");
+   for (int i = 0; i < 40; i++)
+   {
+      fprintf(PC, "%X ", MBOSS_TO_MPIC_ARRAY[i]);
+   }
+   printline();
+   printline();
+}
+```
+- Purpose: Outputs all received data from MBOSS in a human-readable format for debugging.
+#### 4. Acknowledging APRS Commands
+``` c
+void ACK_APRS_COMMAND_TO_COM(unsigned int board_number, unsigned int mission_number)
+{
+   CLEAR_DATA_ARRAY(MPIC_TO_CPIC_ARRAY, 32);
+   MPIC_TO_CPIC_ARRAY[0]  = 0xB0;   // Header
+   MPIC_TO_CPIC_ARRAY[1]  = board_number;
+   MPIC_TO_CPIC_ARRAY[2]  = mission_number;
+   MPIC_TO_CPIC_ARRAY[31] = 0xB1;   // Footer
+   
+   for (int i = 0; i < 32; i++)
+   {
+      fputc(MPIC_TO_CPIC_ARRAY[i], CPic);
+   }
+}
+```
+- Purpose: Sends an acknowledgment to the communication PIC (CPIC) with board and mission numbers.
+#### 5. APRS Board Identification
+``` c
+int APRS_BOARD_IDENTIFY(unsigned int a)
+{
+   char c[3];
+   int bn;
+   sprintf(c, "%X", a);
+   bn = c[1] - '0';
+   
+   if (bn <= 7)
+   {
+      printf("Board Number --> %X", bn);
+   }
+   else
+   {
+      printf("Not correct board number");
+   }
+   return bn;
+}
+```
+- Purpose: Decodes the board number from a command and ensures it is valid.
+#### 6. Mission Boss Control
+``` c
+void TURN_ON_MISSIONBOSS()
+{
+   output_high(PIN_D1);
+   MissionBoss_flag = 1;
+}
+
+void TURN_OFF_MISSIONBOSS()
+{
+   output_low(PIN_D1);
+   MissionBoss_flag = 0;
+}
+```
+- TURN_ON_MISSIONBOSS: Activates the Mission Boss system.
+- TURN_OFF_MISSIONBOSS: Deactivates the Mission Boss system.
+#### 7. Granting and Stopping SFM Access
+``` c
+void GIVE_SFM_ACCESS_TO_MISSIONBOSS()
+{
+   fprintf(PC, "GIVE_SFM_ACCESS_TO\\MISSIONBOSS\n\r");
+   output_high(PIN_A5);
+}
+
+void STOP_SFM_ACCESS_TO_MISSIONBOSS()
+{
+   fprintf(PC, "STOP_SFM_ACCESS_TO\\MISSIONBOSS\n\r");
+   output_low(PIN_A5);
+}
+```
+These functions control access to the Subsystem Function Module (SFM) for the Mission Boss.
+#### 8. Resetting APRS Board Flags
+``` c
+void RESET_ALL_APRSBOARD_NUMBER_FLAGS()
+{
+   if (MISSION_STATUS == 0)
+   {
+      APRS_REFERENSE_1_FLAG = 0;
+      APRS_REFERENSE_2_FLAG = 0;
+      APRS_PAYLOAD_1_FLAG = 0;
+      APRS_PAYLOAD_2_FLAG = 0;
+      APRS_PAYLOAD_3_FLAG = 0;
+      APRS_PAYLOAD_4_FLAG = 0;
+      APRS_PAYLOAD_5_FLAG = 0;
+   }
+}
+```
+Resets all APRS board flags when the mission is not active (MISSION_STATUS == 0).
+#### 9. Sending APRS Commands
+``` c
+void SEND_APRS_COMMAND_TO_MISSIONBOSS_THROUGH_MAIN()
+{
+   if (CPIC_TO_MPIC_ARRAY[1] == 0x00 && (CPIC_TO_MPIC_ARRAY[2] & 0xF0) == 0xB0)
+   {
+      // Acknowledge to CPIC
+      CLEAR_DATA_ARRAY(MPIC_TO_CPIC_ARRAY, 32);
+      MPIC_TO_CPIC_ARRAY[0]  = 0xB0;
+      MPIC_TO_CPIC_ARRAY[1]  = 0xB0;
+      MPIC_TO_CPIC_ARRAY[31] = 0xB1;
+      
+      for (int i = 0; i < 32; i++)
+      {
+         fputc(MPIC_TO_CPIC_ARRAY[i], CPic);
+      }
+      
+      fprintf(PC, "Sending APRS command to Mission Boss\n\r");
+      TURN_ON_MISSIONBOSS();
+      delay_ms(1000);
+      
+      CLEAR_DATA_ARRAY(MPIC_TO_MBOSS_ARRAY, 40);
+      CLEAR_DATA_ARRAY(MBOSS_TO_MPIC_ARRAY, 40);
+
+      MPIC_TO_MBOSS_ARRAY[0] = CPIC_TO_MPIC_ARRAY[2];
+      MPIC_TO_MBOSS_ARRAY[1] = CPIC_TO_MPIC_ARRAY[3];
+      MPIC_TO_MBOSS_ARRAY[2] = 0xE0;
+
+      for (int i = 3; i < 10; i++)
+      {
+         MPIC_TO_MBOSS_ARRAY[i] = CPIC_TO_MPIC_ARRAY[i + 1];
+      }
+      MPIC_TO_MBOSS_ARRAY[10] = 0xED;
+      
+      fprintf(PC, "APRS command:");
+      fputc(0xAA, MBOSS); // Header for Mission Boss
+      for (int i = 0; i < 11; i++)
+      {
+         fputc(MPIC_TO_MBOSS_ARRAY[i], MBOSS);
+         fprintf(PC, "%X ", MPIC_TO_MBOSS_ARRAY[i]);
+      }
+
+      if (MPIC_TO_MBOSS_ARRAY[3] == 0x11) // Grant access if data transfer command
+      {
+         GIVE_SFM_ACCESS_TO_MISSIONBOSS();
+         delay_ms(5000);
+         STOP_SFM_ACCESS_TO_MISSIONBOSS();
+      }
+      
+      printline();
+      CHECK_UART_INCOMING_FROM_MBOSS_PIC(500000);
+   }
+}
+```
+- Sends an APRS command to Mission Boss.
+- Grants SFM access if the command is a data transfer request.
+
+
+
