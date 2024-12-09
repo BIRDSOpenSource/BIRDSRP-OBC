@@ -1366,10 +1366,10 @@ void SENDING_TIME_TO_COMPIC()
 #include <stdio.h>
 #include <18F67J94.h>: Includes the device-specific header file.
 ``` 
-FUSES: Configuration fuses set up the microcontroller's behavior:
-NOWDT: Disables the Watchdog Timer.
-NOBROWNOUT: Disables Brown-out Reset.
-SOSC_DIG: Configures the secondary oscillator for digital mode.
+- FUSES: Configuration fuses set up the microcontroller's behavior:
+- NOWDT: Disables the Watchdog Timer.
+- NOBROWNOUT: Disables Brown-out Reset.
+- SOSC_DIG: Configures the secondary oscillator for digital mode.
 ``` c
 #use delay: Sets the crystal frequency and system clock.
 #include <PIC18F67J94_REGISTERS.h>: Defines registers for specific hardware components.
@@ -1387,10 +1387,9 @@ SOSC_DIG: Configures the secondary oscillator for digital mode.
 #include <Debug.c>
 ```
 These files implement modular functionalities, such as:
-
-RTC_functions.c: RTC setup and manipulation.
-Flash_Memory.c: Flash memory operations.
-Debug.c: Debugging utilities.
+- RTC_functions.c: RTC setup and manipulation.
+- Flash_Memory.c: Flash memory operations.
+- Debug.c: Debugging utilities.
 #### 3. Interrupt Priority Configuration
 ``` c
 #PRIORITY INT_RDA4, INT_RDA2, INT_RDA3, INT_RDA
@@ -1416,9 +1415,9 @@ Void setting()
    output_HIGH(MBOSS_EN);
 }
 ```
-Enables UART interrupts for communication with other PICs.
-Configures the RTC and initializes its values.
-Sets up pins to enable or disable certain components like the On-Board Computer (OBC) and Mission Boss (MBOSS).
+- Enables UART interrupts for communication with other PICs.
+- Configures the RTC and initializes its values.
+- Sets up pins to enable or disable certain components like the On-Board Computer (OBC) and Mission Boss (MBOSS).
 #### 5. main() Function
 The main() function orchestrates all operations.
 
@@ -1451,9 +1450,9 @@ while(true)
    CHECK_UART_INCOMING_FROM_COM_PIC();
 }
 ```
-RTC Operations: Reads and prints the RTC values.
-Antenna Deployment: Configures antenna deployment based on time and other parameters.
-Communication: Interacts with the Reset PIC every 90 seconds and checks incoming UART commands.
+- RTC Operations: Reads and prints the RTC values.
+- Antenna Deployment: Configures antenna deployment based on time and other parameters.
+- Communication: Interacts with the Reset PIC every 90 seconds and checks incoming UART commands.
 Command Handling
 Commands from COM PIC
 
