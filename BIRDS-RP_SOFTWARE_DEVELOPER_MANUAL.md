@@ -2449,6 +2449,7 @@ board   sel_0   sel_1   sel_2
 
 
 ## PIC18F67J94 Registers
+The use of #byte and #bit directives maps register addresses and specific bits to named variables. This abstraction makes it easier to interact with hardware registers directly in the code.
 ### General Purpose I/O Registers
 These registers control the configuration and state of the I/O pins of the microcontroller:
 
