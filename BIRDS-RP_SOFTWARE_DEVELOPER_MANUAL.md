@@ -1795,7 +1795,7 @@ Steps:
     - Toggles the hardware pin PIN_A4 to open the switch and prints success.
  - Otherwise, prints failure.
 
-#### 8. Supporting Logic:
+#### Supporting Logic:
 - Data Arrays:
 
   - FAB_TO_MPIC_ARRAY: Buffer for storing received data.
@@ -1811,3 +1811,133 @@ Steps:
 - Hardware Interaction:
 
   - Output_high(PIN_A4) and Output_low(PIN_A4): Toggles a hardware pin for kill switch control.
+
+
+## FAB - Settings 
+
+This code is designed for managing UART communication between a microcontroller and a subsystem (OBC - On-Board Computer). Additionally, it provides functionality to control and monitor kill switches for solar panel connections. The kill switches are toggled via specific pins, enabling or disabling power transfer.
+
+#### 1. Data Arrays for Communication
+``` c
+// Arrays used for communication with OBC
+unsigned int8 MPIC_TO_FAB_ARRAY[12];  // Only 3 bytes are used
+unsigned int8 FAB_TO_MPIC_ARRAY[50];
+```
+These arrays handle data exchange:
+- MPIC_TO_FAB_ARRAY: Stores outgoing data.
+- FAB_TO_MPIC_ARRAY: Stores incoming data from the FAB PIC.
+#### 2. UART Ports and Debug Communication
+``` c
+#use rs232(baud=19200, xmit = PIN_B7, parity=N, bits=8, stream=PC, force_sw, ERRORS)
+```
+- Configures the UART port for communication.
+- Debug communication is established via the PC stream.
+#### 3. UART Buffer and Interrupt
+``` c
+#define MP_BFR_SIZE 10  // UART buffer size
+unsigned int8 MP_Buffer[MP_BFR_SIZE];
+unsigned int16 MP_Byte_Counter = 0;
+unsigned int8 MP_Overflow = 0;
+unsigned int16 MP_Read_Byte_counter = 0;
+unsigned int8 MP_Temp_byte = 0;
+
+#INT_RDA
+Void SERIAL_ISR1()
+{
+   if (MP_Byte_Counter < MP_BFR_SIZE)
+   {
+      MP_Buffer[MP_Byte_Counter] = fgetc(MPIC);
+      MP_Byte_Counter++;
+   }
+   else MP_Overflow = fgetc(MPIC);  // Handle overflow
+}
+```
+- Purpose: Manages UART communication via interrupt service.
+- Key Points:
+  - Incoming data is stored in a circular buffer (MP_Buffer).
+  - If buffer overflows, extra data is discarded.
+- Helper Functions:
+  1. MPic_Available()
+    - Returns the number of bytes available in the buffer.
+  2. MPic_Read()
+    - Reads a byte from the buffer, reducing the byte counter.
+    - Resets counters when the buffer is empty.
+
+#### 4. Utility Functions
+``` c
+void CLEAR_DATA_ARRAY(unsigned int8 array[], int array_size)
+{
+   for (int i = 0; i < array_size; i++) array[i] = 0;
+}
+```
+Clears any array, setting all elements to zero.
+``` c
+void printline()
+{
+   fprintf(PC, "\n\r");
+}
+```
+Prints a blank line for debug readability.
+#### 5. FAB Kill Switch
+``` c
+void FAB_KILL_SWITCH(int status)
+{
+   Output_High(PIN_D4);    // Enable kill switch driver
+   Delay_ms(100);
+   
+   if (status == CLOSE)
+   {
+      Output_High(PIN_D5);    
+      Output_Low(PIN_D6);
+      fprintf(PC, "FAB Kill Switch Closing done\n\r");
+   }
+   
+   if (status == OPEN)
+   {
+      Output_Low(PIN_D5);      
+      Output_High(PIN_D6); 
+      fprintf(PC, "FAB Kill Switch Opening done\n\r");
+   }
+   
+   Delay_ms(100);
+   Output_Low(PIN_D4);  // Disable kill switch driver
+}
+```
+- Purpose: Controls the FAB kill switch, which disconnects or reconnects the solar panels.
+- Operation:
+  - status == CLOSE: Connects solar panels.
+  - status == OPEN: Disconnects solar panels.
+- Pins:
+  - PIN_D4: Enables kill switch driver.
+  - PIN_D5/PIN_D6: Sets the switch state.
+#### 6.  OBC Kill Switch
+``` c
+void OBC_KILL_SWITCH(int status)
+{
+   if (status == CLOSE)
+   {
+      Output_High(PIN_D2);    
+      Output_Low(PIN_D1);
+      fprintf(PC, "OBC Kill Switch Closing done\n\r");
+   }
+   
+   if (status == OPEN)
+   {
+      Output_Low(PIN_D2);     
+      Output_High(PIN_D1);
+      fprintf(PC, "OBC Kill Switch Opening done\n\r");
+   }
+}
+```
+- Purpose: Controls the OBC kill switch, operating similarly to the FAB kill switch.
+- Pins:
+  - PIN_D2/PIN_D1: Sets the switch state.
+- Operation:
+  - status == CLOSE: Connects solar panels.
+  - status == OPEN: Disconnects solar panels.
+
+#### How the Code Works
+- UART Communication: Handles bidirectional communication via MP_Buffer and interrupt-driven logic.
+- Kill Switch Control: The FAB and OBC kill switches allow toggling the connection between solar panels and the system.
+- Debugging: Uses fprintf to print status messages for monitoring operations.
+
