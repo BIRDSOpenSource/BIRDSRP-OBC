@@ -1570,3 +1570,244 @@ Tracks multiple payloads and reference systems, allowing detailed monitoring of 
 
 4. Error Handling:
 Includes counters for communication failures and success rates, which can be used for diagnostics.
+
+
+
+## 4. MPIC- FAB
+#### Function: CHECK_UART_INCOMING_FROM_FAB_PIC()
+This function verifies and processes UART data received from the FAB PIC (Peripheral Interface Controller).
+
+``` c
+void CHECK_UART_INCOMING_FROM_FAB_PIC()
+{
+   if(FABPic_available())
+   {
+      Delay_ms(100);
+      for( int i = 0; i<5; i++)
+      {
+         if( FABPIC_Read() == 0xFA )
+         {
+            FAB_TO_MPIC_ARRAY[0] = 0xFA;
+            break;
+         }
+      }
+      
+      for (int i=1; i<=50; i++)
+      {
+         FAB_TO_MPIC_ARRAY[i] = FABPIC_Read();
+      }
+   }
+}
+```
+Steps:
+1. Checks if there is data available from FABPic_available().
+2. Introduces a 100 ms delay (Delay_ms(100)) to allow data to accumulate in the buffer.
+3. Reads up to 5 bytes from FABPIC_Read() and looks for the start byte 0xFA. If found, it stores it as the first byte in FAB_TO_MPIC_ARRAY.
+4. Reads the next 50 bytes from the FAB PIC into FAB_TO_MPIC_ARRAY.
+
+#### Function: PRINT_RECIVED_COMMAND_FROM_FAB_PIC()
+This function prints the data received from the FAB PIC.
+``` c
+void PRINT_RECIVED_COMMAND_FROM_FAB_PIC()
+{
+   Fprintf(PC,"Received command from FAB PIC >> ");
+   for(int i = 0; i<35; i++)
+   {
+      Fprintf(PC,"%X ",FAB_TO_MPIC_ARRAY[i]);
+   }
+   printline();
+   printline();
+}
+```
+Steps:
+1. Outputs a message indicating the data is being printed: "Received comand from FAB pic >> ".
+2. Iterates through the first 35 bytes of FAB_TO_MPIC_ARRAY and prints each in hexadecimal format.
+3. Adds two blank lines for clarity (printline();).
+
+#### Function: COMUNICATION_WITH_FAB_PIC_AND_WAIT_FOR_RESPONE()
+Handles communication with the FAB PIC, sends a command, and waits for the response.
+``` c
+void COMUNICATION_WITH_FAB_PIC_AND_WAIT_FOR_RESPONE(int numof_times, int16 wait_time = 200, int16 time_delay = 70, int inc_array_length = 3)
+{
+   printline();
+   for(int j=0; j<numof_times; j++)
+   {
+      Fprintf(PC,"Num of communication tries to FAB PIC = %d\n\r", j+1);
+      FABPic_flush();
+      for( int i = 0; i<3; i++)
+      {
+         fputc(MPIC_TO_FAB_ARRAY[i], FAB);
+      }
+      Delay_ms(wait_time);
+      
+      CHECK_UART_INCOMING_FROM_FAB_PIC();
+      PRINT_RECIVED_COMMAND_FROM_FAB_PIC();
+      
+      if( FAB_TO_MPIC_ARRAY[0] == 0xFA && FAB_TO_MPIC_ARRAY[inc_array_length-1] == 0xFB )
+      {
+         Fprintf(PC,"FAB responded correctly\n\r");
+         break;
+      } 
+      else
+      {  
+         Delay_ms(time_delay);
+         Fprintf(PC,"Received wrong response from FAB PIC >> ");
+         for(int i = 0; i<inc_array_length; i++)
+         {
+            Fprintf(PC,"%X ",FAB_TO_MPIC_ARRAY[i]);
+         }
+         printline();  
+      }
+   }
+}
+```
+- Parameters:
+  - numof_times: Number of communication attempts.
+  - wait_time: Delay before checking the response (default: 200 ms).
+  - time_delay: Delay between retry attempts (default: 70 ms).
+  - inc_array_length: Expected length of the response array (default: 3).
+- Steps:
+  1. Attempts communication numof_times times.
+  2. Sends the MPIC_TO_FAB_ARRAY data via the FAB UART.
+  3. Waits for wait_time milliseconds, then calls CHECK_UART_INCOMING_FROM_FAB_PIC() to receive the response.
+  4. Prints the received data using PRINT_RECIVED_COMMAND_FROM_FAB_PIC().
+  5. Checks if the response starts with 0xFA and ends with 0xFB.
+    - If valid, prints success and breaks out of the loop.
+    - Otherwise, retries after a time_delay and prints the incorrect response.
+
+ 
+#### Function: _CLOSE_FAB_KILL_SWITCH()
+Closes the FAB kill switch.
+``` c
+void _CLOSE_FAB_KILL_SWITCH()
+{
+   CLEAR_DATA_ARRAY(FAB_TO_MPIC_ARRAY, 10);
+   MPIC_TO_FAB_ARRAY[0] = 0xFA;
+   MPIC_TO_FAB_ARRAY[1] = 0xF1;
+   MPIC_TO_FAB_ARRAY[2] = 0xFB;
+   COMUNICATION_WITH_FAB_PIC_AND_WAIT_FOR_RESPONE(3, 500, 200);
+   
+   if(FAB_TO_MPIC_ARRAY[0] == 0xFA && FAB_TO_MPIC_ARRAY[1] == 0xF1 && FAB_TO_MPIC_ARRAY[2] == 0xFB)
+   {
+      Fprintf(PC,"FAB kill switch successfully closed\n\r");    
+   }
+   else Fprintf(PC,"FAB kill switch closing not successful\n\r");
+   printline();
+}
+```
+Steps:
+1. Clears FAB_TO_MPIC_ARRAY and prepares MPIC_TO_FAB_ARRAY with the command sequence [0xFA, 0xF1, 0xFB].
+2. Calls COMUNICATION_WITH_FAB_PIC_AND_WAIT_FOR_RESPONE() to communicate the command.
+3. Verifies the response matches [0xFA, 0xF1, 0xFB].
+  - If valid, prints a success message.
+  - Otherwise, prints a failure message.
+
+#### Function: _CLOSE_OBC_KILL_SWITCH()
+Closes the OBC (Onboard Computer) kill switch.
+``` c
+void _CLOSE_OBC_KILL_SWITCH()
+{
+   CLEAR_DATA_ARRAY(FAB_TO_MPIC_ARRAY, 10);
+   MPIC_TO_FAB_ARRAY[0] = 0xFA;
+   MPIC_TO_FAB_ARRAY[1] = 0xF2;
+   MPIC_TO_FAB_ARRAY[2] = 0xFB;
+   COMUNICATION_WITH_FAB_PIC_AND_WAIT_FOR_RESPONE(3, 500, 200);
+   
+   if(FAB_TO_MPIC_ARRAY[0] == 0xFA && FAB_TO_MPIC_ARRAY[1] == 0xF2 && FAB_TO_MPIC_ARRAY[2] == 0xFB)
+   {
+      Output_high(PIN_A4);
+      Delay_ms(1000);
+      Output_low(PIN_A4);
+      Fprintf(PC,"OBC kill switch successfully closed\n\r");
+   }
+   else Fprintf(PC,"OBC kill switch closing not successful\n\r");
+   Output_low(PIN_A4);
+   printline();
+}
+```
+Steps:
+1. Clears FAB_TO_MPIC_ARRAY and prepares MPIC_TO_FAB_ARRAY with the command [0xFA, 0xF2, 0xFB].
+2. Calls COMUNICATION_WITH_FAB_PIC_AND_WAIT_FOR_RESPONE() to send the command.
+3. Verifies the response.
+  - If valid, toggles the hardware pin PIN_A4 to close the switch and prints success.
+  - Otherwise, prints failure.
+
+
+#### Function: _OPEN_FAB_KILL_SWITCH()
+Opens the FAB kill switch.
+``` c
+void _OPEN_FAB_KILL_SWITCH()
+{
+   CLEAR_DATA_ARRAY(FAB_TO_MPIC_ARRAY, 10);
+   MPIC_TO_FAB_ARRAY[0] = 0xFA;
+   MPIC_TO_FAB_ARRAY[1] = 0xF3;
+   MPIC_TO_FAB_ARRAY[2] = 0xFB;
+   COMUNICATION_WITH_FAB_PIC_AND_WAIT_FOR_RESPONE(1, 200, 200);
+   
+   if(FAB_TO_MPIC_ARRAY[0] == 0xFA && FAB_TO_MPIC_ARRAY[1] == 0xF3 && FAB_TO_MPIC_ARRAY[2] == 0xFB)
+   {
+      Fprintf(PC,"FAB kill open command successfully sent to FAB\n\r");
+   }
+   else Fprintf(PC,"Communication with FAB not successful\n\r"); 
+   printline();
+}
+```
+Steps:
+1. Clears FAB_TO_MPIC_ARRAY and prepares MPIC_TO_FAB_ARRAY with the command [0xFA, 0xF3, 0xFB].
+2. Calls COMUNICATION_WITH_FAB_PIC_AND_WAIT_FOR_RESPONE() to send the command.
+3. Verifies the response.
+  - If valid, prints success.
+  - Otherwise, prints failure.
+
+#### Function: _OPEN_OBC_KILL_SWITCH()
+Opens the OBC kill switch.
+``` c
+void _OPEN_OBC_KILL_SWITCH()
+{
+   CLEAR_DATA_ARRAY(FAB_TO_MPIC_ARRAY, 10);
+   MPIC_TO_FAB_ARRAY[0] = 0xFA;
+   MPIC_TO_FAB_ARRAY[1] = 0xF4;
+   MPIC_TO_FAB_ARRAY[2] = 0xFB;
+   COMUNICATION_WITH_FAB_PIC_AND_WAIT_FOR_RESPONE(1, 200, 200);
+   
+   if(FAB_TO_MPIC_ARRAY[0] == 0xFA && FAB_TO_MPIC_ARRAY[2] == 0xFB)
+   {
+      Fprintf(PC,"OBC kill open command successfully sent to FAB\n\r");
+      if(FAB_TO_MPIC_ARRAY[1] == 0xF4)
+      {
+         Output_high(PIN_A4);
+         Delay_ms(1000);
+         Output_low(PIN_A4);
+         Fprintf(PC,"OBC kill is opened\n\r");
+      }
+   }
+   else Fprintf(PC,"Communication with FAB not successful\n\r"); 
+   Output_low(PIN_A4);
+   printline();
+}
+```
+Steps:
+1. Clears FAB_TO_MPIC_ARRAY and prepares MPIC_TO_FAB_ARRAY with the command [0xFA, 0xF4, 0xFB].
+2. Calls COMUNICATION_WITH_FAB_PIC_AND_WAIT_FOR_RESPONE() to send the command.
+3. Verifies the response starts with 0xFA and ends with 0xFB.
+ - If valid:
+    - Checks if the second byte is 0xF4.
+    - Toggles the hardware pin PIN_A4 to open the switch and prints success.
+ - Otherwise, prints failure.
+
+#### 8. Supporting Logic:
+- Data Arrays:
+
+  - FAB_TO_MPIC_ARRAY: Buffer for storing received data.
+  - MPIC_TO_FAB_ARRAY: Command data to be sent.
+- Serial Communication:
+
+  - FABPic_available(): Checks if data is available on the FAB PIC UART.
+  - FABPIC_Read(): Reads a byte from the FAB PIC.
+  - Fprintf(PC, ...): Outputs data to the PC console.
+- Delays:
+
+  - Delay_ms(): Introduces a delay in milliseconds for synchronization.
+- Hardware Interaction:
+
+  - Output_high(PIN_A4) and Output_low(PIN_A4): Toggles a hardware pin for kill switch control.
