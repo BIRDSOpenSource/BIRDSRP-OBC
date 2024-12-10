@@ -1838,8 +1838,8 @@ This program is designed to manage and control various subsystems of BIRDS-X usi
 
 The code is modular and uses external files to implement specific functionalities such as flash memory handling, RTC functions, and debugging.
 
-### Code Breakdown
-#### 1. Header Files and Configuration
+### MainPICmain.c
+#### Header Files and Configuration
 ``` c
 #include <18F67J94.h>
 #FUSES NOWDT,NOBROWNOUT,SOSC_DIG
@@ -1856,7 +1856,7 @@ The code is modular and uses external files to implement specific functionalitie
 #use delay: Sets the crystal frequency and system clock.
 #include <PIC18F67J94_REGISTERS.h>: Defines registers for specific hardware components.
 ``` 
-#### 2. External Files
+#### External Files
 ``` c
 #include <MainPIC_Settings.c>
 #include <RTC_functions.c>
@@ -1872,12 +1872,14 @@ These files implement modular functionalities, such as:
 - RTC_functions.c: RTC setup and manipulation.
 - Flash_Memory.c: Flash memory operations.
 - Debug.c: Debugging utilities.
-#### 3. Interrupt Priority Configuration
+#### Interrupt Priority Configuration
 ``` c
 #PRIORITY INT_RDA4, INT_RDA2, INT_RDA3, INT_RDA
 ```
 Configures interrupt priorities for UART communication on different ports.
-#### 4. setting() Function
+
+#### setting()
+
 ``` c
 Void setting()
 {
@@ -1900,7 +1902,8 @@ Void setting()
 - Enables UART interrupts for communication with other PICs.
 - Configures the RTC and initializes its values.
 - Sets up pins to enable or disable certain components like the On-Board Computer (OBC) and Mission Boss (MBOSS).
-#### 5. main() Function
+
+#### main()
 The main() function orchestrates all operations.
 
 Initialization
@@ -1948,7 +1951,9 @@ if(CPIC_TO_MPIC_ARRAY[0] == 0xB0 && CPIC_TO_MPIC_ARRAY[39] == 0xB1)
    CLEAR_DATA_ARRAY(CPIC_TO_MPIC_ARRAY, 32);
 }
 ```
+
 Commands from Debug Port
+
 ``` c
 if(DEBUG_TO_MPIC_ARRAY[0] == 0xD0 && DEBUG_TO_MPIC_ARRAY[12] == 0xD1)
 {
@@ -1962,7 +1967,7 @@ if(DEBUG_TO_MPIC_ARRAY[0] == 0xD0 && DEBUG_TO_MPIC_ARRAY[12] == 0xD1)
 Handles specific command sequences received through UART, performs necessary tasks, and clears the command buffer.
 
 
-## MAIN PIC - Settings
+### MainPIC_Settings.c
 
 #### Header Definitions and Constants
 - Pin Configuration:
@@ -1977,8 +1982,10 @@ Handles specific command sequences received through UART, performs necessary tas
   - #define RP_BFR_SIZE 50
   - #define CP_BFR_SIZE 50
   - #define FP_BFR_SIZE 50
+
 #### Global Variables
 - Counters and Arrays for Communication: Arrays used for bidirectional communication with various subsystems (debug, reset PIC, communication PIC, FAB PIC, MBOSS PIC).
+
 ``` c
 char DEBUG_TO_MPIC_ARRAY[55];
 char MPIC_TO_RPIC_ARRAY[10], RPIC_TO_MPIC_ARRAY[55];
@@ -1987,21 +1994,25 @@ char MPIC_TO_FAB_ARRAY[32], FAB_TO_MPIC_ARRAY[55];
 char MPIC_TO_MBOSS_ARRAY[40], MBOSS_TO_MPIC_ARRAY[40];
 ```
 - Antenna Deployment Variables: Flags and counters for antenna deployment tracking.
+
 ``` c
 unsigned int16 ANT_SET_1_DEP_FLAG, ANT_SET_2_DEP_FLAG;
 unsigned int16 ANTSET_1_COUNT, ANTSET_2_COUNT;
 ```
 - Housekeeping Data: Communication success/failure counters for Reset PIC and FAB PIC.
+
 ``` c
 unsigned int32 SUCCESFULL_COMUNICATION_WITH_RST_PIC, FAILED_COMUNICATION_WITH_RST_PIC;
 unsigned int32 SUCCESFULL_COMUNICATION_WITH_FAB, FAILED_COMUNICATION_WITH_FAB;
 ```
 - Real-Time Clock Variables: Tracking year, month, day, hour, minute, and second for the main PIC's RTC.
+
 ``` c
 char MP_RTC_YEAR, MP_RTC_MONTH, MP_RTC_DAY;
 char MP_RTC_HOUR, MP_RTC_MIN, MP_RTC_SEC;
 ```
 - Mission Flags: Used to track the status of payloads and references.
+
 ``` c
 unsigned int8 APRS_REFERENSE_1_FLAG, APRS_REFERENSE_2_FLAG;
 unsigned int8 APRS_PAYLOAD_1_FLAG, APRS_PAYLOAD_2_FLAG, APRS_PAYLOAD_3_FLAG, APRS_PAYLOAD_4_FLAG, APRS_PAYLOAD_5_FLAG;
@@ -2009,6 +2020,7 @@ unsigned int8 MISSION_STATUS;
 ```
 #### Serial Communication Configurations
 - UART Streams and Pins: Configured for various communication ports (PC, Reset PIC, COM PIC, FAB PIC).
+
 ``` c
 #use rs232(baud=115200, parity=N, UART1, bits=8, stream=PC, errors)
 #use rs232(baud=38400, parity=N, UART4, bits=8, stream=RPic, errors)
@@ -2017,22 +2029,26 @@ unsigned int8 MISSION_STATUS;
 ```
 #### Interrupt Service Routines (ISRs)
 - UART Receive Interrupts: Handles data reception for PC, Reset PIC, COM PIC, and FAB PIC communication.
+
 ``` c
 #INT_RDA, #INT_RDA2, #INT_RDA3, #INT_RDA4
 Void SERIAL_ISR1(), SERIAL_ISR2(), SERIAL_ISR3(), SERIAL_ISR4();
 ```
 #### Functions
 - Buffer Management: Functions to check available data, read data, and flush buffers for each communication channel.
+
 ``` c
 unsigned int8 PC_Available(), PC_Read(), RPic_Available(), RPic_Read(), CPic_Available(), CPic_Read(), FABPic_Available(), FABPic_Read();
 void PC_flush(), RPic_flush(), CPic_flush(), FABPic_flush();
 ```
 - Data and Debug Utilities: Printing and clearing data.
+
 ``` c
 void printline(), printtable(unsigned int8 table[], int table_size, int column_size);
 void CLEAR_DATA_ARRAY(unsigned int8 array[], int array_size);
 ```
 - Mission Communication Utilities: Placeholder for core functions related to communication and operations:
+
 ``` c
 void COMUNICATION_WITH_FAB_PIC_AND_WAIT_FOR_RESPONE(int numof_times, int16 time_delay = 200, int16 wait_time = 70, int inc_array_length = 3);
 void GIVE_COMFM_ACCESS_TO_COMPIC_FOR_DATA_DOWNLOAD();
@@ -2052,9 +2068,9 @@ Tracks multiple payloads and reference systems, allowing detailed monitoring of 
 Includes counters for communication failures and success rates, which can be used for diagnostics.
 
 
+### MPIC_FAB.c
 
-## 4. MPIC- FAB
-#### Function: CHECK_UART_INCOMING_FROM_FAB_PIC()
+#### CHECK_UART_INCOMING_FROM_FAB_PIC()
 This function verifies and processes UART data received from the FAB PIC (Peripheral Interface Controller).
 
 ``` c
@@ -2085,8 +2101,9 @@ Steps:
 3. Reads up to 5 bytes from FABPIC_Read() and looks for the start byte 0xFA. If found, it stores it as the first byte in FAB_TO_MPIC_ARRAY.
 4. Reads the next 50 bytes from the FAB PIC into FAB_TO_MPIC_ARRAY.
 
-#### Function: PRINT_RECIVED_COMMAND_FROM_FAB_PIC()
+#### PRINT_RECIVED_COMMAND_FROM_FAB_PIC()
 This function prints the data received from the FAB PIC.
+
 ``` c
 void PRINT_RECIVED_COMMAND_FROM_FAB_PIC()
 {
@@ -2104,8 +2121,9 @@ Steps:
 2. Iterates through the first 35 bytes of FAB_TO_MPIC_ARRAY and prints each in hexadecimal format.
 3. Adds two blank lines for clarity (printline();).
 
-#### Function: COMUNICATION_WITH_FAB_PIC_AND_WAIT_FOR_RESPONE()
+#### COMUNICATION_WITH_FAB_PIC_AND_WAIT_FOR_RESPONE()
 Handles communication with the FAB PIC, sends a command, and waits for the response.
+
 ``` c
 void COMUNICATION_WITH_FAB_PIC_AND_WAIT_FOR_RESPONE(int numof_times, int16 wait_time = 200, int16 time_delay = 70, int inc_array_length = 3)
 {
@@ -2156,8 +2174,9 @@ void COMUNICATION_WITH_FAB_PIC_AND_WAIT_FOR_RESPONE(int numof_times, int16 wait_
     - Otherwise, retries after a time_delay and prints the incorrect response.
 
  
-#### Function: _CLOSE_FAB_KILL_SWITCH()
+#### _CLOSE_FAB_KILL_SWITCH()
 Closes the FAB kill switch.
+
 ``` c
 void _CLOSE_FAB_KILL_SWITCH()
 {
@@ -2182,8 +2201,9 @@ Steps:
   - If valid, prints a success message.
   - Otherwise, prints a failure message.
 
-#### Function: _CLOSE_OBC_KILL_SWITCH()
+#### _CLOSE_OBC_KILL_SWITCH()
 Closes the OBC (Onboard Computer) kill switch.
+
 ``` c
 void _CLOSE_OBC_KILL_SWITCH()
 {
@@ -2213,8 +2233,9 @@ Steps:
   - Otherwise, prints failure.
 
 
-#### Function: _OPEN_FAB_KILL_SWITCH()
+#### _OPEN_FAB_KILL_SWITCH()
 Opens the FAB kill switch.
+
 ``` c
 void _OPEN_FAB_KILL_SWITCH()
 {
@@ -2239,7 +2260,8 @@ Steps:
   - If valid, prints success.
   - Otherwise, prints failure.
 
-#### Function: _OPEN_OBC_KILL_SWITCH()
+#### _OPEN_OBC_KILL_SWITCH()
+
 Opens the OBC kill switch.
 ``` c
 void _OPEN_OBC_KILL_SWITCH()
@@ -2293,11 +2315,11 @@ Steps:
   - Output_high(PIN_A4) and Output_low(PIN_A4): Toggles a hardware pin for kill switch control.
 
 
-## FAB - Settings 
+### FAB_Settings.c
 
 This code is designed for managing UART communication between a microcontroller and a subsystem (OBC - On-Board Computer). Additionally, it provides functionality to control and monitor kill switches for solar panel connections. The kill switches are toggled via specific pins, enabling or disabling power transfer.
 
-#### 1. Data Arrays for Communication
+#### Data Arrays for Communication
 ``` c
 // Arrays used for communication with OBC
 unsigned int8 MPIC_TO_FAB_ARRAY[12];  // Only 3 bytes are used
@@ -2306,13 +2328,16 @@ unsigned int8 FAB_TO_MPIC_ARRAY[50];
 These arrays handle data exchange:
 - MPIC_TO_FAB_ARRAY: Stores outgoing data.
 - FAB_TO_MPIC_ARRAY: Stores incoming data from the FAB PIC.
-#### 2. UART Ports and Debug Communication
+
+#### UART Ports and Debug Communication
 ``` c
 #use rs232(baud=19200, xmit = PIN_B7, parity=N, bits=8, stream=PC, force_sw, ERRORS)
 ```
 - Configures the UART port for communication.
 - Debug communication is established via the PC stream.
-#### 3. UART Buffer and Interrupt
+
+#### UART Buffer and Interrupt
+
 ``` c
 #define MP_BFR_SIZE 10  // UART buffer size
 unsigned int8 MP_Buffer[MP_BFR_SIZE];
@@ -2320,7 +2345,11 @@ unsigned int16 MP_Byte_Counter = 0;
 unsigned int8 MP_Overflow = 0;
 unsigned int16 MP_Read_Byte_counter = 0;
 unsigned int8 MP_Temp_byte = 0;
+```
 
+#### SERIAL_ISR1()
+
+```c
 #INT_RDA
 Void SERIAL_ISR1()
 {
@@ -2343,7 +2372,9 @@ Void SERIAL_ISR1()
     - Reads a byte from the buffer, reducing the byte counter.
     - Resets counters when the buffer is empty.
 
-#### 4. Utility Functions
+#### Utility Functions
+
+#### CLEAR_DATA_ARRAY()
 ``` c
 void CLEAR_DATA_ARRAY(unsigned int8 array[], int array_size)
 {
@@ -2351,14 +2382,17 @@ void CLEAR_DATA_ARRAY(unsigned int8 array[], int array_size)
 }
 ```
 Clears any array, setting all elements to zero.
+
 ``` c
 void printline()
 {
    fprintf(PC, "\n\r");
 }
 ```
+
 Prints a blank line for debug readability.
-#### 5. FAB Kill Switch
+
+#### FAB_KILL_SWITCH()
 ``` c
 void FAB_KILL_SWITCH(int status)
 {
@@ -2390,7 +2424,8 @@ void FAB_KILL_SWITCH(int status)
 - Pins:
   - PIN_D4: Enables kill switch driver.
   - PIN_D5/PIN_D6: Sets the switch state.
-#### 6.  OBC Kill Switch
+
+#### OBC_KILL_SWITCH()
 ``` c
 void OBC_KILL_SWITCH(int status)
 {
@@ -2421,13 +2456,13 @@ void OBC_KILL_SWITCH(int status)
 - Kill Switch Control: The FAB and OBC kill switches allow toggling the connection between solar panels and the system.
 - Debugging: Uses fprintf to print status messages for monitoring operations.
 
-## 5. MPIC - Mission BOSS
+### MPIC_MBOSS.c
 This code manages communication between a Mission Boss (MBOSS) system and an APRS (Automatic Packet Reporting System) setup. It includes functionality for sending commands, receiving responses, toggling system states, and handling APRS board numbers and flags.
 
 - Mission Boss Management: Use this code to interact with the Mission Boss system via UART communication.
 - APRS Command Handling: Ensure reliable transfer of commands and data validation.
 
-#### 1. Global Variables
+#### Global Variables
 ``` c
 int board_number;
 unsigned int8 MissionBoss_flag = 0;
@@ -2435,7 +2470,7 @@ unsigned int8 MissionBoss_flag = 0;
 - board_number: Stores the board identifier, configurable in Settings.c.
 - MissionBoss_flag: Tracks whether the Mission Boss is active (1) or inactive (0).
 
-#### 2. Checking Incoming Data from Mission Boss
+#### CHECK_UART_INCOMING_FROM_MBOSS_PIC()
 ``` c
 void CHECK_UART_INCOMING_FROM_MBOSS_PIC(unsigned int32 looping = 100000)
 {
@@ -2464,7 +2499,8 @@ void CHECK_UART_INCOMING_FROM_MBOSS_PIC(unsigned int32 looping = 100000)
 - Purpose: Reads incoming UART data from MBOSS into MBOSS_TO_MPIC_ARRAY.
 - Loops for a specified count (looping) or until 13 bytes are read.
 - Prints received data to the debug interface.
-#### 2. Printing Commands from Mission Boss
+
+#### PRINT_RECIVED_COMMAND_FROM_MISSION_BOSS()
 
 ``` c
 void PRINT_RECIVED_COMMAND_FROM_MISSION_BOSS()
@@ -2479,7 +2515,8 @@ void PRINT_RECIVED_COMMAND_FROM_MISSION_BOSS()
 }
 ```
 - Purpose: Outputs all received data from MBOSS in a human-readable format for debugging.
-#### 4. Acknowledging APRS Commands
+
+#### ACK_APRS_COMMAND_TO_COM()
 ``` c
 void ACK_APRS_COMMAND_TO_COM(unsigned int board_number, unsigned int mission_number)
 {
@@ -2496,7 +2533,8 @@ void ACK_APRS_COMMAND_TO_COM(unsigned int board_number, unsigned int mission_num
 }
 ```
 - Purpose: Sends an acknowledgment to the communication PIC (CPIC) with board and mission numbers.
-#### 5. APRS Board Identification
+
+#### APRS_BOARD_IDENTIFY()
 ``` c
 int APRS_BOARD_IDENTIFY(unsigned int a)
 {
@@ -2517,30 +2555,39 @@ int APRS_BOARD_IDENTIFY(unsigned int a)
 }
 ```
 - Purpose: Decodes the board number from a command and ensures it is valid.
-#### 6. Mission Boss Control
+
+#### TURN_ON_MISSIONBOSS()
 ``` c
 void TURN_ON_MISSIONBOSS()
 {
    output_high(PIN_D1);
    MissionBoss_flag = 1;
 }
+```
+- TURN_ON_MISSIONBOSS: Activates the Mission Boss system.
 
+#### TURN_OFF_MISSIONBOSS()
+
+```c
 void TURN_OFF_MISSIONBOSS()
 {
    output_low(PIN_D1);
    MissionBoss_flag = 0;
 }
 ```
-- TURN_ON_MISSIONBOSS: Activates the Mission Boss system.
 - TURN_OFF_MISSIONBOSS: Deactivates the Mission Boss system.
-#### 7. Granting and Stopping SFM Access
+
+#### GIVE_SFM_ACCESS_TO_MISSIONBOSS()
 ``` c
 void GIVE_SFM_ACCESS_TO_MISSIONBOSS()
 {
    fprintf(PC, "GIVE_SFM_ACCESS_TO\\MISSIONBOSS\n\r");
    output_high(PIN_A5);
 }
+```
 
+#### STOP_SFM_ACCESS_TO_MISSIONBOSS()
+```c
 void STOP_SFM_ACCESS_TO_MISSIONBOSS()
 {
    fprintf(PC, "STOP_SFM_ACCESS_TO\\MISSIONBOSS\n\r");
@@ -2548,7 +2595,8 @@ void STOP_SFM_ACCESS_TO_MISSIONBOSS()
 }
 ```
 These functions control access to the Subsystem Function Module (SFM) for the Mission Boss.
-#### 8. Resetting APRS Board Flags
+
+#### RESET_ALL_APRSBOARD_NUMBER_FLAGS()
 ``` c
 void RESET_ALL_APRSBOARD_NUMBER_FLAGS()
 {
@@ -2565,7 +2613,8 @@ void RESET_ALL_APRSBOARD_NUMBER_FLAGS()
 }
 ```
 Resets all APRS board flags when the mission is not active (MISSION_STATUS == 0).
-#### 9. Sending APRS Commands
+
+#### SEND_APRS_COMMAND_TO_MISSIONBOSS_THROUGH_MAIN()
 ``` c
 void SEND_APRS_COMMAND_TO_MISSIONBOSS_THROUGH_MAIN()
 {
@@ -2624,21 +2673,22 @@ void SEND_APRS_COMMAND_TO_MISSIONBOSS_THROUGH_MAIN()
 
 
 
-## BIRDS-X Mission (Header) 
-#### 1. Pin definition 
+### BIRDS-X_Mission_Boss.h
+
+#### Pin definition 
 ``` c
 #define sel_0 PIN_C6    //CPLD(D)
 #define sel_1 PIN_C7    //CPLD(E)
 #define sel_2 PIN_C2    //CPLD(F)
 //#define sel_3 PIN_C3    //CPLD(G)
 ```
-#### 2. Debugging UART
+#### Debugging UART
 A software UART is configured on Pin C0 with a baud rate of 19200 for debugging purposes.
 ``` c
 #use rs232(baud=19200, parity=N, xmit=pin_C0,  bits=8, stream=DEBUG, ERRORS, force_sw) //Pin_B7 = PGD, Pin_B6 = PGC
 ```
 
-#### 3. APRS Communication (UART2):
+#### APRS Communication (UART2):
 ``` c
 unsigned int8 APRS_RESPONSE[210];
 
@@ -2655,6 +2705,10 @@ unsigned int8  APRS_Overflow = 0;
 unsigned int16 APRS_Read_Byte_counter = 0;
 unsigned int8  APRS_Temp_byte = 0;
 #INT_RDA2
+```
+
+#### SERIAL_ISR2() 
+```c
 Void SERIAL_ISR2()                                                             // MAIN PIC uart interupt loop
 {
    if( APRS_Byte_Counter < APRS_BFR_SIZE )
@@ -2665,12 +2719,18 @@ Void SERIAL_ISR2()                                                             /
    
    else APRS_Overflow = fgetc(APRS);
 }
+```
 
+#### APRS_Available()
+```c
 unsigned int8 APRS_Available()
 {
    return APRS_Byte_Counter ;
 }
+```
 
+#### APRS_Read()
+```c
 unsigned int8 APRS_Read()
 {
    if (APRS_Byte_Counter>0)
@@ -2691,13 +2751,19 @@ unsigned int8 APRS_Read()
    }
  
 }
+```
 
+#### APRS_flush()
+```c
 void APRS_flush()
 {
    while( APRS_Available() ) APRS_Read() ;
 }
+```
 
+#### GET_DATA_OR_ACK_FROM_APRS()
 
+```c
 void GET_DATA_OR_ACK_FROM_APRS()
 {
    if( APRS_Available() )
@@ -2745,6 +2811,10 @@ unsigned int8  OBC_Temp_byte = 0;
 int8 Flag_OBC = 0;
 
 #INT_RDA3
+```
+
+#### SERIAL_ISR3()   
+```c
 Void SERIAL_ISR3()                                                             // MAIN PIC uart interupt loop
 {
    if( OBC_Byte_Counter < OBC_BFR_SIZE )
@@ -2755,12 +2825,18 @@ Void SERIAL_ISR3()                                                             /
    
    else OBC_Overflow = fgetc(OBC);
 }
+```
 
+#### OBC_Available()
+```c
 unsigned int8 OBC_Available()
 {
    return OBC_Byte_Counter ;
 }
+```
 
+#### OBC_Read()
+```c
 unsigned int8 OBC_Read()
 {
    if (OBC_Byte_Counter>0)
@@ -2781,14 +2857,22 @@ unsigned int8 OBC_Read()
    }
  
 }
+```
 
+#### OBC_flush()
+
+```c
 void OBC_flush()
 {
    while( OBC_Available() ) OBC_Read() ;
 }
 
 char header ;
+```
 
+#### GET_COMMANDS_FROM_OBC()
+
+```c
 void GET_COMMANDS_FROM_OBC()
 {
    if( OBC_Available() )
@@ -2818,14 +2902,18 @@ Similar to APRS, it uses a buffer and an ISR (#INT_RDA3) for data handling:
 - Stores OBC data in OBC_Buffer.
 - Implements helper functions (OBC_Available, OBC_Read, OBC_flush).
 - GET_COMMANDS_FROM_OBC: Processes specific header-based commands (0xB0 to 0xB6) and stores the command data.
-#### SPI Interface for Shared Flash Memory:
+
+#### SPI Interface for Shared Flash Memory
+
 ```c
 #use spi(MASTER, CLK = PIN_A0, DI = PIN_A1, DO = PIN_A2,  BAUD = 1000000, BITS = 8, STREAM = SHARED_FM, MODE = 0)
 // CS pin = PIN_A3
 unsigned int8 address[4];
 unsigned int8 _data;
+```
 
-
+#### SHARED_FM_WRITE_ENABLE()
+```c
 void SHARED_FM_WRITE_ENABLE()
 {
   Output_low(Pin_A3);
@@ -2833,7 +2921,10 @@ void SHARED_FM_WRITE_ENABLE()
   Output_high(Pin_A3);
   return;
 }
+```
 
+#### SHARED_FM_SECTOR_ERASE()
+```c
 void SHARED_FM_SECTOR_ERASE(unsigned int32 sector_address,char sector_size, unsigned int16 delay = 1000)
 {
    
@@ -2861,7 +2952,10 @@ void SHARED_FM_SECTOR_ERASE(unsigned int32 sector_address,char sector_size, unsi
    delay_ms(delay); 
    return;
 }
+```
 
+#### SHARED_FM_BYTE_WRITE()
+```c
 void SHARED_FM_BYTE_WRITE(unsigned int32 byte_address, unsigned int8 data)
 {
    
@@ -2917,7 +3011,7 @@ board   sel_0   sel_1   sel_2
 #P5     1       1       1
 */
 ```
-#### Key Observations:
+**Key Observations:**
 1. Interrupt Handling:
   - The SERIAL_ISR2 and SERIAL_ISR3 functions ensure efficient data collection from APRS and OBC without blocking execution.
 2. Buffer Management:
@@ -2928,9 +3022,10 @@ board   sel_0   sel_1   sel_2
   - The SPI functions use standard flash memory commands for sector erasure and byte writing, ensuring compatibility with various memory chips.
 
 
-## PIC18F67J94 Registers
+### PIC18F67J94_registers.h
 The use of #byte and #bit directives maps register addresses and specific bits to named variables. This abstraction makes it easier to interact with hardware registers directly in the code.
-### General Purpose I/O Registers
+
+#### General Purpose I/O Registers
 These registers control the configuration and state of the I/O pins of the microcontroller:
 
 #### TRIS Registers (Data Direction)
@@ -2955,9 +3050,6 @@ These registers control the configuration and state of the I/O pins of the micro
 #bit    TRISA1 = TRISA.1
 #bit    TRISA2 = TRISA.2
 #bit    TRISA5 = TRISA.5
-
-
-
 ```
 - TRIS registers (e.g., TRISA, TRISB, ..., TRISG) control whether the corresponding pins are inputs (1) or outputs (0).
     - TRISA = 0xF92 means the TRIS register for port A is located at address 0xF92.
@@ -2981,7 +3073,6 @@ These registers control the configuration and state of the I/O pins of the micro
 - LAT registers (e.g., LATA, LATB, ..., LATG) hold the output data for output pins. Writing to these registers updates the state of the output pins.
     - LATB = 0xF8A means the latch register for port B is located at address 0xF8A.
 
-
 #### PORT Registers (I/O State)
 
 ```c
@@ -3003,7 +3094,6 @@ These registers control the configuration and state of the I/O pins of the micro
 
 #byte PORTE = 0xF84
 #bit    RE2 = PORTE.2
-
 
 #byte PORTD = 0xF83
 #byte PORTC = 0xF82
@@ -3033,7 +3123,7 @@ These registers control the configuration and state of the I/O pins of the micro
     - PORTC = 0xF82 defines the port register for port C at address 0xF82.
     - #bit RC0 = PORTC.0 accesses the first bit of the PORTC register.
 
-### Real-Time Clock (RTC) Registers 
+#### Real-Time Clock (RTC) Registers 
 ```c 
 #byte RTCCON1 = 0xF5F
 #bit    RTCPTR0 = RTCCON1.0
@@ -3090,8 +3180,8 @@ These registers control the real-time clock module, which tracks time and suppor
     - CHIME: Enables the alarm to repeat (chime).
 - Other RTC-related registers, like RTCVALH, RTCVALL, and ALRMVALH, hold the time and alarm values.
 
-### Time Registers
-#### T1CON (Timer1 Control)
+#### Time Registers
+**T1CON (Timer1 Control)**
 ```c
 #byte T1CON  = 0xFCD
 #bit  T1CON7 = T1CON.7
@@ -3132,5 +3222,5 @@ These registers control and monitor interrupt settings
 - OSCCON (0xFD3): Controls the oscillator configuration for the microcontroller.
 
 
-## Flash_Memory.c
+### Flash_Memory.c
 
