@@ -1801,12 +1801,39 @@ Reset a connected device or trigger a specific action.
 
 ### RTC_fun.c
 
+The code provided handles functions for a basic real-time clock (RTC) and includes utilities for updating and displaying time, as well as monitoring power line status. 
+Below is an analysis of the functions, their purpose, and suggestions for improvement.
+
+
 
 
 
 
 
 ## 3. MAIN PIC
+
+The files found in the MAIN PIC folder are detailed in Table 3 below. 
+
+|  File name pattern   | Scope  |  Content    |
+|----------------------|--------|-------------|
+| BIRDS-X_Mission_Boss.h |    |    |
+| ComPic_Settings.c  |    |    |
+| Debug.c  |    |    |
+| Definitions.c  |    |    |
+| FAB_Settings.c  |    |    |
+| Flash_Memory.c  |    |    |
+| MainPIC_Settings.c  |    |    |
+| MainPICmain.c  |    |    |
+| MEMORY_OPERATION.c  |    |    |
+| MPIC_CPIC.c  |    |    |
+| MPIC_FAB.c  |    |    |
+| MPIC_MBOSS.c  |    |    |
+| MPIC_RPIC.c  |    |    |
+| PIC18F67J94_registers.c  |    |    |
+| RESERVE_fun.c  |    |    |
+| RTC_functions.c  |    |    |
+
+
 This program is designed to manage and control various subsystems of BIRDS-X using the PIC18F67J94 microcontroller. It includes functionalities such as antenna deployment, real-time clock (RTC) management, communication with other PICs (microcontrollers), and handling commands through UART interfaces.
 
 The code is modular and uses external files to implement specific functionalities such as flash memory handling, RTC functions, and debugging.
