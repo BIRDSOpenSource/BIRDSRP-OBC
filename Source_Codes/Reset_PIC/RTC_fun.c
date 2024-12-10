@@ -3,6 +3,9 @@
 // this function set the RTC time______________________________________________
 void Set_RTC( char y, char mo, char d, char h, char mi, char s )
 {
+   // Validate inputs
+   if (mo < 1 || mo > 12 || d < 1 || d > 31 || h < 0 || h > 23 || mi < 0 || mi > 59 || s < 0 || s > 59)
+         return;
    year   = y  ;
    month  = mo ;
    day    = d  ;
@@ -14,70 +17,30 @@ void Set_RTC( char y, char mo, char d, char h, char mi, char s )
 int previous_second ;
 
 // this function will update the time when timer 1 interupt happens every 1 second
-Void RTC_Function()
+void RTC_Function()
 {
-   if (second < 59)                                                            // updating seconds
-   {
-      second++;
-   }
-      
-   else
-   {
-      second = 0;
-      minute++;
-   }
-      
-   if (minute >= 60)                                                           // updating minutes
-   {
-      minute = 0;
-      hour++;
-      LAST_RESET_HOUR ++ ;
-   }
-      
-   if (hour >= 24)                                                             // updating day
-   {
-      hour = 0;
-      day++;
-   }
+   static const int daysInMonth[] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+   bool isLeapYear = (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0));
    
-   if( (day >= 31) && (month == 4 || month == 6 || month == 9 || month == 11) )     // 30 days months
-   {
-      day = 1;
-      month++;
+   second = (second + 1) % 60;                                                   // updating seconds
+   if (second == 0) {
+      minute = (minute + 1) % 60;                                                // updating minutes
+      if (minute == 0) {
+            hour = (hour + 1) % 24;                                              // updating hours
+            if (hour == 0) {
+               day++;                                                            // updating days
+               int maxDays = daysInMonth[month] + (isLeapYear && month == 2);
+               if (day > maxDays) {
+                  day = 1;
+                  month++;                                                       // updating months
+                  if (month > 12) {
+                        month = 1;
+                        year++;                                                  // updating years
+                  }
+               }
+            }
+      }
    }
-   
-   if( (day >= 32) && (month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10) )  // 31 days months
-   {
-      day = 1;
-      month++;
-   }
-   
-   if(year%4 == 0)
-   {
-      if( (day >= 30) && (month == 2) )                                           // february
-      {
-         day = 1;
-         month++;
-      } 
-   }
-   
-   else
-   {
-      if( (day >= 29) && (month == 2) )                                           // february
-      {
-         day = 1;
-         month++;
-      } 
-   }
-   
-   
-   if( (day >= 32) && (month == 12) )                                          //december
-   {
-      day = 1;
-      month = 1;
-      year++;
-   }
-      
 }
 
 void PRINT_POWER_LINE_STATUS()

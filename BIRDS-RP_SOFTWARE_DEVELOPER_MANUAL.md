@@ -1804,10 +1804,136 @@ Reset a connected device or trigger a specific action.
 The code provided handles functions for a basic real-time clock (RTC) and includes utilities for updating and displaying time, as well as monitoring power line status. 
 Below is an analysis of the functions, their purpose, and suggestions for improvement.
 
+#### Set_RTC Function()
+Initializes or updates the RTC with specific date and time values.
+
+```c
+void Set_RTC( char y, char mo, char d, char h, char mi, char s )
+{
+   year   = y  ;
+   month  = mo ;
+   day    = d  ;
+   hour   = h  ;
+   minute = mi ;
+   second = s  ;
+}
+```
+
+#### RTC_Function()
+Updates the RTC values every second, accounting for leap years, month boundaries, and year rollover.
+
+```c
+Void RTC_Function()
+{
+   if (second < 59)                                                            // updating seconds
+   {
+      second++;
+   }
+      
+   else
+   {
+      second = 0;
+      minute++;
+   }
+      
+   if (minute >= 60)                                                           // updating minutes
+   {
+      minute = 0;
+      hour++;
+      LAST_RESET_HOUR ++ ;
+   }
+      
+   if (hour >= 24)                                                             // updating day
+   {
+      hour = 0;
+      day++;
+   }
+   
+   if( (day >= 31) && (month == 4 || month == 6 || month == 9 || month == 11) )     // 30 days months
+   {
+      day = 1;
+      month++;
+   }
+   
+   if( (day >= 32) && (month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10) )  // 31 days months
+   {
+      day = 1;
+      month++;
+   }
+   
+   if(year%4 == 0)
+   {
+      if( (day >= 30) && (month == 2) )                                           // february
+      {
+         day = 1;
+         month++;
+      } 
+   }
+   
+   else
+   {
+      if( (day >= 29) && (month == 2) )                                           // february
+      {
+         day = 1;
+         month++;
+      } 
+   }
+   
+   
+   if( (day >= 32) && (month == 12) )                                          //december
+   {
+      day = 1;
+      month = 1;
+      year++;
+   }
+      
+}
+```
 
 
+#### PRINT_POWER_LINE_STATUS()
+Prints the status of various power lines by extracting bit information from a ```POWER_LINE_STATUS``` variable.
 
+```c
+void PRINT_POWER_LINE_STATUS()
+{
+   fprintf(PC,"M=%d,", (POWER_LINE_STATUS>>7) & 0x01 ); 
+   fprintf(PC,"C=%d,", (POWER_LINE_STATUS>>6) & 0x01 );
+   fprintf(PC,"3=%d,", (POWER_LINE_STATUS>>5) & 0x01 );
+   fprintf(PC,"3=%d,", (POWER_LINE_STATUS>>4) & 0x01 );
+   fprintf(PC,"5=%d,", (POWER_LINE_STATUS>>3) & 0x01 );
+   fprintf(PC,"U=%d,", (POWER_LINE_STATUS>>2) & 0x01 );
+   fprintf(PC,"U=%d" , (POWER_LINE_STATUS>>1) & 0x01 );
+   printline();
+}
+```
 
+#### Print_RTC()
+Prints the current RTC time and resets, with additional context like power line status and counters.
+
+```c
+void Print_RTC()
+{
+   if(previous_second != second )
+   {
+      fprintf(PC,"RP ");
+      fprintf(PC,"%02d", year);
+      fprintf(PC,"/%02d", month);
+      fprintf(PC,"/%02d", day);
+      fprintf(PC," %02d", hour);
+      fprintf(PC,":%02d", minute);
+      fprintf(PC,":%02d ", second);                                         // 20-01-01__05:20:22
+      
+      fprintf(PC,"%d>",NUMOF_MPIC_RST);
+      fprintf(PC,"%03Ld", MPIC_TIME_COUNTER);
+      fprintf(PC," %d>",NUMOF_CPIC_RST);
+      fprintf(PC,"%03Ld ", CPIC_TIME_COUNTER);
+      
+      PRINT_POWER_LINE_STATUS();
+   } 
+   previous_second = second ;
+}
+```
 
 
 ## 3. MAIN PIC
