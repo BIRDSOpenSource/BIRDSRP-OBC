@@ -45,14 +45,11 @@ void RTC_Function()
 
 void PRINT_POWER_LINE_STATUS()
 {
-   fprintf(PC,"M=%d,", (POWER_LINE_STATUS>>7) & 0x01 ); 
-   fprintf(PC,"C=%d,", (POWER_LINE_STATUS>>6) & 0x01 );
-   fprintf(PC,"3=%d,", (POWER_LINE_STATUS>>5) & 0x01 );
-   fprintf(PC,"3=%d,", (POWER_LINE_STATUS>>4) & 0x01 );
-   fprintf(PC,"5=%d,", (POWER_LINE_STATUS>>3) & 0x01 );
-   fprintf(PC,"U=%d,", (POWER_LINE_STATUS>>2) & 0x01 );
-   fprintf(PC,"U=%d" , (POWER_LINE_STATUS>>1) & 0x01 );
-   printline();
+    const char* labels[] = {"M", "C", "3", "3", "5", "U", "U"};
+    for (int i = 7; i >= 1; --i) {
+        fprintf(PC, "%s=%d,", labels[7 - i], (POWER_LINE_STATUS >> i) & 0x01);
+    }
+    printline();
 }
 
 // this function will print the Reset pic time in every 1 second
