@@ -1353,6 +1353,381 @@ void SENDING_TIME_TO_COMPIC()
 ```
 
 
+### RPIC_MPIC.c
+
+
+#### CHECK_UART_INCOMING_FROM_MAIN_PIC
+This function checks if data is available on the UART interface from the main PIC and saves it into an array.
+
+```c
+void CHECK_UART_INCOMING_FROM_MAIN_PIC()
+{
+   if( MPic_Available() )
+   {
+      Delay_ms(100);
+      for( int i = 0; i<10; i++ )
+      {
+         if( MPic_Read() == 0xA0 )
+         {
+            MPIC_TO_RPIC_ARRAY[0] = 0xA0 ;
+            break;
+         }
+      }
+
+      for(int i = 1; i<=30; i++)
+      {
+         MPIC_TO_RPIC_ARRAY[i] = MPic_Read();
+         fprintf(PC, "%X ", MPIC_TO_RPIC_ARRAY[i]);
+      }
+      printline();
+   }
+}
+```
+
+
+if (MPic_Available()): Checks if the UART data is available from the main PIC.
+Delay_ms(100);: Waits for 100 milliseconds to ensure data is fully received.
+First for loop: Reads up to 10 bytes and looks for a specific header value (0xA0).
+if (MPic_Read() == 0xA0): Verifies the header byte; if found, saves it in the array at index 0 and exits the loop.
+Second for loop: Reads the next 30 bytes from the UART and stores them in MPIC_TO_RPIC_ARRAY.
+fprintf(PC, "%X ", MPIC_TO_RPIC_ARRAY[i]);: Logs each received byte to a PC for debugging.
+printline();: Prints a line break (likely for formatting the debug output).
+
+#### PRINT_RECIVED_COMMAND_FROM_MAIN_PIC
+This function prints the command received from the main PIC to the PC.
+
+```c
+
+void PRINT_RECIVED_COMMAND_FROM_MAIN_PIC()
+{
+   printline();
+   Fprintf(PC,"RCVD CMD FROM MAIN PIC >> ");
+   for(int i = 0; i<10; i++)
+   {
+      Fprintf(PC,"%X ",MPIC_TO_RPIC_ARRAY[i]);
+   }
+   printline();
+}
+```
+
+Fprintf(PC, "RCVD CMD FROM MAIN PIC >> ");: Prints a header message to the PC.
+for loop: Iterates over the first 10 bytes of MPIC_TO_RPIC_ARRAY and prints them in hexadecimal format.
+
+#### MONITOR_MAIN_PIC_90SEC_COMUNICATION
+Monitors communication with the main PIC. If there’s no response for 10 minutes, it resets the main PIC.
+
+```c
+void MONITOR_MAIN_PIC_90SEC_COMUNICATION(int time)
+{
+   if( MPIC_TIME_COUNTER >= 600 )
+   {
+      MPIC_TIME_COUNTER = 0;
+      NUMOF_MPIC_RST++;
+      
+      Fprintf(PC,"Hang up reset, MainPIC is turned off\n\r");
+      MainPic_Power(0);   // turn off main pic
+      for( int i = 0; i<time; i++)
+      {
+         Delay_ms(1000);
+         Fprintf(PC,"Waiting to turn on Main Pic %02d Sec\n\r",i);
+      }
+      MainPic_Power(1);   // turn on main pic
+      Fprintf(PC,"MainPIC is restarted\n\r");
+   }
+}
+```
+
+
+if (MPIC_TIME_COUNTER >= 600): Checks if the counter exceeds 10 minutes (assuming each increment is 1 second).
+Reset Procedure:
+MPIC_TIME_COUNTER = 0;: Resets the timer.
+NUMOF_MPIC_RST++;: Increments the reset counter.
+Logs reset activity to the PC: Prints messages indicating the PIC is being restarted.
+MainPic_Power(0);: Turns off the main PIC.
+Delay_ms(1000);: Waits for a specified duration (in seconds).
+MainPic_Power(1);: Turns the main PIC back on.
+
+
+#### RESEPOND_TO_MPIC_90SEC_CMD
+Responds to a 90-second communication command from the main PIC by sending housekeeping data.
+
+
+```c
+void RESEPOND_TO_MPIC_90SEC_CMD()
+{
+   if(MPIC_TO_RPIC_ARRAY[1] == 0x7A)
+   {
+      Fprintf(PC,"90 seconds comunication command\n\r");
+      
+      // we make main pic counter zero because succesful comunication
+      MPIC_TIME_COUNTER = 0;
+      
+      // clear RPIC_TO_MPIC array before putting new data______________________
+      CLEAR_DATA_ARRAY( RPIC_TO_MPIC_ARRAY, 32 );
+      
+      // reading ADC values____________________________________________________
+      _Raw_power_ADC_val       = Measure_Raw_voltage() ;          
+      _3V3_1_current_ADC_val   = Measure_3V3_1_current() ;          
+      _3V3_2_current_ADC_val   = Measure_3V3_2_current() ;
+      _5V0_current_ADC_val     = Measure_5V0_current() ;          
+      _UNREG_1_current_ADC_val = Measure_UNREG_1_current() ;      
+      _UNREG_2_current_ADC_val = Measure_UNREG_2_current() ; 
+      
+      RPIC_TO_MPIC_ARRAY[0]    = 0xA0   ;     // header
+      RPIC_TO_MPIC_ARRAY[1]    = 0x7A   ;
+      RPIC_TO_MPIC_ARRAY[2]    = year   ;
+      RPIC_TO_MPIC_ARRAY[3]    = month  ;
+      RPIC_TO_MPIC_ARRAY[4]    = day    ;
+      RPIC_TO_MPIC_ARRAY[5]    = hour   ;
+      RPIC_TO_MPIC_ARRAY[6]    = minute ;
+      RPIC_TO_MPIC_ARRAY[7]    = second ;     // sending reset pic RTC time to main pic
+      
+      RPIC_TO_MPIC_ARRAY[8]    = (unsigned int8)((_Raw_power_ADC_val>>8)     & 0xFF)     ;   
+      RPIC_TO_MPIC_ARRAY[9]    = (unsigned int8)((_Raw_power_ADC_val)        & 0xFF)     ;   
+      RPIC_TO_MPIC_ARRAY[10]   = (unsigned int8)((_3V3_1_current_ADC_val>>8) & 0xFF)     ;   
+      RPIC_TO_MPIC_ARRAY[11]   = (unsigned int8)((_3V3_1_current_ADC_val)    & 0xFF)     ; 
+      RPIC_TO_MPIC_ARRAY[12]   = (unsigned int8)((_3V3_2_current_ADC_val>>8) & 0xFF)     ;   
+      RPIC_TO_MPIC_ARRAY[13]   = (unsigned int8)((_3V3_2_current_ADC_val)    & 0xFF)     ; 
+      RPIC_TO_MPIC_ARRAY[14]   = (unsigned int8)((_5V0_current_ADC_val>>8)   & 0xFF)     ;   
+      RPIC_TO_MPIC_ARRAY[15]   = (unsigned int8)((_5V0_current_ADC_val)      & 0xFF)     ;
+      RPIC_TO_MPIC_ARRAY[16]   = (unsigned int8)((_UNREG_1_current_ADC_val>>8) & 0xFF)   ;   
+      RPIC_TO_MPIC_ARRAY[17]   = (unsigned int8)((_UNREG_1_current_ADC_val)    & 0xFF)   ;
+      RPIC_TO_MPIC_ARRAY[18]   = (unsigned int8)((_UNREG_2_current_ADC_val>>8) & 0xFF)   ;   
+      RPIC_TO_MPIC_ARRAY[19]   = (unsigned int8)((_UNREG_2_current_ADC_val) )            ;
+      
+      RPIC_TO_MPIC_ARRAY[20]   = NUMOF_MPIC_RST ;    // number of main pic reset
+      RPIC_TO_MPIC_ARRAY[21]   = NUMOF_CPIC_RST ;    // number of com pic reset
+      RPIC_TO_MPIC_ARRAY[22]   = POWER_LINE_STATUS ; // power line status
+      RPIC_TO_MPIC_ARRAY[23]   = (unsigned int8)((LAST_RESET_HOUR>>8) & 0xFF) ;
+      RPIC_TO_MPIC_ARRAY[24]   = (unsigned int8)((LAST_RESET_HOUR)    & 0xFF) ;
+      RPIC_TO_MPIC_ARRAY[25]   = 0xAA   ;  
+      
+      RPIC_TO_MPIC_ARRAY[31]  = 0xA1   ;  // footer  
+      // sending data to main pic______________________________________________
+      for(int i = 0; i<32; i++)
+      {
+         fputc( RPIC_TO_MPIC_ARRAY[i] , MPic);
+      }
+      
+      // just printing sent reply to main pic__________________________________
+      Fprintf(PC,"Reply sent to main pic >> ");
+      for(int i = 0; i<32; i++)
+      {
+         Fprintf(PC,"%X ",RPIC_TO_MPIC_ARRAY[i]);
+      }
+      printline();
+      printline();
+   }
+}
+```
+
+
+if (MPIC_TO_RPIC_ARRAY[1] == 0x7A): Checks if the command byte is 0x7A (90-second communication command).
+Reset Timer: Sets MPIC_TIME_COUNTER to 0 to indicate successful communication.
+Clear Array: Calls CLEAR_DATA_ARRAY to clear RPIC_TO_MPIC_ARRAY.
+Read ADC Values:
+Calls functions like Measure_Raw_voltage() to read sensor data (e.g., voltages, currents).
+Saves these values into the array as two bytes (high and low).
+Time and Metadata:
+Adds RTC values (year, month, etc.) and reset counters to the array.
+Send Data:
+Sends the array to the main PIC using fputc.
+Logs the data to the PC for debugging.
+
+
+#### UPDATE_RTC_BY_MAIN_PIC_CMD
+Updates the RTC (Real-Time Clock) based on a command from the main PIC.
+
+
+```c
+Void UPDATE_RTC_BY_MAIN_PIC_CMD()
+{
+   if(MPIC_TO_RPIC_ARRAY[1] == 0x7B) //MP HF
+   {
+      Fprintf(PC,"Reset pic RTC update command Received\n\r");
+      
+      // Acknowleging to the comand____________________________________________
+      CLEAR_DATA_ARRAY( RPIC_TO_MPIC_ARRAY, 32);
+      RPIC_TO_MPIC_ARRAY[0]  = 0xA0   ;
+      RPIC_TO_MPIC_ARRAY[1]  = 0x7B   ;
+      RPIC_TO_MPIC_ARRAY[31] = 0xA1   ;
+      for(int i = 0; i<32; i++)
+      {
+         fputc(RPIC_TO_MPIC_ARRAY[i],MPic);
+      }
+      //_______________________________________________________________________
+      
+      //Updating the RTC
+      year   = MPIC_TO_RPIC_ARRAY[2]  ;
+      month  = MPIC_TO_RPIC_ARRAY[3]  ;
+      day    = MPIC_TO_RPIC_ARRAY[4]  ;
+      hour   = MPIC_TO_RPIC_ARRAY[5]  ;
+      minute = MPIC_TO_RPIC_ARRAY[6]  ;
+      second = MPIC_TO_RPIC_ARRAY[7]  ;
+     
+
+      //Printing New RTC value
+      Fprintf(PC,"Updated New Time >> ") ;
+      Fprintf(PC,"%u-", year)        ;
+      Fprintf(PC,"%u-", month)       ;
+      Fprintf(PC,"%u__", day)        ;
+      Fprintf(PC,"%u:", hour)        ;
+      Fprintf(PC,"%u:", minute)      ;
+      Fprintf(PC,"%u\n\r", second)   ;
+       
+   }
+}
+```
+
+
+if (MPIC_TO_RPIC_ARRAY[1] == 0x7B): Checks for the RTC update command (0x7B).
+Acknowledgment:
+Clears RPIC_TO_MPIC_ARRAY.
+Sends an acknowledgment array with 0xA0 (header), 0x7B (command), and 0xA1 (footer).
+Update RTC:
+Updates the RTC variables (year, month, etc.) with the data from MPIC_TO_RPIC_ARRAY.
+Log Update:
+Prints the updated RTC time to the PC.
+
+
+#### POWER_LINE_CONTROL_USING_MAIN_PIC_CMD
+Controls power lines based on commands from the main PIC.
+
+
+```c
+Void POWER_LINE_CONTROL_USING_MAIN_PIC_CMD()
+{
+   if(MPIC_TO_RPIC_ARRAY[1] == 0x7C) 
+   {
+      Fprintf(PC,"Power line control command Received from main pic\n\r");
+      // Acknowleging to the comand____________________________________________
+      CLEAR_DATA_ARRAY( RPIC_TO_MPIC_ARRAY, 32);
+      RPIC_TO_MPIC_ARRAY[0]  = 0xA0   ;
+      RPIC_TO_MPIC_ARRAY[1]  = 0x7C   ;
+      RPIC_TO_MPIC_ARRAY[31] = 0xA1   ;
+      for(int i = 0; i<32; i++)
+      {
+         fputc(RPIC_TO_MPIC_ARRAY[i],MPic);
+      }
+      //_______________________________________________________________________
+      
+      if(MPIC_TO_RPIC_ARRAY[2] == 0x01) _3V3Power_Line1(BB_ON_OCP_ON)  ;
+      else _3V3Power_Line1(BB_OFF_OCP_OFF)  ;
+      
+      if(MPIC_TO_RPIC_ARRAY[3] == 0x01) _3V3Power_Line2(BB_ON_OCP_ON)  ;
+      else _3V3Power_Line2(BB_OFF_OCP_OFF)   ;
+      
+      if(MPIC_TO_RPIC_ARRAY[4] == 0x01) _5V0Power_Line(BB_ON_OCP_ON)   ;
+      else _5V0Power_Line(BB_OFF_OCP_OFF)  ;
+      
+      if(MPIC_TO_RPIC_ARRAY[5] == 0x01) Unreg2_Line(ON)         ;
+      else Unreg2_Line(OFF)  ;
+      
+   }
+}
+```
+
+if (MPIC_TO_RPIC_ARRAY[1] == 0x7C): Checks for the power line control command (0x7C).
+Acknowledgment:
+Clears RPIC_TO_MPIC_ARRAY and sends an acknowledgment to the main PIC.
+Control Logic:
+Reads specific bytes (e.g., MPIC_TO_RPIC_ARRAY[2]) to control power lines like _3V3Power_Line1.
+
+
+#### RESET_SATELLITE_CMD
+Resets the satellite when a command is received.
+
+
+```c
+Void RESET_SATELLITE_CMD()
+{
+   if(MPIC_TO_RPIC_ARRAY[1] == 0x7D)
+   {  
+      Fprintf(PC, "Reset satellite command Received from main PIC");
+      SYSTEM_RESET();
+   } 
+   // Acknowleging to the comand____________________________________________
+   CLEAR_DATA_ARRAY( RPIC_TO_MPIC_ARRAY, 32);
+   RPIC_TO_MPIC_ARRAY[0]  = 0xA0   ;
+   RPIC_TO_MPIC_ARRAY[1]  = 0x7C   ;
+   RPIC_TO_MPIC_ARRAY[31] = 0xA1   ;
+   for(int i = 0; i<32; i++)
+   {
+      fputc(RPIC_TO_MPIC_ARRAY[i],MPic);
+   }
+}
+```
+
+
+if (MPIC_TO_RPIC_ARRAY[1] == 0x7D): Checks for the reset command (0x7D).
+SYSTEM_RESET();: Executes a system-wide reset.
+Acknowledgment:
+Sends an acknowledgment array back to the main PIC.
+
+#### TURN_ON_UNREG_2_LINE_FOR_ANT_DEPLOYMENT
+Controls the unregulated power line to deploy an antenna.
+
+```c
+Void TURN_ON_UNREG_2_LINE_FOR_ANT_DEPLOYMENT()
+{
+   if(MPIC_TO_RPIC_ARRAY[1] == 0xDA) 
+   {
+      Fprintf(PC,"Antenna deployment command received\n\r"); 
+      // Acknowleging to the comand____________________________________________
+      
+      CLEAR_DATA_ARRAY( RPIC_TO_MPIC_ARRAY, 32);
+      RPIC_TO_MPIC_ARRAY[0]  = 0xA0   ;
+      RPIC_TO_MPIC_ARRAY[1]  = 0xDA   ;
+      RPIC_TO_MPIC_ARRAY[31] = 0xA1   ;
+      for(int i = 0; i<32; i++)
+      {
+         fputc(RPIC_TO_MPIC_ARRAY[i],MPic);
+      }
+      //_______________________________________________________________________
+      
+      int sec_count = 0 ;
+      Unreg2_Line(1);
+      Fprintf(PC,"UNREG-2 line is turned ON \n\r") ;
+            
+      for(int i = 0; i<120 ;i++)  // waiting 30 seconds, we can change this
+      { 
+         RST_EXT_WDT();
+         Delay_ms(250); 
+         Fprintf(PC,"Counting deployment time %02d Sec \n\r",sec_count++) ;
+      }
+      
+      Unreg2_Line(0);
+      Fprintf(PC,"UNREG-2 line is turned OFF \n\r") ;   
+   } 
+}
+```
+
+
+if (MPIC_TO_RPIC_ARRAY[1] == 0xDA): Checks for the antenna deployment command (0xDA).
+Acknowledgment:
+Clears RPIC_TO_MPIC_ARRAY and sends an acknowledgment.
+Deployment Procedure:
+Turns on the unregulated power line (Unreg2_Line(1)).
+Waits for a specified time (e.g., 30 seconds) while keeping the watchdog timer reset (RST_EXT_WDT()).
+Turns off the unregulated power line after deployment.
+
+
+
+### RPIC_STARTPIC.c
+
+
+
+
+
+
+
+### RTC_fun.c
+
+
+
+
+
+
 ## 3. MAIN PIC
 This program is designed to manage and control various subsystems of BIRDS-X using the PIC18F67J94 microcontroller. It includes functionalities such as antenna deployment, real-time clock (RTC) management, communication with other PICs (microcontrollers), and handling commands through UART interfaces.
 
@@ -2650,3 +3025,7 @@ These registers control and monitor interrupt settings
 ```
 - EECON2 (0xF7E): Used for EEPROM read/write operations.
 - OSCCON (0xFD3): Controls the oscillator configuration for the microcontroller.
+
+
+## Flash_Memory.c
+
