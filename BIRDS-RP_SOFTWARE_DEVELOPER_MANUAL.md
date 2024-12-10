@@ -1355,6 +1355,9 @@ void SENDING_TIME_TO_COMPIC()
 
 ### RPIC_MPIC.c
 
+This code is designed for robust communication and control between the main PIC and the reset PIC (RPIC), with built-in redundancy and debugging features. 
+Each function focuses on a specific task, ensuring modularity and clarity. 
+
 
 #### CHECK_UART_INCOMING_FROM_MAIN_PIC
 This function checks if data is available on the UART interface from the main PIC and saves it into an array.
@@ -1715,10 +1718,85 @@ Turns off the unregulated power line after deployment.
 
 ### RPIC_STARTPIC.c
 
+This first section is commented out but nonetheless we will look at the use of it.
 
 
+#### CHECK_UART_INCOMING_FROM_START_PIC
+This function checks whether there is data available from the "START PIC" over UART and reads the data into an array if available.
 
 
+```c
+//!// here we check START pic UART is available or not if available we save in MPIC_TO_RPIC array
+//!void CHECK_UART_INCOMING_FROM_START_PIC()
+//!{
+//!   if( SPic_available() )
+//!   {
+//!      Delay_ms(30);
+//!      for(int i = 0; i<=5; i++)
+//!      {
+//!         SPIC_TO_RPIC_ARRAY[i] = SPic_Read();
+//!      }
+//!   }
+//!}
+```
+
+
+SPic_available(): This function likely checks if there is data waiting in the UART receive buffer from the "START PIC."
+Delay_ms(30): Introduces a 30-millisecond delay. This is likely used to ensure that the incoming data transmission is complete before reading it.
+Reading loop: The for loop iterates 6 times (indexes 0 to 5) to read bytes from the "START PIC" via the SPic_Read() function and store them in the global array SPIC_TO_RPIC_ARRAY.
+
+
+#### PRINT_RECIVED_COMMAND_FROM_START_PIC
+This function prints the contents of the received command from the "START PIC" to a PC console.
+
+
+```c
+//!// this function will print recived command from START pic_______________________
+//!void PRINT_RECIVED_COMMAND_FROM_START_PIC()
+//!{
+//!   printline();
+//!   Fprintf(PC,"RCVD CMD FROM START PIC >> ");
+//!   for(int i = 0; i<=5; i++)
+//!   {
+//!      Fprintf(PC,"%X ",SPIC_TO_RPIC_ARRAY[i]);
+//!   }
+//!   printline();
+//!}
+```
+
+
+printline(): Assumes it prints a separator line or a newline for formatting purposes.
+Fprintf(PC, ...): Outputs formatted data to the PC console via a predefined communication channel PC.
+Hexadecimal printing: The loop prints each byte from SPIC_TO_RPIC_ARRAY in hexadecimal format (%X).
+
+
+#### INFORM_WORKING_TO_START_PIC
+This function appears to send a sequence of specific bytes (0xAA, 0xBB, 0xCC) to the "START PIC" microcontroller over UART, likely to signal its working status. After sending the bytes, it sets PIN_C6 to a low state, potentially as an additional signal to indicate the operation's completion.
+
+```c
+void INFORM_WORKING_TO_START_PIC()
+{
+   fputc(0xAA, SPic);
+   delay_ms(1);
+   fputc(0xBB, SPic);
+   delay_ms(1);
+   fputc(0xCC, SPic);
+   delay_ms(1);
+   output_low(PIN_C6);
+}
+```
+
+1. Byte Transmission Over UART:
+fputc(0xAA, SPic): Sends the byte 0xAA over the UART communication channel SPic.
+This is repeated for 0xBB and 0xCC, with a 1-millisecond delay between transmissions.
+2. Delay Between Transmissions:
+delay_ms(1): Introduces a 1-millisecond delay after each byte transmission. This ensures there is enough time for the "START PIC" to process each byte before receiving the next one.
+Depending on the baud rate and UART settings, this delay may not be necessary and could be optimized.
+3. Pin State Change:
+output_low(PIN_C6): Drives the microcontroller pin C6 to a low state (grounded).
+This might be used to:
+Signal a state change to an external device or the "START PIC."
+Reset a connected device or trigger a specific action.
 
 
 ### RTC_fun.c
