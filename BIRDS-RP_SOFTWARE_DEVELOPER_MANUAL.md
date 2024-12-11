@@ -2148,7 +2148,434 @@ Toggles PIN_F2 every 0.5 seconds to indicate system activity.
 Sends a periodic message (INFORM_WORKING_TO_START_PIC()) every 5 seconds.
 
 
-#### ResetPIC_Functions.c 
+### ResetPIC_Functions.c 
+
+#### Monitoring Variables
+Monitoring:
+Ensures the health of the Main PIC and COM PIC through periodic communication checks.
+Provides a fail-safe mechanism to restart components if communication fails.
+
+Communication:
+Buffers allow for efficient, structured data exchange between the Reset PIC, Main PIC, and COM PIC.
+
+RTC Management:
+Timekeeping is crucial for scheduling operations and triggering time-based resets.
+
+**Main PIC (MPIC) Monitoring**
+
+```c
+unsigned int16 MPIC_TIME_COUNTER = 0;
+unsigned int8  NUMOF_MPIC_RST = 0;
+unsigned int16 CPIC_TIME_COUNTER = 0;
+unsigned int8  NUMOF_CPIC_RST = 0;
+unsigned int8 MPIC_TO_RPIC_ARRAY[35] ;   
+unsigned int8 RPIC_TO_MPIC_ARRAY[32] ;
+unsigned int8 CPIC_TO_RPIC_ARRAY[35] ;   
+unsigned int8 RPIC_TO_CPIC_ARRAY[20] ;
+//unsigned int8 SPIC_TO_RPIC_ARRAY[10] ;   // only 
+//unsigned int8 RPIC_TO_SPIC_ARRAY[10] ;
+unsigned int8 year, month, day, hour, minute, second;
+```
+
+**MPIC_TIME_COUNTER:**
+
+A 16-bit counter incremented every second in the TIMER1_ISR interrupt.
+Monitors communication with the Main PIC.
+Reset to 0 if the Main PIC communicates successfully within 90 seconds.
+If no communication occurs for 10 minutes (600 seconds), the Main PIC is restarted.
+
+**NUMOF_MPIC_RST:**
+
+An 8-bit counter tracking how many times the Reset PIC has restarted the Main PIC.
+Useful for diagnostics and debugging.
+
+**COM PIC (CPIC) Monitoring**
+
+**CPIC_TIME_COUNTER:**
+
+Similar to MPIC_TIME_COUNTER, but for monitoring the COM PIC.
+Incremented every second and reset upon successful communication.
+
+**NUMOF_CPIC_RST:**
+
+Tracks the number of times the Reset PIC has restarted the COM PIC.
+
+#### UART Communication Buffers
+
+**Main PIC Buffers**
+MPIC_TO_RPIC_ARRAY[35]:
+
+A buffer for storing data received from the Main PIC.
+Only the first 10 bytes are actively used for communication commands.
+
+RPIC_TO_MPIC_ARRAY[32]:
+
+- A buffer for storing data to be sent to the Main PIC.
+
+**COM PIC Buffers**
+CPIC_TO_RPIC_ARRAY[35]:
+
+- Stores data received from the COM PIC.
+- Only the first 20 bytes are actively used for commands.
+
+RPIC_TO_CPIC_ARRAY[20]:
+
+- Stores data to be sent to the COM PIC.
+
+**Commented SPI Buffers**
+
+SPIC_TO_RPIC_ARRAY and RPIC_TO_SPIC_ARRAY:
+- Commented out, possibly reserved for SPI communication with another subsystem or PIC.
+- Could be enabled later if required.
+
+**RTC Variables**
+year, month, day, hour, minute, second:
+- Used to store and manage the RTC (Real-Time Clock) values.
+- Likely updated periodically using RTC_Function() in the Timer-1 interrupt.
+
+```c
+#use rs232(baud=38400, parity=N, xmit=PIN_B2,  bits=8, stream = PC, errors, force_sw )  // dummy port
+```
+baud=38400:
+
+Specifies the communication speed of 38400 bits per second.
+parity=N:
+
+Indicates no parity checking is used for error detection.
+xmit=PIN_B2:
+
+Assigns the transmit pin for UART communication to PIN_B2.
+bits=8:
+
+Data format consists of 8 data bits per frame.
+stream=PC:
+
+Defines a named stream (PC) for easier reference in the program.
+errors:
+
+Enables error detection and handling during UART communication.
+force_sw:
+
+Forces the use of software UART, even if the hardware UART module is available.
+
+
+#### RST_EXT_WDT()
+```c
+void RST_EXT_WDT()
+{
+   Output_Toggle(PIN_F2);
+}
+```
+The function ensures the external watchdog timer does not expire and cause an unwanted reset. By toggling the state of PIN_F2, the watchdog timer interprets it as the system being healthy and operational.
+
+#### UART port connection to main pic definitons
+```c
+#define MP_BFR_SIZE 30
+#pin_select TX3=PIN_E1  
+#pin_select RX3=PIN_E0  
+#use rs232(UART3, baud=38400, parity=N, bits=8, stream=MPic, errors) 
+
+unsigned int8  MP_Buffer[MP_BFR_SIZE];
+unsigned int16 MP_Byte_Counter = 0;
+unsigned int8  MP_Overflow = 0;
+unsigned int16 MP_Read_Byte_counter = 0;
+unsigned int8  MP_Temp_byte = 0;
+
+unsigned int16 LAST_RESET_HOUR = 0;
+#INT_RDA3
+```
+```#define MP_BFR_SIZE 30```
+
+Defines the size of the buffer MP_Buffer as 30 bytes. This buffer will temporarily store incoming UART data from UART3.
+
+```#pin_select TX3=PIN_E1``` and ```#pin_select RX3=PIN_E0```
+
+Assigns the UART3 transmit (TX) pin to PIN_E1 and the receive (RX) pin to PIN_E0.
+These pin mappings are specific to microcontrollers that allow remappable pins.
+
+```#use rs232```
+Configures UART3 for communication:
+UART3: Uses the third UART module.
+baud=38400: Sets the baud rate to 38,400 bits per second.
+parity=N: No parity bit.
+bits=8: Uses 8 data bits.
+stream=MPic: Creates a stream identifier (MPic) for easier UART read/write operations.
+errors: Enables error checking (e.g., framing errors).
+
+**Variables**
+
+- ```MP_Buffer[MP_BFR_SIZE]:```
+An array that serves as a ring buffer to store incoming data.
+- ```MP_Byte_Counter:```
+Tracks the number of bytes written into the buffer.
+- ```MP_Overflow:```
+A flag to indicate if the buffer has overflowed.
+- ```MP_Read_Byte_counter:```
+Tracks the number of bytes read from the buffer.
+- ```MP_Temp_byte:```
+Temporarily stores a received byte for processing.
+- ```LAST_RESET_HOUR:```
+Tracks the hour when the system was last reset.
+- ```#INT_RDA3```
+Declares an interrupt service routine (ISR) for the UART3 receive interrupt.
+When a byte is received via UART3, this interrupt is triggered, and the ISR handles the byte.
+
+#### SERIAL_ISR3()   
+The code processes incoming bytes, stores them in a buffer, and manages the overflow condition.
+```c
+Void SERIAL_ISR3()         // MAIN PIC uart interupt loop
+{
+   if( kbhit(MPic) )
+   {
+      if( MP_Byte_Counter < MP_BFR_SIZE )
+      {
+         MP_Buffer[MP_Byte_Counter] = fgetc(MPic);
+         MP_Byte_Counter++;
+      }
+      else MP_Overflow = fgetc(MPic);
+   }
+}
+```
+Use of kbhit(MPic):
+
+kbhit(MPic) is used to check if there is data available to read from the UART stream. This is generally a good way to avoid blocking the program while waiting for data.
+Storing Data in the Buffer:
+
+The MP_Buffer[MP_Byte_Counter] = fgetc(MPic); line stores the received byte in MP_Buffer if the buffer has space (i.e., MP_Byte_Counter < MP_BFR_SIZE).
+Handling Buffer Overflow:
+
+If the buffer is full (MP_Byte_Counter >= MP_BFR_SIZE), the code reads a byte into MP_Overflow to store the overflowed data. This is an interesting method, but a more typical approach would be to set a flag and handle the overflow in the main program.
+Inconsistent Handling of Overflow:
+
+If an overflow occurs, the code reads the incoming byte and stores it in MP_Overflow. This seems somewhat counterintuitive because the system already has a dedicated overflow flag. Instead, it would make more sense to just set the MP_Overflow flag and leave the byte unread if there is no room in the buffer.
+
+
+#### MPic_Available()
+```c
+unsigned int8 MPic_Available()
+{
+   return MP_Byte_Counter ;
+}
+```
+The function returns the number of bytes that have been received and stored in the MP_Buffer by the interrupt handler (SERIAL_ISR3). This is useful for other parts of your program to know if there is data available to process.
+
+Return Value: The function returns the value of MP_Byte_Counter, which keeps track of the number of bytes that have been successfully received.
+
+
+#### MPic_Read()
+```c
+unsigned int8 MPic_Read()
+{
+   if (MP_Byte_Counter>0)
+   {    
+      MP_Temp_byte = MP_Buffer[MP_Read_Byte_counter];
+      
+      MP_Byte_Counter--;
+      MP_Read_Byte_counter++;
+      if(MP_Byte_Counter == 0) MP_Read_Byte_counter = 0;
+      return MP_Temp_byte; 
+   }
+   
+   if (MP_Byte_Counter == 0)
+   { 
+      MP_Read_Byte_counter = 0;
+      MP_Temp_byte = 0x00;
+      return MP_Temp_byte; 
+   }
+ 
+}
+```
+Check if Data is Available:
+
+The function first checks if there are any bytes available in the buffer (MP_Byte_Counter > 0).
+If data is available, it reads a byte from MP_Buffer[MP_Read_Byte_counter] and returns it. It also decrements the byte counter (MP_Byte_Counter) and increments the read counter (MP_Read_Byte_counter).
+Reset on Empty Buffer:
+
+If the buffer becomes empty (i.e., MP_Byte_Counter == 0), the function resets MP_Read_Byte_counter to 0 and returns 0x00.
+Returns:
+
+It returns the byte from the buffer if there is data, or 0x00 if the buffer is empty.
+
+
+#### MPic_flush()
+```c
+void MPic_flush()
+{
+   while( MPic_Available() ) MPic_Read() ;
+}
+```
+MPic_Available():
+
+This function checks how many bytes are available to be read from the buffer. If there are any bytes in the buffer (MPic_Available() returns a non-zero value), the loop continues.
+Flush the Buffer:
+
+The MPic_Read() function is called within the while loop to read and discard all bytes in the buffer.
+The loop will continue reading bytes from the buffer until the buffer is empty (i.e., MPic_Available() returns 0).
+
+
+#### UART port connection to com pic definitons
+For COM and Start pic, the functions do the same thing as above.
+
+```c
+#define CP_BFR_SIZE 30
+#pin_select TX2=PIN_G1  
+#pin_select RX2=PIN_G0  
+#use rs232(UART2, baud=38400, parity=N, bits=8, stream=CPic, errors) 
+
+unsigned int8  CP_Buffer[CP_BFR_SIZE];
+unsigned int16 CP_Byte_Counter = 0;
+unsigned int8  CP_Overflow = 0;
+unsigned int16 CP_Read_Byte_counter = 0;
+unsigned int8  CP_Temp_byte = 0;
+
+#INT_RDA2
+```
+
+#### SERIAL_ISR2()  
+```c
+Void SERIAL_ISR2()         // MAIN PIC uart interupt loop
+{
+   if( kbhit(CPic) )
+   {
+      if( CP_Byte_Counter < CP_BFR_SIZE )
+      {
+         CP_Buffer[CP_Byte_Counter] = fgetc(CPic);
+         CP_Byte_Counter++;
+      }
+      else CP_Overflow = fgetc(CPic);
+   }
+}
+```
+
+#### CPic_Available()
+```c
+unsigned int8 CPic_Available()
+{
+   return CP_Byte_Counter ;
+}
+```
+
+
+#### CPic_Read()
+```c
+unsigned int8 CPic_Read()
+{
+   if (CP_Byte_Counter>0)
+   {    
+      CP_Temp_byte = CP_Buffer[CP_Read_Byte_counter];
+      
+      CP_Byte_Counter--;
+      CP_Read_Byte_counter++;
+      if(CP_Byte_Counter == 0) CP_Read_Byte_counter = 0;
+      return CP_Temp_byte; 
+   }
+   
+   if (CP_Byte_Counter == 0)
+   { 
+      CP_Read_Byte_counter = 0;
+      CP_Temp_byte = 0x00;
+      return CP_Temp_byte; 
+   }
+ 
+}
+```
+
+#### CPic_flush()
+```c
+void CPic_flush()
+{
+   while( CPic_Available() ) CPic_Read() ;
+}
+```
+
+#### UART port connection to start pic definitons
+```c
+#define SP_BFR_SIZE 5
+#pin_select TX1=PIN_C6  
+#pin_select RX1=PIN_C7  
+#use rs232(UART1, baud=38400, parity=N, bits=8, stream=SPic, errors) 
+
+unsigned int8  SP_Buffer[SP_BFR_SIZE];
+unsigned int16 SP_Byte_Counter = 0;
+unsigned int8  SP_Overflow = 0;
+unsigned int16 SP_Read_Byte_counter = 0;
+unsigned int8  SP_Temp_byte = 0;
+
+#INT_RDA
+```
+
+#### SERIAL_ISR()  
+```c
+Void SERIAL_ISR()         // MAIN PIC uart interupt loop
+{
+   if( SP_Byte_Counter < SP_BFR_SIZE )
+   {
+      SP_Buffer[SP_Byte_Counter] = fgetc(SPic);
+      SP_Byte_Counter++;
+   }
+   
+   else SP_Overflow = fgetc(SPic);
+}
+```
+
+#### SPic_Available()
+```c
+unsigned int8 SPic_Available()
+{
+   return SP_Byte_Counter ;
+}
+```
+
+#### SPic_Read()
+```c
+unsigned int8 SPic_Read()
+{
+   if (SP_Byte_Counter>0)
+   {    
+      SP_Temp_byte = SP_Buffer[SP_Read_Byte_counter];
+      
+      SP_Byte_Counter--;
+      SP_Read_Byte_counter++;
+      if(SP_Byte_Counter == 0) SP_Read_Byte_counter = 0;
+      return SP_Temp_byte; 
+   }
+   
+   if (SP_Byte_Counter == 0)
+   { 
+      SP_Read_Byte_counter = 0;
+      SP_Temp_byte = 0x00;
+      return SP_Temp_byte; 
+   }
+ }
+```
+
+#### SPic_flush()
+```c
+void SPic_flush()
+{
+   while( SPic_Available() ) SPic_Read() ;
+}
+```
+
+#### printline()
+```c
+void printline()
+{
+   fprintf( PC, "\n\r");
+}
+```
+
+#### CLEAR_DATA_ARRAY(array, array_size)
+using this function we can make any data array clear
+```c
+void CLEAR_DATA_ARRAY(unsigned int8 array[], int array_size)
+{   
+   for(int i = 0; i < array_size; i++)
+   {
+      array[i] = 0 ;
+   }
+}
+```
 
 ## 3. MAIN PIC
 
