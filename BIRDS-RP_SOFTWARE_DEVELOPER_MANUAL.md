@@ -634,7 +634,7 @@ The files found in the RESET PIC folder are detailed in Table 2 below.
 | ResetMain.c                 |        |             |
 | ResetPIC_Functions.c        |        |             |
 
-###  ADC_Power_Lines_Control.c 
+### ADC_Power_Lines_Control.c 
 
 This code manages power lines, resets the system, and monitors current and voltage using analog-to-digital converter (ADC). Each function is modular and updates ```POWER_LINE_STATUS``` to track the state of the system. Functions like ```SYSTEM_RESET``` and ```SYSTEM_RESET_24H``` ensure operational stability through scheduled or manual resets.
 
@@ -1935,6 +1935,220 @@ void Print_RTC()
 }
 ```
 
+### ResetMain.c       
+The code is for a reset controller for a satellite with multiple PIC microcontrollers. Its primary role is managing communication, monitoring system health, and executing commands from other microcontrollers (MAIN_PIC and COM_PIC) while maintaining time synchronization using an RTC (Real-Time Clock). 
+
+Key Functions
+- Command Parsing
+- - Commands are validated by checking predefined markers (e.g., MPIC_TO_RPIC_ARRAY[0] == 0xA0).
+A set of command-specific functions is called based on the parsed command.
+- Clear Arrays
+- - CLEAR_DATA_ARRAY() clears the command arrays after processing to avoid re-executing old commands.
+- Watchdog Reset
+- - RST_EXT_WDT() ensures the external watchdog timer is reset, preventing system reset due to inactivity.
+
+#### Initialization
+```c
+#include <18F67J94.h>
+#FUSES NOWDT,NOBROWNOUT,SOSC_DIG
+#device ADC = 12
+#use delay(crystal = 16MHz, clock = 16MHz)
+#include <PIC18F67J94_REGISTERS.h>
+
+#include <ResetPIC_Functions.c>
+#include <ADC_Power_Lines_Control.c>
+#include <RPIC_MPIC.c>
+#include <RPIC_CPIC.c>
+#include <RPIC_STARTPIC.c>
+#include <RTC_fun.c>
+
+unsigned int16 MLC = 0;
+
+// we set interupt priority here , timer 1 is the highest priority_____________
+#PRIORITY INT_TIMER1,INT_RDA,INT_RDA3           
+
+// this is the timer 1 interupt loop___________________________________________
+#INT_TIMER1
+```
+
+
+#### TIMER1_ISR() 
+
+```c
+Void TIMER1_ISR()                                                              
+{ 
+  set_timer1(0x8000);                                // Timer-1 preload
+  RTC_Function();                                    // updating RTC
+  
+  MPIC_TIME_COUNTER++;                               // this is main pic comunication time counter
+  CPIC_TIME_COUNTER++;                               // this is com  pic comunication time counter
+}
+```
+Timer-1 Interrupt
+The TIMER1_ISR() function is triggered periodically by Timer-1:
+
+Updates the RTC by calling RTC_Function().
+Increments counters for monitoring communication with MAIN_PIC and COM_PIC.
+
+#### settings()
+
+```c
+// here we set the reset pic initial setups____________________________________
+void settings()
+{
+   //output_low(PIN_C6);
+   MP_CP_BuckBoost(ON)              ;      // enable MP CP buck boost conveter
+   MainPic_Power(ON)                ;      // turn on main pic power
+   ComPic_Power(ON)                 ;      // turn on com pic power
+   _3V3Power_Line1(BB_ON_OCP_ON)    ;      // both obc and buck boost converters are ON
+   _3V3Power_Line2(BB_ON_OCP_ON)    ;      // both obc and buck boost converter are OFF
+   _5V0Power_Line(BB_ON_OCP_ON)     ;      // both obc and buck boost converters are OFF BB_ON_OCP_ON
+   
+   Unreg1_Line(ON)                  ;      // turn on unreg line 1
+   Unreg2_Line(ON)                  ;      // turn off unreg line 2
+
+   setup_timer_1(T1_EXTERNAL | T1_DIV_BY_1);         // timer-1 clock source ans prescaler value         
+   SOSCEN1 = 1;                                      // enabling timer 1
+   set_timer1(0x8000);                               // timer 1 preload
+   
+   enable_interrupts(INT_RDA2);                      // enabling com pic UART interupt
+   enable_interrupts(INT_RDA3);                      // enabling main pic UART interupt
+   enable_interrupts(INT_TIMER1);                    // enabling timer - 1 interupt
+   enable_interrupts(GLOBAL);                        // start interupt procesing
+   
+   SETUP_ADC(ADC_CLOCK_INTERNAL);
+   SETUP_ADC_PORTS(sAN2|sAN1|sAN0|sAN4|sAN6|sAN9);   // setting all analog ports
+   
+   Set_RTC(24,01,01, 00,00,06);
+   MPic_flush() ;
+   fprintf( PC, "Reset pic is booting.......\n\r");
+}
+```
+The settings() function configures the hardware peripherals and system state:
+
+Power Lines Control:
+
+Enables the power to specific lines (MainPic_Power, ComPic_Power) and sets converters.
+Activates or deactivates unregulated power lines (Unreg1_Line, Unreg2_Line).
+Timer-1 Setup:
+
+Configures Timer-1 as an external clock source with a preload value of 0x8000.
+Timer-1 is used for real-time operations (e.g., updating the RTC).
+Interrupts:
+
+Enables UART receive interrupts for communication with MAIN_PIC and COM_PIC.
+Timer-1 interrupt is enabled for periodic tasks.
+ADC Ports:
+
+Configures specific pins as analog inputs.
+RTC Setup:
+
+Initializes the RTC with a starting date and time.
+Sends a boot message to the PC for debugging.
+
+
+#### main()
+The main() function contains the core operational logic:
+
+```c
+void main()
+{
+   settings();
+   while(true)
+   {  
+      // printing rtc__________________________________________________________
+      Print_RTC();  
+      
+      // this funtion will reset the system if time is 00:00:00________________
+      SYSTEM_RESET_24H();
+```
+
+
+RTC Management:
+
+Prints the current RTC time (Print_RTC()).
+Resets the system at midnight (SYSTEM_RESET_24H()).
+
+```c
+      // check uart incoming from main pic and compic__________________________
+      CHECK_UART_INCOMING_FROM_MAIN_PIC()  ;
+      CHECK_UART_INCOMING_FROM_COM_PIC()   ; 
+```
+UART Command Handling:
+
+Checks for incoming UART data from MAIN_PIC and COM_PIC using dedicated functions.
+Processes valid command arrays from both sources and performs corresponding actions.
+
+```c
+      // monitoring 90 second comunication of compic and mainpic_______________
+      MONITOR_MAIN_PIC_90SEC_COMUNICATION(10)  ;   // 10 means how much turn off time before restart 
+      MONITOR_COM_PIC_90SEC_COMUNICATION(10)   ;   // 10 means how much turn off time before restart 
+```
+90-Second Communication Monitoring:
+
+Monitors communication with MAIN_PIC and COM_PIC. If no communication is detected for 90 seconds, resets are triggered.
+
+
+```c     
+      // executing main pic comands____________________________________________
+      if( MPIC_TO_RPIC_ARRAY[0] == 0xA0 && MPIC_TO_RPIC_ARRAY[9] == 0xA1 )
+      {
+         PRINT_RECIVED_COMMAND_FROM_MAIN_PIC();
+         Delay_ms(5);   // just delay 5ms before execute
+         RST_EXT_WDT();
+         
+         RESEPOND_TO_MPIC_90SEC_CMD();                // 0x7A
+         UPDATE_RTC_BY_MAIN_PIC_CMD();                // 0x7B
+         POWER_LINE_CONTROL_USING_MAIN_PIC_CMD();     // 0x7C
+         RESET_SATELLITE_CMD();                       // 0x7D
+         TURN_ON_UNREG_2_LINE_FOR_ANT_DEPLOYMENT();   // 0xDA
+         
+         // finaly clear the data array received from main pic
+         CLEAR_DATA_ARRAY( MPIC_TO_RPIC_ARRAY, 10 );
+      }
+      
+      // executing com pic comands____________________________________________
+      if( CPIC_TO_RPIC_ARRAY[0] == 0xC0 && CPIC_TO_RPIC_ARRAY[19] == 0xC1 )
+      {
+         PRINT_RECIVED_COMMAND_FROM_COM_PIC();
+         Delay_ms(5);   // just delay 5ms before execute
+         RST_EXT_WDT();
+         
+         RESEPOND_TO_CPIC_90SEC_CMD()     ;           // 0xE0
+         UPDATE_RTC_BY_COM_PIC_CMD()      ;           // 0xEA
+         SENDING_TIME_TO_COMPIC()         ;           // 0xEB
+         
+         // finaly clear the data array received from main pic
+         CLEAR_DATA_ARRAY( CPIC_TO_RPIC_ARRAY, 20 );
+      }
+```
+Command Execution:
+
+Handles specific commands received from MAIN_PIC and COM_PIC. Examples include updating the RTC, controlling power lines, and resetting the satellite.
+
+```c
+      if( (MLC%25) == 0 )  // every half sec
+      {        
+         Output_Toggle(PIN_F2); 
+         if(MLC>=500)
+         {
+            INFORM_WORKING_TO_START_PIC();
+            MLC = 0;
+         }
+      }
+
+      Delay_ms(10);
+      MLC++;
+   }
+}
+```
+Heartbeat Signal:
+
+Toggles PIN_F2 every 0.5 seconds to indicate system activity.
+Sends a periodic message (INFORM_WORKING_TO_START_PIC()) every 5 seconds.
+
+
+#### ResetPIC_Functions.c 
 
 ## 3. MAIN PIC
 
@@ -3349,4 +3563,87 @@ These registers control and monitor interrupt settings
 
 
 ### Flash_Memory.c
+This setup allows the microcontroller to independently communicate with three SPI devices by selecting the appropriate SPI stream for each device.
 
+```c
+//commands
+#define READ_ID           0x9F
+#define READ_STATUS_REG   0x05 
+
+#use spi(MASTER, CLK=PIN_E1, DI=PIN_E0, DO=PIN_E6,  BAUD=1000000, BITS=8, STREAM=MAIN_FM, MODE=0)        //MAIN flash memory port
+#use spi(MASTER, CLK=PIN_B2, DI=PIN_B5, DO=PIN_B4,  BAUD=1000000, BITS=8, STREAM=COM_FM, MODE=0)         //COM flash memory port
+#use spi(MASTER, CLK=PIN_A3, DI=PIN_A0, DO=PIN_A1,  BAUD=1000000, BITS=8, STREAM=MSN_FM, MODE=0) 
+```
+
+```READ_ID``` (0x9F): SPI command to read the device ID. Commonly used to retrieve manufacturer and memory type information from an SPI device.
+```READ_STATUS_REG``` (0x05): SPI command to read the status register, often used to check the device's status, such as write enable latch or ready/busy state.
+
+**Syntax:**
+MASTER: Configures the microcontroller as the SPI master.
+CLK (Clock): The pin used for the SPI clock line.
+DI (Data Input): The pin used for receiving data (MISO: Master In Slave Out).
+DO (Data Output): The pin used for sending data (MOSI: Master Out Slave In).
+BAUD: Communication speed in bits per second (1 MHz in this case).
+BITS: Number of bits per data frame (8-bit per frame here).
+STREAM: A named handle for the SPI interface to manage communication with multiple devices.
+MODE: SPI mode defines clock polarity and phase; Mode 0 (CPOL=0, CPHA=0) is selected here.
+
+**Streams:**
+```MAIN_FM```: SPI interface for the main flash memory (pins on port E).
+```COM_FM```: SPI interface for the communication flash memory (pins on port B).
+```MSN_FM```: SPI interface for the mission flash memory (pins on port A).
+
+
+The code below defines three functions, each enabling the "write" operation for a specific SPI flash memory device.
+The ```WRITE_ENABLE``` command (0x06) is a standard SPI flash memory command. Before any write, erase, or modification operation, the flash memory must be explicitly enabled to accept write operations. 
+This mechanism helps prevent accidental data overwrites.
+
+#### MAIN_FM_WRITE_ENABLE()
+
+```c
+void MAIN_FM_WRITE_ENABLE()
+{
+  Output_low(Pin_E2);
+  spi_xfer(MAIN_FM,0x06);                
+  Output_high(Pin_E2);
+  return;
+}Controls the main flash memory.
+```
+
+Pulls the chip select (CS) line (Pin_E2) low to begin communication.
+Sends the WRITE_ENABLE command (0x06) over the MAIN_FM SPI stream.
+Sets the CS line (Pin_E2) high to end communication.
+
+#### COM_FM_WRITE_ENABLE()
+
+```c
+void COM_FM_WRITE_ENABLE()
+{
+  Output_low(Pin_B3);
+  spi_xfer(COM_FM,0x06);                
+  Output_high(Pin_B3);
+  return;
+}
+```
+Controls the communication flash memory.
+Operates similarly to MAIN_FM_WRITE_ENABLE() but uses Pin_B3 as the chip select line and the COM_FM SPI stream.
+
+#### MSN_FM_WRITE_ENABLE()
+```c
+void MSN_FM_WRITE_ENABLE()
+{
+
+  Output_low(Pin_A2);
+  spi_xfer(MSN_FM,0x06);                
+  Output_high(Pin_A2);
+  return;
+}
+```
+
+Controls the mission flash memory.
+Uses Pin_A2 as the chip select line and the MSN_FM SPI stream.
+
+**SPI Command Workflow**
+Activate Chip Select: Pulling the CS line (Output_low) tells the SPI device to pay attention to incoming data.
+Send Command: The spi_xfer function transmits the command byte (0x06 for WRITE_ENABLE) to the flash memory.
+Deactivate Chip Select: Raising the CS line (Output_high) completes the transaction, ensuring the device latches the command.
