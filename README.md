@@ -3,6 +3,9 @@
 <p align=center>
 <img src="https://birds-x.birds-project.com/wp-content/uploads/2023/01/logo_aboutus-1024x393.png" width=50%>
 </p>
+<div align="center">
+  <img width="125" alt="birds x" src="https://github.com/user-attachments/assets/8aa7c5b7-313c-48e7-952b-81ce0ce1a703">
+</div>
 
 
 # BIRDSRP-OBC
@@ -65,9 +68,6 @@ The organisational file stucture of the microcontrollers in the BIRDS-RP OBC boa
   </a>
 </div> 
 
-<div align="center">
-  <img width="125" alt="birds x" src="https://github.com/user-attachments/assets/8aa7c5b7-313c-48e7-952b-81ce0ce1a703">
-</div>
 
 
 ## I like this project, can I help you?
