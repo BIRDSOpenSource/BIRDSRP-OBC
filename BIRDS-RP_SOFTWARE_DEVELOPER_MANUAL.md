@@ -2385,11 +2385,12 @@ unsigned int8 MPic_Read()
  
 }
 ```
-Check if Data is Available:
+- Check if Data is Available:
 
 The function first checks if there are any bytes available in the buffer (MP_Byte_Counter > 0).
 If data is available, it reads a byte from MP_Buffer[MP_Read_Byte_counter] and returns it. It also decrements the byte counter (MP_Byte_Counter) and increments the read counter (MP_Read_Byte_counter).
-Reset on Empty Buffer:
+
+- Reset on Empty Buffer:
 
 If the buffer becomes empty (i.e., MP_Byte_Counter == 0), the function resets MP_Read_Byte_counter to 0 and returns 0x00.
 Returns:
@@ -2404,10 +2405,11 @@ void MPic_flush()
    while( MPic_Available() ) MPic_Read() ;
 }
 ```
-MPic_Available():
+- MPic_Available():
 
 This function checks how many bytes are available to be read from the buffer. If there are any bytes in the buffer (MPic_Available() returns a non-zero value), the loop continues.
-Flush the Buffer:
+
+- Flush the Buffer:
 
 The MPic_Read() function is called within the while loop to read and discard all bytes in the buffer.
 The loop will continue reading bytes from the buffer until the buffer is empty (i.e., MPic_Available() returns 0).
@@ -4066,7 +4068,6 @@ void MSN_FM_WRITE_ENABLE()
   return;
 }
 ```
-
 Controls the mission flash memory.
 Uses Pin_A2 as the chip select line and the MSN_FM SPI stream.
 
@@ -4074,3 +4075,192 @@ Uses Pin_A2 as the chip select line and the MSN_FM SPI stream.
 Activate Chip Select: Pulling the CS line (Output_low) tells the SPI device to pay attention to incoming data.
 Send Command: The spi_xfer function transmits the command byte (0x06 for WRITE_ENABLE) to the flash memory.
 Deactivate Chip Select: Raising the CS line (Output_high) completes the transaction, ensuring the device latches the command.
+
+```c
+unsigned int8 _data;
+```
+Initialisation of a data variable
+
+#### Sector Erase Main FM (4KB,32KB,64KB )
+```c
+void MAIN_FM_SECTOR_ERASE(unsigned int32 sector_address,char sector_size,  int16 delay = 1000)
+{
+   
+   adsress[0]  = (unsigned int8)((sector_address>>24) & 0xFF);   // 0x __ 00 00 00
+   adsress[1]  = (unsigned int8)((sector_address>>16) & 0xFF);   // 0x 00 __ 00 00
+   adsress[2]  = (unsigned int8)((sector_address>>8)  & 0xFF);   // 0x 00 00 __ 00
+   adsress[3]  = (unsigned int8)((sector_address)     & 0xFF);   // 0x 00 00 00 __
+   
+   MAIN_FM_WRITE_ENABLE();
+   Output_low(Pin_E2);             //lower the CS PIN
+
+   ///////////////////////////////////////////////////////////////////
+
+   if( Sector_size == 4  ) spi_xfer(MAIN_FM,0x21);                    // 4KB Sector erase
+   if( Sector_size == 32 ) spi_xfer(MAIN_FM,0x5C);                    // 32KB Sector erase
+   if( Sector_size == 64 ) spi_xfer(MAIN_FM,0xDC);                    // 64KB Sector erase
+   
+   spi_xfer(MAIN_FM,adsress[0]);   
+   spi_xfer(MAIN_FM,adsress[1]);    
+   spi_xfer(MAIN_FM,adsress[2]);    
+   spi_xfer(MAIN_FM,adsress[3]);
+   //////////////////////////////////////////////////////////////////
+   Output_high(Pin_E2);           //take CS PIN higher back
+
+   delay_ms(delay); 
+   return;
+}
+```
+The MAIN_FM_SECTOR_ERASE function is intended to erase a specified sector of memory on a flash device using SPI communication. It does so by sending the appropriate erase command followed by the sector's address. The sector size is used to determine which erase command should be sent.
+
+Function Breakdown
+- Function Parameters:
+
+sector_address: The address of the sector to be erased (32-bit).
+sector_size: The size of the sector (e.g., 4KB, 32KB, 64KB).
+delay: A delay in milliseconds after the erase operation (default 1000 ms if not provided).
+- Address Formatting: The address is split into 4 bytes (since it's a 32-bit address) and stored in adsress[]. This is required for the SPI transmission.
+
+- SPI Write Enable: The function calls MAIN_FM_WRITE_ENABLE() to ensure that the flash memory is in a writable state.
+- Chip Select (CS): The Pin_E2 is used for the chip select signal. The Output_low(Pin_E2) brings the chip select low, indicating that the flash memory is being selected for communication.
+- Sector Erase Command: Depending on the size of the sector (Sector_size), the appropriate erase command is sent:
+
+0x21 for 4KB sector erase
+0x5C for 32KB sector erase
+0xDC for 64KB sector erase
+- Address Transmission: After the erase command, the address bytes are transmitted via the SPI interface using spi_xfer().
+- CS Pin Reset: After the address is transmitted, Output_high(Pin_E2) sets the chip select pin high to deselect the flash memory.
+- Delay: After the operation, a delay (specified by delay) is introduced to allow the memory erase to complete.
+
+#### Sector Erase COM FM (4KB,32KB,64KB )
+Same as above but for COM flash memory
+```c
+void COM_FM_SECTOR_ERASE(unsigned int32 sector_address, char sector_size, unsigned int16 delay = 1000)
+{
+   
+   adsress[0]  = (unsigned int8)((sector_address>>24) & 0xFF);   // 0x __ 00 00 00
+   adsress[1]  = (unsigned int8)((sector_address>>16) & 0xFF);   // 0x 00 __ 00 00
+   adsress[2]  = (unsigned int8)((sector_address>>8)  & 0xFF);   // 0x 00 00 __ 00
+   adsress[3]  = (unsigned int8)((sector_address)     & 0xFF);   // 0x 00 00 00 __
+   
+   COM_FM_WRITE_ENABLE();
+   Output_low(Pin_B3);             //lower the CS PIN
+   ///////////////////////////////////////////////////////////////////
+   if( Sector_size == 4  ) spi_xfer(COM_FM,0x21);                    // 4KB Sector erase
+   if( Sector_size == 32 ) spi_xfer(COM_FM,0x5C);                    // 32KB Sector erase
+   if( Sector_size == 64 ) spi_xfer(COM_FM,0xDC);                    // 64KB Sector erase
+      
+   spi_xfer(COM_FM,adsress[0]);   
+   spi_xfer(COM_FM,adsress[1]);    
+   spi_xfer(COM_FM,adsress[2]);    
+   spi_xfer(COM_FM,adsress[3]);
+   //////////////////////////////////////////////////////////////////
+   Output_high(Pin_B3);           //take CS PIN higher back
+   delay_ms(delay); 
+   return;
+}
+```
+
+#### Sector Erase MSN FM (4KB,32KB,64KB )
+Same as above but for MSN flash memory
+```c
+void MSN_FM_SECTOR_ERASE(unsigned int32 sector_address,char sector_size, unsigned int16 delay = 1000)
+{
+   
+   adsress[0]  = (unsigned int8)((sector_address>>24) & 0xFF);   // 0x __ 00 00 00
+   adsress[1]  = (unsigned int8)((sector_address>>16) & 0xFF);   // 0x 00 __ 00 00
+   adsress[2]  = (unsigned int8)((sector_address>>8)  & 0xFF);   // 0x 00 00 __ 00
+   adsress[3]  = (unsigned int8)((sector_address)     & 0xFF);   // 0x 00 00 00 __
+   
+   MSN_FM_WRITE_ENABLE();
+   Output_low(Pin_A2);             //lower the CS PIN
+   ///////////////////////////////////////////////////////////////////
+   if( Sector_size == 4  ) spi_xfer(MSN_FM,0x21);                    // 4KB Sector erase
+   if( Sector_size == 32 ) spi_xfer(MSN_FM,0x5C);                    // 32KB Sector erase
+   if( Sector_size == 64 ) spi_xfer(MSN_FM,0xDC);                    // 64KB Sector erase
+   
+   spi_xfer(MSN_FM,adsress[0]);   
+   spi_xfer(MSN_FM,adsress[1]);    
+   spi_xfer(MSN_FM,adsress[2]);    
+   spi_xfer(MSN_FM,adsress[3]);
+   //////////////////////////////////////////////////////////////////
+   Output_high(Pin_A2);           //take CS PIN higher back
+   delay_ms(delay); 
+   return;
+}
+```
+
+#### MAIN_FM_BYTE_WRITE(byte_address, data)
+```c
+void MAIN_FM_BYTE_WRITE(unsigned int32 byte_address, unsigned int8 data)
+{
+   
+   //Byte extraction
+   adsress[0]  = (unsigned int8)((byte_address>>24) & 0xFF);   // 0x __ 00 00 00
+   adsress[1]  = (unsigned int8)((byte_address>>16) & 0xFF);   // 0x 00 __ 00 00
+   adsress[2]  = (unsigned int8)((byte_address>>8)  & 0xFF);   // 0x 00 00 __ 00
+   adsress[3]  = (unsigned int8)((byte_address)     & 0xFF);   // 0x 00 00 00 __
+ 
+   MAIN_FM_WRITE_ENABLE();
+   Output_low(Pin_E2);             //lower the CS PIN
+   ///////////////////////////////////////////////////////////////////
+   spi_xfer(MAIN_FM,0x12);         //Byte WRITE COMAND  (0x12)
+   spi_xfer(MAIN_FM,adsress[0]);    
+   spi_xfer(MAIN_FM,adsress[1]);    
+   spi_xfer(MAIN_FM,adsress[2]);    
+   spi_xfer(MAIN_FM,adsress[3]);
+
+   spi_xfer(MAIN_FM,data); 
+   //////////////////////////////////////////////////////////////////
+   Output_high(Pin_E2);           //take CS PIN higher back 
+   
+   return;
+}
+```
+The MAIN_FM_BYTE_WRITE function is designed to write a byte of data to a specific address in flash memory via SPI. The function performs the following tasks:
+
+Function Breakdown
+- Parameters:
+
+byte_address: The 32-bit address where the byte data will be written.
+data: The byte data to be written to the specified address.
+- Address Extraction: The 32-bit byte_address is broken down into four 8-bit bytes and stored in the adsress[] array. This is done by shifting the address bits and applying a mask.
+
+- Write Enable: The function calls MAIN_FM_WRITE_ENABLE(), which is assumed to be another function that ensures the flash memory is in write-enabled mode.
+
+- Chip Select (CS): The function pulls the chip select pin (Pin_E2) low to select the flash memory for communication.
+
+- SPI Write Command: The function sends the Byte Write command (0x12) followed by the address bytes (adsress[0], adsress[1], adsress[2], and adsress[3]). Afterward, it sends the byte of data (data) to be written.
+
+- Chip Select Reset: After the data is sent, the chip select pin is pulled high to deselect the flash memory.
+
+
+
+#### 
+same as above for com
+```c
+void COM_FM_BYTE_WRITE(unsigned int32 byte_address, unsigned int8 data)
+{
+   
+   //Byte extraction
+   adsress[0]  = (unsigned int8)((byte_address>>24) & 0xFF);   // 0x __ 00 00 00
+   adsress[1]  = (unsigned int8)((byte_address>>16) & 0xFF);   // 0x 00 __ 00 00
+   adsress[2]  = (unsigned int8)((byte_address>>8)  & 0xFF);   // 0x 00 00 __ 00
+   adsress[3]  = (unsigned int8)((byte_address)     & 0xFF);   // 0x 00 00 00 __
+ 
+   COM_FM_WRITE_ENABLE();
+   Output_low(Pin_B3);             //lower the CS PIN
+   ///////////////////////////////////////////////////////////////////
+   spi_xfer(COM_FM,0x12);         //Byte WRITE COMAND  (0x12)
+   spi_xfer(COM_FM,adsress[0]);    
+   spi_xfer(COM_FM,adsress[1]);    
+   spi_xfer(COM_FM,adsress[2]);    
+   spi_xfer(COM_FM,adsress[3]);
+
+   spi_xfer(COM_FM,data); 
+   //////////////////////////////////////////////////////////////////
+   Output_high(Pin_B3);           //take CS PIN higher back 
+   
+   return;
+}
+```
