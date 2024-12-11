@@ -55,22 +55,14 @@ void PRINT_POWER_LINE_STATUS()
 // this function will print the Reset pic time in every 1 second
 void Print_RTC()
 {
-   if(previous_second != second )
+   if (previous_second != second) 
    {
-      fprintf(PC,"RP ");
-      fprintf(PC,"%02d", year);
-      fprintf(PC,"/%02d", month);
-      fprintf(PC,"/%02d", day);
-      fprintf(PC," %02d", hour);
-      fprintf(PC,":%02d", minute);
-      fprintf(PC,":%02d ", second);                                         // 20-01-01__05:20:22
-      
-      fprintf(PC,"%d>",NUMOF_MPIC_RST);
-      fprintf(PC,"%03Ld", MPIC_TIME_COUNTER);
-      fprintf(PC," %d>",NUMOF_CPIC_RST);
-      fprintf(PC,"%03Ld ", CPIC_TIME_COUNTER);
-      
+      char buffer[128];
+      sprintf(buffer, "RP %02d/%02d/%02d %02d:%02d:%02d %d>%03Ld %d>%03Ld",
+               year, month, day, hour, minute, second, NUMOF_MPIC_RST,
+               MPIC_TIME_COUNTER, NUMOF_CPIC_RST, CPIC_TIME_COUNTER);
+      fprintf(PC, "%s", buffer);
       PRINT_POWER_LINE_STATUS();
-   } 
-   previous_second = second ;
+      previous_second = second;
+   }
 }
