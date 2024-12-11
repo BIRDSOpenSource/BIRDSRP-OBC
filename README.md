@@ -9,7 +9,7 @@
 
 
 # BIRDSRP-OBC
- Documentation for the Solar Panel files of the BIRDSX Satellite.
+ Documentation for the ON BOARD COMPUTER AND GENERAL COMMAND AND DATA HANDLING files of the BIRDS-RP Satellite.
 
 
 ## About the BIRDS-RP Program:
