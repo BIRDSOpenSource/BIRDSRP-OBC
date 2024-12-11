@@ -34,6 +34,7 @@ The organisational file stucture of the microcontrollers in the BIRDS-RP OBC boa
 
 ## 1. START PIC
 
+#### File content
 ![](Diagrams/pics_operation-START-PIC.png)
 
 The files found in the START PIC folder are detailed in Table 1 below. 
@@ -619,6 +620,7 @@ Here's the flow diagram illustrating the operation of the microcontroller system
 
 ## 2. RESET PIC 
 
+#### File content
 ![](Diagrams/pic_operations-RESET-PIC.png)
 
 The files found in the RESET PIC folder are detailed in Table 2 below. 
@@ -2581,6 +2583,7 @@ void CLEAR_DATA_ARRAY(unsigned int8 array[], int array_size)
 
 ## 3. MAIN PIC
 
+#### File content
 The files found in the MAIN PIC folder are detailed in Table 3 below. 
 
 |  File name pattern   | Scope  |  Content    |
@@ -2823,7 +2826,7 @@ void COMUNICATION_WITH_FAB_PIC_AND_WAIT_FOR_RESPONE(int numof_times, int16 time_
 void GIVE_COMFM_ACCESS_TO_COMPIC_FOR_DATA_DOWNLOAD();
 ```
 
-### Code Highlights
+#### Code Highlights
 1. Communication Handling:
 The code establishes a structured communication mechanism between the main PIC and subsystems like FAB PIC, Reset PIC, and external PCs, using UART streams and dedicated buffers.
 
@@ -4264,3 +4267,292 @@ void COM_FM_BYTE_WRITE(unsigned int32 byte_address, unsigned int8 data)
    return;
 }
 ```
+
+
+
+### ComPic_Settings.c 
+
+####
+
+
+####
+
+
+####
+
+
+####
+
+
+
+### Definitions.c 
+
+#### Initial constat definitons
+```c
+#define ON    1
+#define OFF   0
+#define CLOSE 1
+#define OPEN  0
+```
+values of on and off, close and open for 0 and 1
+
+```c
+#define FAB_KILL_SWITCH_FLAG            5
+#define OBC_KILL_SWITCH_FLAG            10
+```
+flags memory locations of kill switches in EEROM
+
+
+```c
+#define FAB_KILL_SWITCH_STATUS_PIN      PIN_D3
+#define OBC_KILL_STATUS_STATUS_PIN      PIN_C1
+```
+kill switch status read pin
+
+#### ADC Channel definitions
+
+```c
+unsigned int8 CNL_ADD = 0B1000001100110000 ;              // 0x8330
+
+#define PLUS_X_TEMP         0       //  V0 channel TEMP1
+#define MINUS_Y_TEMP        1       //  V1 channel TEMP2
+#define MINUS_Z_TEMP        2       //  V2 channel TEMP3
+#define PLUS_Y_TEMP         3       //  V3 channel TEMP4
+#define PLUS_Z_TEMP         4       //  V4 channel TEMP5
+#define BACKPLANE_TEMP      5       //  V5 channel TEMP6  // rename
+#define MINUS_X_TEMP        6       //  V6 channel TEMP7
+#define TEMP8               7       //  V7 channel TEMP8  // rename
+
+#define PLUS_X_VOLTAGE      8       //  V_1 V8 channel voltage
+#define PLUS_Y_VOLTAGE      9       //  V_2 V9 channel voltage
+#define MINUS_Z_VOLTAGE    10       //  V_3 V10 channel voltage
+#define MINUS_Y_VOLTAGE    11       //  V_4 V11 channel voltage
+#define PLUS_Z_VOLTAGE     12       //  V_5 V12 channel voltage
+#define MINUS_X_VOLTAGE    13       //  V_6 V13 channel voltage
+```
+Represents a 16-bit binary channel address (possibly for a specific hardware register or device).
+0x8330: The hexadecimal representation of 1000001100110000.
+
+definitions related external adc channel address, 
+These constants map temperature sensors to specific channels in the telemetry system
+Maps voltage monitoring channels for solar panels or subsystems corresponding to satellite axes (+X, -Y, etc.).
+
+
+```c
+#define MINUS_X_SP_CURRENT 5
+#define MINUS_Y_SP_CURRENT 3
+#define MINUS_Z_SP_CURRENT 2
+#define PLUS_Y_SP_CURRENT  1
+#define PLUS_Z_SP_CURRENT  4
+#define PLUS_X_SP_CURRENT  0  //
+
+#define RAW_VOLTAGE        9
+#define RAW_CURRENT         6
+#define BATTERY_VOLTAGE    10
+#define BATTERY_CURRENT    12
+#define BATTERY_TEMP       13
+#define SP_BUS_VOLTAGE     8
+#define SP_BUS_CURRENT     11
+```
+PIC ADC lines, 
+Maps solar panel currents to channels for telemetry or control purposes, aligned with the satellite's axes.
+Represents telemetry values for monitoring the satellite's power system
+
+
+```c
+#use spi(MASTER, CLK = PIN_C3, DI = PIN_C4, DO = PIN_C5,ENABLE = PIN_C2, BAUD = 100000, BITS = 16, STREAM = SPIPORT, MODE = 2 )
+```
+external adc spi port definition
+
+#### READ_EXT_ADC_CHANELS(channel)
+```c
+unsigned int8 READ_EXT_ADC_CHANELS( unsigned int32 channel )
+{
+   unsigned int32 CNL_ADD = 0B1000001100110000 | (channel<<10) ;      // 0B1000001100110000 = 0x8330         
+   spi_xfer(SPIPORT, CNL_ADD); 
+   unsigned int16 ADC_READING = spi_xfer(SPIPORT) & 0x0FFF;           // reading ADC values and removing first address bits  
+   
+   return ADC_READING/16;                                             // converting to 8 bit
+}
+```
+using this function external ADC temperature channels can be read
+
+#### READ_FAB_PIC_ADC(port_name)
+
+```c
+unsigned int16 READ_FAB_PIC_ADC(int port_name)
+{
+   SET_ADC_CHANNEL(port_name); //  routing nth channel to adc
+   delay_us(40);      
+
+   return READ_ADC();       
+}
+```
+
+#### AVERAGE_PICADC_READING(channel, num_of_readings, timedelay)
+
+```c
+unsigned int8 AVERAGE_PICADC_READING(int channel, int16 num_of_readings, int16 timedelay)
+{
+   unsigned int16 val = 0;
+   
+   for(int16 i=0; i<num_of_readings; i++)  
+   {
+      val = val + READ_FAB_PIC_ADC( channel ) ;
+      delay_us(timedelay);
+   }
+   
+   val = (val/num_of_readings);
+   
+   return (char)((val>>4)&0xFF);
+}
+```
+
+#### AVERAGE_EXTADC_READING(channel, num_of_readings, timedelay)
+
+```c
+unsigned int8 AVERAGE_EXTADC_READING(int channel, int16 num_of_readings, int16 timedelay)
+{
+   unsigned int32 val = 0;
+   
+   for(int16 i=0; i<num_of_readings; i++)  
+   {
+      val = val + READ_EXT_ADC_CHANELS( channel ) ;
+      delay_us(timedelay);
+   }
+   
+   val = val /num_of_readings;
+   
+   return (char)val;
+}
+```
+
+#### AVERAGE_HECS_READING(channel, num_of_readings, timedelay)
+
+```c
+unsigned int16 AVERAGE_HECS_READING(int channel, int16 num_of_readings, int16 timedelay)
+{
+   unsigned int32 VAL = 0;
+   
+   for(int16 i=0; i<num_of_readings; i++)  
+   {
+      val = val + READ_FAB_PIC_ADC( channel ) ;
+      delay_us(timedelay);
+   }
+   val = (val/num_of_readings); 
+   
+   return (unsigned int16)val;
+}
+```
+
+### Debug.c  
+
+####
+
+
+####
+
+
+####
+
+
+####
+
+
+### MPIC_CPIC.c 
+
+####
+
+
+####
+
+
+####
+
+
+####
+
+
+### MPIC_RPIC.c 
+
+####
+
+
+####
+
+
+####
+
+
+####
+
+
+### RESERVE_fun.c 
+
+####
+
+
+####
+
+
+####
+
+
+####
+
+
+
+
+### RTC_functions.c 
+
+####
+
+
+####
+
+
+####
+
+
+####
+
+
+
+
+
+
+## 4. COM PIC
+
+#### File content
+The files found in the COM PIC folder are detailed in Table 3 below. 
+
+|  File name pattern   | Scope  |  Content    |
+|----------------------|--------|-------------|
+|  |    |    |
+|  |    |    |
+|  |    |    |
+|  |    |    |
+|  |    |    |
+|  |    |    |
+|  |    |    |
+|  |    |    |
+|  |    |    |
+|  |    |    |
+|  |    |    |
+|  |    |    |
+|  |    |    |
+|  |    |    |
+|  |    |    |
+|  |    |    |
+
+
+This program is designed to manage and control various subsystems of BIRDS-X using the PIC18F67J94 microcontroller. It includes functionalities such as antenna deployment, real-time clock (RTC) management, communication with other PICs (microcontrollers), and handling commands through UART interfaces.
+
+The code is modular and uses external files to implement specific functionalities such as flash memory handling, RTC functions, and debugging.
+
+
+
+
+
+
+
