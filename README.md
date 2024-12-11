@@ -1,25 +1,48 @@
 # BIRDSRP-OBC
 
-
-<p align=center>
- <h1>
-  BIRDS-RP SATELLITE SOFTWARE DEVELOPER’S MANUAL 
- </h1>
-</p>
-
-
 <p align=center>
 <img src="https://birds-x.birds-project.com/wp-content/uploads/2023/01/logo_aboutus-1024x393.png" width=50%>
 </p>
 
 
-## Introduction 
- 
-### Document Purpose 
-This document is prepared to share a thorough explaination of the execution of the BIRDS-RP satellite bus software. 
+# BIRDSRP-OBC
+ Documentation for the Solar Panel files of the BIRDSX Satellite.
 
 
-## BLOCK DIAGRAMS
+## About the BIRDS-RP Program:
+
+The Mission Statement of the Project is:
+
+> “The goal of our project is to bring diversity to the space sector and democratize the usage of space.”
+
+The project is led by Kyushu Institute of Technology in Japan and involves students from XXX,XXX and Japan.
+
+Satellite Name: Dragonfly (Japan), 
+
+Stakeholders:  Our stakeholders are Kyushu Institute of Technology (Kyutech), Rwanda, Paraguay, Moldova, and the Association for Radio Digital Communications (ARDC).
+
+Project duration: 2024-2026
+
+CubeSat: 3U (30x10x10) cm3
+
+Weight: N/Akg
+
+Launch Date: 2026
+
+BIRDS-X project is a 2U CubeSat dedicated to amateur radio communication.
+
+## Organisation structure
+
+```bash
+
+├── 
+├── 
+├── 
+├── 
+└── README.md
+
+```
+
 
 ### BUS SYSTEM BLOCK DIAGRAM
 The system block diagram of the BIRDS-RP satellite is detailed in figure 1 below. 
@@ -36,74 +59,22 @@ The system block diagram of the BIRDS-RP satellite is detailed in figure 1 below
 The organisational file stucture of the microcontrollers in the BIRDS-RP OBC board is detailed in  figure 2 below. 
  
 
+<div align="center">
+  <a href="https://lean-sat.org/opensource/">
+  <img alt="Join the monthly community webinars" src="https://img.shields.io/badge/join_our-monthly_webinars-orange" />
+  </a>
+</div> 
 
-## START PIC
-The following table shows the flow chart of operation for the START PIC after RBF pin is removed and 30 minutes after the satellite is launched for the ISS.
-
-|  After RBF removed |  After ISS release  | 
-|----------------------|--------|
-| ![](Diagrams/pic_operations_ISS-START_PIC.png) |  ![](Diagrams/pic_operations-START-PIC.png)  | 
-| <a href="https://app.diagrams.net/#HBIRDSOpenSource%2FBIRDSRP-OBC%2Fmain%2FDiagrams%2Fpic_operations_ISS-START_PIC.png" target="_blank">Edit with draw.io</a> | <a href="https://app.diagrams.net/#HBIRDSOpenSource%2FBIRDSRP-OBC%2Fmain%2FDiagrams%2Fpic_operations-START-PIC.png" target="_blank">Edit with draw.io</a>  | 
-
-
-The files found in the START PIC folder are detailed in Table 1 below. 
-
-|  File name pattern   | Scope  |  Content    |
-|----------------------|--------|-------------|
-|  STARTPIC.c |    |    |
-|  StartPIC_Functions.c  |    |    |
+<div align="center">
+  <img width="125" alt="birds x" src="https://github.com/user-attachments/assets/8aa7c5b7-313c-48e7-952b-81ce0ce1a703">
+</div>
 
 
-## RESET PIC 
-The following table shows the flow chart of operation for the RESET PIC after RBF pin is removed and 30 minutes after the satellite is launched for the ISS.
+## I like this project, can I help you?
+You are welcome 🙂
 
-|  After RBF removed   |  After ISS release  | 
-|----------------------|---------------------|
-| ![](Diagrams/pic_operations_ISS-RESET_PIC.png) |  ![](Diagrams/pic_operations-RESET-PIC.png)  | 
-| <a href="https://app.diagrams.net/#HBIRDSOpenSource%2FBIRDSRP-OBC%2Fmain%2FDiagrams%2Fpic_operations_ISS-RESET_PIC.png" target="_blank">Edit with draw.io</a> | <a href="https://app.diagrams.net/#HBIRDSOpenSource%2FBIRDSRP-OBC%2Fmain%2FDiagrams%2Fpic_operations-RESET-PIC.png" target="_blank">Edit with draw.io</a>  | 
-
-
-The files found in the RESET PIC folder are detailed in the table below. 
-
-|  File name pattern   | Scope  |  Content    |
-|----|----|----|
-|    |    |    |
-|    |    |    |
-
-
-## MAIN PIC 
-
-After the satellite is released to its orbit, the startpic turn on the power line to the Main PIC
-
-The following table shows the flow chart of operation for the MAIN PIC 30 minutes after the satellite is launched from the ISS and in nominal operation.
-
-|  After ISS release  |  Nominal operation  | 
-|----------------------|---------------------|
-| ![](Diagrams/pic_operations-MAIN-PIC.png) |  ![](Diagrams/pic_operations-RESET-PIC.png)  | 
-| <a href="https://app.diagrams.net/#HBIRDSOpenSource%2FBIRDSRP-OBC%2Fmain%2FDiagrams%2Fpic_operations-MAIN-PIC.png" target="_blank">Edit with draw.io</a> | <a href="https://app.diagrams.net/#HBIRDSOpenSource%2FBIRDSRP-OBC%2Fmain%2FDiagrams%2Fpic_operations-MAIN-PIC.png" target="_blank">Edit with draw.io</a>  | 
-
-The files found in the MAIN PIC folder are detailed in the table below. 
-
-|  File name pattern   | Scope  |  Content    |
-|----|----|----|
-|    |    |    |
-|    |    |    |
-
-### MAIN.C 
-
-### DEFINITIONS.H 
- 
-### DEVICE.H
- 
-### LIBUART.H 
-
-### RTCPERIPHERAL.H 
- 
-### MEMORY_SETUP.H 
- 
-### FLASH_MEMORY.H 
- 
-### INTERPRETER.H  
-
-## FAB PIC 
-
+* Give us a star ⭐
+* Watch repository to be notified about updates 👀
+* If you will find some errors, report them in Issues 🐞
+* Try Birds designs on some real computer and let us know how it worked in Discussions. 💬
+* We would greatly appreciate if you would also tell others about this ecosystem, it helps us to improve BIRDS Open Source. Thank you!
