@@ -1,0 +1,10 @@
+C:\Users\cholab-12\OneDrive - Kyushu Institute Of Technolgy\Leopard Project\Software\MAIN PIC\device.h:60:1:  Info#300  More info:   Timer 1 tick time is 1.02 ms
+C:\Users\cholab-12\OneDrive - Kyushu Institute Of Technolgy\Leopard Project\Software\MAIN PIC\definitions.h:19:9:  Warning#224  #warning   "Building for FM"
+C:\Users\cholab-12\OneDrive - Kyushu Institute Of Technolgy\Leopard Project\Software\MAIN PIC\interpreter.h:3490:1:  Warning#207  Code has no effect
+C:\Users\cholab-12\OneDrive - Kyushu Institute Of Technolgy\Leopard Project\Software\MAIN PIC\interpreter.h:3514:1:  Warning#207  Code has no effect
+C:\Users\cholab-12\OneDrive - Kyushu Institute Of Technolgy\Leopard Project\Software\MAIN PIC\main.c:28:22:  Warning#202  Variable never used:   uart_port_COMM
+C:\Users\cholab-12\OneDrive - Kyushu Institute Of Technolgy\Leopard Project\Software\MAIN PIC\main.c:29:21:  Warning#202  Variable never used:   uart_port_FAB
+C:\Users\cholab-12\OneDrive - Kyushu Institute Of Technolgy\Leopard Project\Software\MAIN PIC\main.c:30:21:  Warning#202  Variable never used:   uart_port_RST
+      Memory usage:   ROM=87%      RAM=84% - 97%
+      0 Errors,  6 Warnings.
+Build Successful.

@@ -1,0 +1,3 @@
+-xc
+-DPC_SIM
+-Wno-format
