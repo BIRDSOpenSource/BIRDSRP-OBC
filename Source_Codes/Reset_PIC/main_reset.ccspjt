@@ -1,0 +1,14 @@
+[PROJECT]
+Target=main_reset.hex
+Processor_Text=PIC16F1789
+CCSVersion=5.050
+Compiler=PCM
+[Target Data]
+FileList=main_reset.c
+[main_reset.c]
+Type=4
+[mru-list]
+1=main_reset.c
+[Units]
+Count=1
+1=main_reset (main)
