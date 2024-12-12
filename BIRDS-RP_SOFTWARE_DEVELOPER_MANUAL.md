@@ -185,19 +185,6 @@ Declares an 8-bit unsigned integer RP_Temp_byte initialized to 0. This is a temp
 
 ISR (```SERIAL_ISR1()```): Handles incoming UART data efficiently, storing it in a buffer.
 
-``` c
-#INT_RDA
-Void SERIAL_ISR1() // MAIN PIC UART interrupt loop
-{
-   if( RP_Byte_Counter < RP_BFR_SIZE )
-   {
-      RP_Buffer[RP_Byte_Counter] = fgetc(RPIC);
-      RP_Byte_Counter++;
-   }
-   else RP_Overflow = fgetc(RPIC);
-}
-```
-
 ```INT_RDA```: This is the interrupt identifier for UART receive data available. It triggers whenever the UART hardware receives a byte.
 
 ```SERIAL_ISR1()```: The interrupt handler (ISR) for the UART.
@@ -231,25 +218,6 @@ RPic_Read()
 ```
 Safely reads from the buffer, maintaining counters and avoiding overflow.
 
-``` c
-unsigned int8 RPic_Read()
-{
-   if (RP_Byte_Counter > 0)
-   {    
-      RP_Temp_byte = RP_Buffer[RP_Read_Byte_counter];
-      RP_Byte_Counter--;
-      RP_Read_Byte_counter++;
-      if(RP_Byte_Counter == 0) RP_Read_Byte_counter = 0;
-      return RP_Temp_byte; 
-   }
-   if (RP_Byte_Counter == 0)
-   { 
-      RP_Read_Byte_counter = 0;
-      RP_Temp_byte = 0x00;
-      return RP_Temp_byte; 
-   }
-}
-```
 1. Checks if there are bytes available (```RP_Byte_Counter > 0```):
 - Reads the byte from RP_Buffer at the position of RP_Read_Byte_counter.
 - Decreases the byte counter(```RP_Byte_Counter```) and increments the read index (```RP_Read_Byte_counter```).
@@ -263,33 +231,6 @@ unsigned int8 RPic_Read()
 CHECK_UART_INCOMING_FROM_RESET_PIC()
 ```
 Processes incoming messages, searches for a synchronization byte (0xAA), and stores the message in an array. It also sends part of the data to a PC for debugging or monitoring.
-
-``` c
-void CHECK_UART_INCOMING_FROM_RESET_PIC()
-{
-   if( Rpic_Available() )
-   {
-      delay_ms(10);
-      for(int i=0; i<8; i++)
-      {
-         if( RPIC_Read() == 0xAA )
-         {
-            RPIC_TO_SPIC_ARRAY[0] = 0xAA;
-            break;
-         }
-      }
-      for(int i=1; i<10; i++)
-      {
-         RPIC_TO_SPIC_ARRAY[i] = RPIC_Read();
-      }
-      for(int i=0; i<3; i++)
-      {
-         fprintf(PC, "%X ", RPIC_TO_SPIC_ARRAY[i]);
-      }
-      fprintf(PC, "\n\r");
-   }
-}
-```
 1.Checks if data is available:
 - Calls ```Rpic_Available()``` to see if the buffer has any bytes.
 2. Waits briefly:
@@ -308,20 +249,6 @@ The next code defines three utility functions for managing power lines and clear
 
 **TURN_OFF_ALL_POWER_LINES()**
 This function disables power to all connected components by setting specific control pins to a "low" state (0V).
-
-``` c
-void TURN_OFF_ALL_POWER_LINES()
-{
-   output_Low(PIN_D6); // Switch enable for COM PIC
-   output_Low(PIN_D7); // Switch enable for Main PIC   
-   output_Low(PIN_C2); // OCP switch disable for Unreg #1
-   output_Low(PIN_C5); // OCP switch disable for Unreg #2
-   
-   POWER_LINE_STATUS = OFF;
-   fprintf(PC, "Turned OFF Power lines\n\r");
-}
-```
-
 - ```output_Low(PIN_D6)```; Sets the voltage of PIN_D6 to low, disabling the power line for the COM PIC.
 - ```output_Low(PIN_D7)```; Sets the voltage of PIN_D7 to low, disabling the power line for the Main PIC.
 - ```output_Low(PIN_C2)```; Disables the Over-Current Protection (OCP) switch for an unregulated power line labeled "Unreg #1".
@@ -332,24 +259,6 @@ void TURN_OFF_ALL_POWER_LINES()
 
 **TURN_ON_ALL_POWER_LINES()**
 This function enables power to all connected components by setting specific control pins to a "high" state (e.g., 3.3V or 5V).
-
-``` c
-void TURN_ON_ALL_POWER_LINES()
-{
-   output_High(PIN_D6);                                                         
-   Delay_ms(50);
-   output_High(PIN_D7);                                                         
-   Delay_ms(50);
-   output_High(PIN_C2);                                                         
-   Delay_ms(50);
-   output_High(PIN_C5);                                                         
-   Delay_ms(50);
-   
-   POWER_LINE_STATUS = ON;
-   fprintf(PC, "Turned ON Power lines\n\r");
-}
-```
-
 - ```output_High(PIN_D6)```; Sets the voltage of PIN_D6 to high, enabling the power line for the COM PIC.
 - ```Delay_ms(50)```; Waits for 50 milliseconds to stabilize the power line.
 - ```output_High(PIN_D7)```; Enables the power line for the Main PIC. Another 50 ms delay is added for stability.
@@ -360,13 +269,6 @@ Enables the OCP switches for the unregulated power lines "Unreg #1" and "Unreg #
 
 **CLEAR_RPIC_TO_SPIC_ARRAY()**
 This function resets the ```RPIC_TO_SPIC_ARRAY``` to all zeros. This is used to clear stale or invalid data from the communication array.
-
-``` c
-void CLEAR_RPIC_TO_SPIC_ARRAY()
-{
-   for( int i = 0; i<10; i++ ) RPIC_TO_SPIC_ARRAY[i] = 0;
-}
-```
 
 - ```for( int i = 0; i<10; i++ )```: Iterates through the 10 elements of the ```RPIC_TO_SPIC_ARRAY```.
 - ```RPIC_TO_SPIC_ARRAY[i] = 0```: Sets each element of the array to 0, effectively clearing it.
@@ -403,14 +305,6 @@ Configures a UART communication stream on PIN_D3 for transmitting data at 38,400
 
 
 **Global Variables**
-
-``` c
-unsigned int16 RPIC_RESPOND_SEC_COUNTER = 0;
-unsigned int16 MLC = 0;
-
-unsigned int16 SEC_COUNT = 0;
-unsigned int8 ONEHOUR_FLAG = 0x00;
-```
 
 - ```RPIC_RESPOND_SEC_COUNTER```: Tracks how long the Reset PIC takes to respond.
 - ```MLC```: A secondary counter used in the main loop.
@@ -539,84 +433,7 @@ Here is a flow diagram focused on the main loop
 
 
 Here's the flow diagram illustrating the operation of the microcontroller system based on the code. Each step is represented to show the system's initialization, main loop, and decision-making processes. 
-
-``` sql
-          START
-           |
-           V
-          +-----------------------+
-          | Initialize System     |
-          | - Delay for boot time |
-          | - Enable interrupts   |
-          | - Turn on power lines |
-          | - Set inputs for CC,  |
-          |   BB                  |
-          +-----------------------+
-           |
-           | < -----------------------------------------------------------------------------------------+
-           V                                                                                            |
-          +-----------------------+                                                                     |
-          | Check UART Incoming   |                                                                     |
-          | - Look for 0xAA       |                                                                     |
-          | - Store in RPIC array |                                                                     |
-          | - Print first 3 bytes |                                                                     |
-          +-----------------------+                                                                     |
-           |                                                                                            |
-           +--------------------------+                                                                 |
-+->+---->  | Is ONEHOUR_FLAG == 0xAA? |-----> NO -----> Increment SEC_COUNT                             |
-|  |       +--------------------------+                        |                                        |
-|  |                   |                                       V                            +----------------------------+
-|  |                 YES                                Is SEC_COUNT >= 36000? ---- NO -->  | Toggle Watchdog Timer (PIN)|
-|  |                 |                                        |                             +----------------------------+
-|  |                 V                                        |
-|  |      +-----------------------------+                     |
-|  |      | Process Hourly Tasks        |                     V
-|  |      | - Check RPIC array for      |<-------------------YES
-|  |      |   0xAA, 0xBB, 0xCC          |
-|  |      | - Reset counters if valid   |
-|  |      | - Turn off power if ON      |
-|  |      +-----------------------------+
-|  |                 |
-|  |           Response VALID
-|  |                 |
-|  |                 |
-|  |            Reset counters
-|  |      Turn OFF power lines if ON
-|  |                 |
-|  |                 |
-|  |                 V
-|  |       +-------------------------------+
-|  |       | Is Main Loop Counter >= 50?   |
-|  |       +-------------------------------+     
-|  |                 |
-|  |                YES
-|  |                 |
-|  |                 V
-|  |      +-----------------------------------+
-|  |      |           Reset MLC               |
-|  |      | Increment RPIC Response Counter   |
-|  |      +-----------------------------------+
-|  |                 |
-|  |                 |
-|  |                 V
-|  |      +-------------------------------+
-|  NO ----| Is RPIC Response Counter>= 36? | 
-|         +-------------------------------+
-|                  | 
-|                 YES
-|                  |
-|                  V
-|         +-----------------------------+
-|         | No RPIC response: Turn ON   |
-|         | power lines, reset counter  |
-|          +-----------------------------+
-|                    |
-|                    |
-|               Increment MLC
-|                    |
-|                    |
-+---------<----------+
-```
+bytes 
 
 ## 2. RESET PIC 
 
@@ -644,125 +461,35 @@ Here is a detailed breakdown of the functionality:
 
 #### Global Definitions and Variables
 
-``` c
-#define ON  1
-#define OFF 0
-```
 Defines symbolic constants ```ON``` and ```OFF``` for readability, representing ```1``` (ON) and ```0``` (OFF) states.
 
-``` c
-#define BB_ON_OCP_ON   1
-#define BB_ON_OCP_OFF  2
-#define BB_OFF_OCP_OFF 3
-```
 Defines states for a buck-boost converter and overcurrent protection (OCP):
 - ```BB_ON_OCP_ON```: Buck-boost ON, OCP ON.
 - ```BB_ON_OCP_OFF```: Buck-boost ON, OCP OFF.
 - ```BB_OFF_OCP_OFF```: Buck-boost OFF, OCP OFF.
-
-``` c
-unsigned int8 POWER_LINE_STATUS = 0;
-unsigned int8 RESET_TIME = 0;
-```
 - ```POWER_LINE_STATUS```: 8-bit variable where each bit indicates the status of different power lines or components.
 - ```RESET_TIME```: Tracks the time when a system reset occurred.
 
 #### Functions for System Components
 
-MP_CP_BuckBoost(): This function controls the Main PIC <-> Com PIC buck-boost converter.
-
-``` c
-void MP_CP_BuckBoost(int1 status)
-{
-    if (status == ON)
-    {
-      output_LOW(PIN_C4);
-    }
-    if (status == OFF)
-    {
-      output_HIGH(PIN_C4);
-    }
-    RST_EXT_WDT();
-}
-```
+```MP_CP_BuckBoost()```: 
+This function controls the Main PIC <-> Com PIC buck-boost converter.
 - Turns the converter ON/OFF by controlling ```PIN_C4```.
 - Calls ```RST_EXT_WDT()``` to reset an external watchdog timer (prevents system reset due to inactivity).
 
-MainPic_Power(): This function manages power for the main microcontroller (Main PIC)
-
-``` c
-void MainPic_Power(int1 status)
-{
-    if (status == 1)
-    {
-       output_high(PIN_F5);
-       BIT_SET(POWER_LINE_STATUS,7);
-    }
-    if (status == 0)
-    {
-       output_low(PIN_F5);
-       BIT_CLEAR(POWER_LINE_STATUS,7);
-    }
-    delay_ms(50);
-    RST_EXT_WDT();
-}
-```
+```MainPic_Power()```: 
+This function manages power for the main microcontroller (Main PIC)
 - Activates/deactivates power to Main PIC via ```PIN_F5```.
 - Updates bit 7 of ```POWER_LINE_STATUS``` to reflect the Main PIC's state.
 - Adds a delay (debouncing) and resets the watchdog timer.
 
-ComPic_Power(): This function manages power for the communication microcontroller (Com PIC)
-
-``` c
-void ComPic_Power(int1 status)
-{
-    if (status == 1)
-    {
-       output_high(PIN_F6);
-       BIT_SET(POWER_LINE_STATUS,6);
-    }
-    if (status == 0)
-    {
-       output_low(PIN_F6);
-       BIT_CLEAR(POWER_LINE_STATUS,6);
-    }
-    delay_ms(50);
-    RST_EXT_WDT();
-}
-```
+```ComPic_Power()```: 
+This function manages power for the communication microcontroller (Com PIC)
 - Similar to ```MainPic_Power```, but controls ```PIN_F6``` and updates bit 6 of ```POWER_LINE_STATUS```.
 - Adds a delay (debouncing) and resets the watchdog timer.
 
-_3V3Power_Line1(): This function controls a 3.3V#1 power line with overcurrent protection
-
-``` c
-void _3V3Power_Line1(int1 status )
-{
-    if (status == BB_ON_OCP_ON)
-    {
-       output_high(PIN_D1);
-       Delay_ms(50);
-       output_high(PIN_D4);
-       BIT_SET(POWER_LINE_STATUS,5);
-    }
-
-    if (status == BB_ON_OCP_OFF)
-    {
-       output_high(PIN_D1);
-       output_low(PIN_D4);
-       BIT_CLEAR(POWER_LINE_STATUS,5);
-    }
-
-    if (status == BB_OFF_OCP_OFF)
-    {
-       output_low(PIN_D1);
-       output_low(PIN_D4);
-       BIT_CLEAR(POWER_LINE_STATUS,5);
-    }
-    delay_ms(50);
-    RST_EXT_WDT();
-}
-```
+```_3V3Power_Line1()```: 
+This function controls a 3.3V#1 power line with overcurrent protection
 - Uses ```PIN_D1``` to control the buck-boost converter and ```PIN_D4``` to control OCP.
 - Updates bit 5 of ```POWER_LINE_STATUS``` to reflect the 3.3V#1 power line state.
 - Adds a delay (debouncing) and resets the watchdog timer.
@@ -791,50 +518,15 @@ void _3V3Power_Line1(int1 status )
 
 #### System Reset Functions
 
-SYSTEM_RESET(): Performs a manual system reset of the satellite by command from PC or GS
-
-``` c
-void SYSTEM_RESET()
-{  
-   int sec_c = 0;
-   Fprintf(PC,"system reset by command \n\r");
-   // turn off system
-   MainPic_Power(OFF)                ;  Delay_ms(250) ; 
-   ComPic_Power(OFF);Delay_ms(250)   ;  Delay_ms(250) ; 
-   _3V3Power_Line1(BB_OFF_OCP_OFF)   ;  Delay_ms(250) ; 
-   _3V3Power_Line2(BB_OFF_OCP_OFF)   ;  Delay_ms(250) ; 
-   _5V0Power_Line(BB_OFF_OCP_OFF)    ;  Delay_ms(250) ; 
-   Unreg1_Line(OFF);Delay_ms(250)    ;  Delay_ms(250) ; 
-   Unreg2_Line(OFF);Delay_ms(250)    ;  Delay_ms(250) ;
-
-   RESET_TIME = hour;
-
-   for (int i = 0; i < 10; i++)
-   {
-       Delay_ms(500);
-       RST_EXT_WDT();
-       Delay_ms(500);
-       RST_EXT_WDT();
-       sec_c++;
-       Fprintf(PC, "Waiting to turn on system again %02d Sec\n\r", sec_c);
-   }
-
-   // turn on system
-   MainPic_Power(ON)                ;    Delay_ms(250) ;      
-   ComPic_Power(ON)                 ;    Delay_ms(250) ;      
-   _3V3Power_Line1(BB_ON_OCP_ON)    ;    Delay_ms(250) ;     
-   _3V3Power_Line2(BB_ON_OCP_ON)    ;    Delay_ms(250) ;       
-   _5V0Power_Line(BB_ON_OCP_ON)     ;    Delay_ms(250) ;      
-   Unreg1_Line(ON)                  ;    Delay_ms(250) ;     
-   Unreg2_Line(OFF)                 ;    Delay_ms(250) ;
-}
-```
+```SYSTEM_RESET()```: 
+Performs a manual system reset of the satellite by command from PC or GS
 - Sequentially turns off all components.
 - Set reset time to 1 hour
 - Waits 10 seconds, resetting the watchdog timer periodically (every  half second).
 - Turns all components back on after the delay.
 
-SYSTEM_RESET_24H(): This function automates a daily reset at a specific time. Similar to SYSTEM_RESET(), but triggered when hour, minute, and second match predefined values.
+```SYSTEM_RESET_24H()```: 
+This function automates a daily reset at a specific time. Similar to SYSTEM_RESET(), but triggered when hour, minute, and second match predefined values.
 
 #### ADC Measurement Functions
 
@@ -850,19 +542,7 @@ These values are used for:
 **Commented Section**
 
 The commented code below describes how certain hardware signals are being monitored and measured using analog-to-digital conversion.
-
-``` c
-// C3 = Raw power monitor enable
-// A2 (AN2) = Raw voltage measure
-// A1 (AN1) = 3V3-1 current measure
-// A0 (AN0) = 3V3-2 current measure
-// A5 (AN4) = 5V0 current measure
-// A4 (AN6) = UNREG-1 current measure
-// C2 (AN9) = UNREG-2 current measure
-```
-
 Each signal is mapped to a specific pin (or port) on the microcontroller, and the purpose of that pin is described:
-
 1. ```C3 = Raw power monitor enable```
 - This pin (```C3```) controls a pin used to enable or disable monitoring of the raw power input. It is toggled as needed to save power and/or isolate specific circuits.
 2. ```A2 (AN2) = Raw voltage measure```
@@ -878,14 +558,6 @@ Each signal is mapped to a specific pin (or port) on the microcontroller, and th
 7. ```C2 (AN9) = UNREG-2 current measure```
 - Analog channel 9 (```AN9```) measures the current for another unregulated power line labeled UNREG-2.
 
-``` c
-unsigned int16 _Raw_power_ADC_val       = 0 ;          
-unsigned int16 _3V3_1_current_ADC_val   = 0 ;          
-unsigned int16 _3V3_2_current_ADC_val   = 0 ;          
-unsigned int16 _5V0_current_ADC_val     = 0 ;          
-unsigned int16 _UNREG_1_current_ADC_val = 0 ;      
-unsigned int16 _UNREG_2_current_ADC_val = 0 ;
-```
 
 **Variables**
 
@@ -908,18 +580,6 @@ Measure_*(): These functions measure voltages and currents for different lines w
 - UNREG_1_current
 - UNREG_2_current
 
-``` c
-unsigned int16 Measure_Raw_voltage() // A2 (AN2) = Raw voltage measure
-{
-    Output_low(PIN_C3);
-    Delay_us(100);
-
-    SET_ADC_CHANNEL(2);
-    delay_us(20);
-    Output_high(PIN_C3);
-    return READ_ADC();
-}
-```
 - The function returns a ```16-bit unsigned integer```. This integer represents the digital value of the voltage measured at analog channel 2 (```AN2```), corresponding to the raw voltage.
 - Sets **PIN_C3** to a low logic level (0). In the comments, ```C3``` is described as the "Raw power monitor enable" pin. Setting it low activates the raw voltage measurement circuit (e.g., by powering on a sensor or enabling a voltage divider).
 - Introduces a delay of 100 microseconds. This allows the circuitry connected to PIN_C3 to stabilize after being activated. Stabilization is important for accurate ADC readings, especially in systems with capacitors or sensors.
@@ -962,107 +622,34 @@ This block of code is a series of register and bit definitions for working with 
 Here's a line-by-line explanation:
 
 #### Byte Definitions for TRIS Registers
-
 A TRIS register, or tri-state register, is a control register in Microchip PIC microcontrollers that configures the direction of data flow through a port's I/O pins.
-
-``` c
-#byte TRISG = 0xF98
-#byte TRISF = 0xF97
-#byte TRISE = 0xF96
-#byte TRISD = 0xF95
-#byte TRISC = 0xF94
-#byte TRISB = 0xF93
-#byte TRISA = 0xF92
-```
 - TRIS Registers are used to configure the direction of pins (input or output) for each port (```A``` to ```G```).
 - Setting a TRIS bit to ```1``` makes the corresponding pin an **input**; setting it to ```0``` makes it an **output**.
 - These definitions map the TRIS registers to their respective memory addresses (hex values starting at ```0xF92```).
 
 #### Byte Definitions for LAT Registers
-
-``` c
-#byte LATG = 0xF8F
-#byte LATF = 0xF8E
-#byte LATE = 0xF8D
-#byte LATD = 0xF8C
-#byte LATC = 0xF8B
-#byte LATB = 0xF8A
-#byte LATA = 0xF89
-```
 - LAT Registers (LATCH) control the output state of pins.
 - Writing to a LAT register sets the state of the corresponding port pins (```1``` = HIGH, ```0``` = LOW).
 - These definitions link LAT registers to their specific memory locations.
 
 #### Bit-Level Access to TRIS Registers
-
-``` c
-#bit TRISE0 = TRISE.0
-#bit TRISE1 = TRISE.1
-#bit TRISE2 = TRISE.2
-#bit TRISC4 = TRISC.4
-#bit TRISB3 = TRISB.3
-#bit TRISA0 = TRISA.0
-#bit TRISA1 = TRISA.1
-#bit TRISA2 = TRISA.2
-#bit TRISA5 = TRISA.5
-```
 - Individual bits within the TRIS registers are defined for ease of access.
 - Example: ```TRISE0``` refers to bit 0 of the ```TRISE``` register (controls direction for pin ```E0```).
 
 #### Bit-Level Access to LAT Registers
-
-``` c
-#bit LATA0 = LATA.0
-#bit LATA1 = LATA.1
-#bit LATA2 = LATA.2
-#bit LATA3 = LATA.3
-```
 - Defines specific bits in the LAT registers, corresponding to individual pins on port A.
 - Example: ```LATA0``` controls the state of pin ```A0```.
 
 #### Byte Definitions for PORT Registers
-
-``` c
-#byte PORTG = 0xF86
-#byte PORTF = 0xF85
-#byte PORTE = 0xF84
-#byte PORTD = 0xF83
-#byte PORTC = 0xF82
-#byte PORTB = 0xF81
-#byte PORTA = 0xF80
-```
 **PORT Registers** hold the current state of pins on each port. Reading a PORT register retrieves the pin states, and writing to a PORT register directly changes output levels (if configured as outputs).
 
 #### Bit-Level Access to PORT Registers
-
-``` c
-#bit RG0 = PORTG.0
-#bit RG1 = PORTG.1
-#bit RG2 = PORTG.2
-#bit RG3 = PORTG.3
-#bit RF2 = PORTF.2
-#bit RE2 = PORTE.2
-#bit RC0 = PORTC.0
-#bit RB3 = PORTB.3
-#bit RA0 = PORTA.0
-```
 - Bit-level definitions for individual pins on ports.
 - Example: ```RG0``` refers to bit 0 of PORTG, representing the state of pin ```G0```.
 
 #### Real-Time Clock Control and Alarm
 
 The RTC (Real-Time Clock) section defines control registers and bits for managing the clock and alarms.
-
-``` c
-#byte RTCCON1 = 0xF5F
-#bit RTCPTR0 = RTCCON1.0
-#bit RTCPTR1 = RTCCON1.1
-#bit RTCOE = RTCCON1.2
-#bit HALFSEC = RTCCON1.3
-#bit RTCSYNC = RTCCON1.4
-#bit RTCWREN = RTCCON1.5
-#bit RTCEN = RTCCON1.7
-```
 - ```RTCCON1``` is the control register for the RTC.
    - ```RTCPTR0``` and ```RTCPTR1``` are specific bits within this register, for configuring the pointer to RTC data.
    - ```RTCOE ```
@@ -1071,18 +658,6 @@ The RTC (Real-Time Clock) section defines control registers and bits for managin
    - ```RTCWREN```
    - ```RTCEN```
 
-``` c
-#byte RTCCAL = 0xF5E
-#byte RTCVALH = 0xF5D
-#bit    WAITE0 = RTCVALH.0
-#bit    WAITE1 = RTCVALH.1
-#bit    WAITM0 = RTCVALH.2
-#bit    WAITM1 = RTCVALH.3
-#bit    WAITM2 = RTCVALH.4
-#bit    WAITM3 = RTCVALH.5
-#bit    WAITB0 = RTCVALH.6
-#bit    WAITB1 = RTCVALH.7
-```
 - ```RTCCAL``` is the ... register for the RTC.
 - ```RTCVALH``` is the ... register for the RTC.
    - ```WAITE0``` is a specific bit within the RTCVALH register, for configuring the ...
