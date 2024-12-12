@@ -1181,11 +1181,8 @@ The RTC (Real-Time Clock) section defines control registers and bits for managin
 
 ### RPIC_CPIC.c
 
-
-#### 
-
+#### CHECK_UART_INCOMING_FROM_COM_PIC()
  here we check main pic UART is available or not if available we save in MPIC_TO_RPIC array
-
 ``` c
 void CHECK_UART_INCOMING_FROM_COM_PIC()
 {
@@ -1209,8 +1206,7 @@ void CHECK_UART_INCOMING_FROM_COM_PIC()
 }
 ```
 
-
-
+#### PRINT_RECIVED_COMMAND_FROM_COM_PIC()
 this function will print recived command from com pic
 ``` c
 void PRINT_RECIVED_COMMAND_FROM_COM_PIC()
@@ -1225,8 +1221,8 @@ void PRINT_RECIVED_COMMAND_FROM_COM_PIC()
 }
 ```
 
-
-this fucntons monitor the com pic. if no response within 10min reset pic
+#### MONITOR_COM_PIC_90SEC_COMUNICATION(time)
+this functions monitor the com pic. if no response within 10min reset pic
 will restart the com pic
 ``` c
 void MONITOR_COM_PIC_90SEC_COMUNICATION(int time)
@@ -1247,6 +1243,7 @@ void MONITOR_COM_PIC_90SEC_COMUNICATION(int time)
 }
 ```
 
+#### RESEPOND_TO_CPIC_90SEC_CMD()
 ``` c
 void RESEPOND_TO_CPIC_90SEC_CMD()
 {
@@ -1278,10 +1275,8 @@ void RESEPOND_TO_CPIC_90SEC_CMD()
 }
 ```
 
-
+#### UPDATE_RTC_BY_COM_PIC_CMD()
 ``` c
-
-
 Void UPDATE_RTC_BY_COM_PIC_CMD()
 {
    if(CPIC_TO_RPIC_ARRAY[1] == 0xEA) //MP HF
@@ -1322,7 +1317,7 @@ Void UPDATE_RTC_BY_COM_PIC_CMD()
 }
 ```
 
-
+#### SENDING_TIME_TO_COMPIC()
 ``` c
 void SENDING_TIME_TO_COMPIC()
 {
@@ -4272,22 +4267,256 @@ void COM_FM_BYTE_WRITE(unsigned int32 byte_address, unsigned int8 data)
 
 ### ComPic_Settings.c 
 
-####
+#### Pin assignment definitions
+```c
+#define TXMODE_PIN    PIN_F6     // PIN 42 in connector -> CP2NTRX_DIO0 
+#define TXDONE_PIN    PIN_F5     // PIN 43 in connector -> CP2NTRX_DIO1 
+#define TRXPWR_PIN    PIN_A3     // PIN 38 in connector -> CP2NTRX_DIO2  
+
+#define RSTPIC_RESTART_PIN    PIN_F7
+```
+
+#### Constant definitions
+
+```c
+   unsigned int16 MLC = 0;
+```
+ mainloop counter
 
 
-####
+```c
+   unsigned int CW_DATA[16];
+   unsigned int CW_DATA_TO_NEWTRX[55];
+```
+cw data array
 
 
-####
+```c
+   unsigned int8 CW_FLAG   = 0x00;
+   
+   unsigned int8 NEWTRX_CW     = 0xAA ;
+   unsigned int8 OLDTRX_CW     = 0xBB ;
+   unsigned int8 NEWTRX_1PCKT  = 0xCC ;
+   unsigned int8 OLDTRX_1PCKT  = 0xDD ;
+   
+   unsigned int32 TLE_ADDRESS  = 0x07D00000;    // 2000 th sector start adress
+```
+CW transmission related variables
+
+```c
+   unsigned int8 NEW_TRX_STATUS = 0x00;
+   unsigned int8 ON_  = 0xAA;
+   unsigned int8 OFF_ = 0xBB;
+```
+Transceiver operation
+
+```c
+   unsigned int8 RPIC_TO_CPIC_ARRAY[55];  // only 20 bytes are used
+   unsigned int8 CPIC_TO_RPIC_ARRAY[55];  // only 20 bytes are used
+```
+these arrays are used to comunicate with reset pic
+
+```c
+   unsigned int8 NEWTRX_CMD_BUFFER[60];   
+   unsigned int8 NEWTRX_TO_CPIC_ARRAY[60];
+   unsigned int8 CPIC_TO_NEWTRX_ARRAY[110];
+```
+these arrays are used to comunicate with new tranceiver
+
+```c
+   unsigned int8 OLDTRX_CMD_BUFFER[60];
+   unsigned int8 OLDTRX_TO_CPIC_ARRAY[60];
+   unsigned int8 CPIC_TO_OLDTRX_ARRAY[110];
+```
+these arrays are used to comunicate with old tranceiver
+
+```c
+   unsigned int8 MPIC_TO_CPIC_ARRAY[55];  // only 32 bytes are used
+   unsigned int8 CPIC_TO_MPIC_ARRAY[55];  // only 40 bytes are used
+```
+these arrays are used to comunicate with main pic
+
+**Call signs** 
+**GS call sign**
+```c
+   unsigned int8 GS_callsign_leter_1 = 0x4A ;   // J
+   unsigned int8 GS_callsign_leter_2 = 0x47 ;   // G
+   unsigned int8 GS_callsign_leter_3 = 0x36 ;   // 6
+   unsigned int8 GS_callsign_leter_4 = 0x59 ;   // Y
+   unsigned int8 GS_callsign_leter_5 = 0x42 ;   // B
+   unsigned int8 GS_callsign_leter_6 = 0x57 ;   // W
+```
+
+**Satellite call sign**
+```c
+   unsigned int8 ST_callsign_leter_1 = 0x6A ;   // J
+   unsigned int8 ST_callsign_leter_2 = 0x67 ;   // G
+   unsigned int8 ST_callsign_leter_3 = 0x36 ;   // 6
+   unsigned int8 ST_callsign_leter_4 = 0x79 ;   // Y
+   unsigned int8 ST_callsign_leter_5 = 0x6F ;   // O
+   unsigned int8 ST_callsign_leter_6 = 0x77 ;   // W
+```
+
+#### Tranciever beacons
+```c   
+   Void OLD_TRX_SEND_1PCKT_BEACON() ;
+   Void NEW_TRX_SEND_1PCKT_BEACON() ;
+   void COMUNICATION_WITH_MAIN_PIC_AND_WAIT_FOR_RESPONE(int16 numof_times, int16 time_delay, int16 wait_time = 200);  
+```
+
+#### debug software uart
+```c
+#use rs232(baud=19200, parity=N, xmit=PIN_B7,  bits=8, stream = PC, errors, force_sw )  //Debug PGD line
+```
+
+#### UART port connected to main pic
+This section handle the UART port connected to main pic
+```c
+#define MP_BFR_SIZE 50
+#pin_select TX2=PIN_G1  
+#pin_select RX2=PIN_G2  
+#use rs232(UART2, baud=38400, parity=N, bits=8, stream=MPic, errors) 
+
+unsigned int8  MP_Buffer[MP_BFR_SIZE];
+unsigned int16 MP_Byte_Counter = 0;
+unsigned int8  MP_Overflow = 0;
+unsigned int16 MP_Read_Byte_counter = 0;
+unsigned int8  MP_Temp_byte = 0;
+
+#INT_RDA2
+```
 
 
-####
+#### SERIAL_ISR2()   
+```c
+Void SERIAL_ISR2()         // MAIN PIC uart interupt loop
+{
+   if( kbhit(MPic) )
+   {
+      if( MP_Byte_Counter < MP_BFR_SIZE )
+      {
+         MP_Buffer[MP_Byte_Counter] = fgetc(MPic);
+         MP_Byte_Counter++;
+      }
+      else MP_Overflow = fgetc(MPic);
+   }
+}
+```
+
+
+#### MPic_Available()
+```c
+unsigned int8 MPic_Available()
+{
+   if (MP_Byte_Counter > 0) return MP_Byte_Counter ;
+   else return 0;
+}
+```
+
+
+#### MPic_Read()
+```c
+unsigned int8 MPic_Read()
+{
+   if (MP_Byte_Counter>0)
+   {    
+      MP_Temp_byte = MP_Buffer[MP_Read_Byte_counter];
+      
+      MP_Byte_Counter--;
+      MP_Read_Byte_counter++;
+      if(MP_Byte_Counter == 0) MP_Read_Byte_counter = 0;
+      return MP_Temp_byte; 
+   }
+   
+   if (MP_Byte_Counter == 0)
+   { 
+      MP_Read_Byte_counter = 0;
+      MP_Temp_byte = 0x00;
+      return MP_Temp_byte; 
+   }
+}
+```
+
+#### MPic_flush()
+```c
+void MPic_flush()
+{
+   while( MPic_Available() ) MPic_Read() ;
+}
+```
+
+#### UART port connected to RESET pic
+pin select and constant definitions
+
+#### SERIAL_ISR3() 
+MAIN PIC uart interupt loop
+
+#### RPic_Available()
+
+#### RPic_Read()
+
+#### RPic_flush()
+
+
+#### UART port connected to OLD TRANCEIVER definitons
+
+#### SERIAL_ISR1() 
+
+#### OLDTRX_Available()
+
+#### OLDTRX_Read()
+
+#### OLDTRX_flush()
+
+
+
+
+#### UART port connected to NEW TRANCEIVER
+
+#### SERIAL_ISR4() 
+
+#### NEWTRX_Available()
+
+#### NEWTRX_Read()
+
+#### NEWTRX_flush()
+
+
+
+#### printline()
+just printing a line
+
+#### CLEAR_DATA_ARRAY(array[], array_size)
+using this function we can make any data array clear
+
+
+
+#### crc calculating function
+
+#### CALCULATE_CRC(data[], data_number)
+
+#### CALCULATE_CRC_(data[], data_number)
+
+#### flash memory functions
+
+#### FM_WRITE_ENABLE()
+
+#### FM_SECTOR_ERASE(sector_address, sector_size, delay = 1000)
+
+#### FM_BYTE_WRITE(byte_address, data)
+
+#### FM_BYTE_READ_(ADDRESS)
+
+#### FM_BYTE_READ(ADDRESS)
+
+
+
 
 
 
 ### Definitions.c 
 
-#### Initial constat definitons
+#### Initial constant definitons
 ```c
 #define ON    1
 #define OFF   0
@@ -4296,13 +4525,14 @@ void COM_FM_BYTE_WRITE(unsigned int32 byte_address, unsigned int8 data)
 ```
 values of on and off, close and open for 0 and 1
 
+**Flags**
 ```c
 #define FAB_KILL_SWITCH_FLAG            5
 #define OBC_KILL_SWITCH_FLAG            10
 ```
 flags memory locations of kill switches in EEROM
 
-
+**Pin assignments**
 ```c
 #define FAB_KILL_SWITCH_STATUS_PIN      PIN_D3
 #define OBC_KILL_STATUS_STATUS_PIN      PIN_C1
@@ -4311,6 +4541,7 @@ kill switch status read pin
 
 #### ADC Channel definitions
 
+**Temperature and vontage**
 ```c
 unsigned int8 CNL_ADD = 0B1000001100110000 ;              // 0x8330
 
@@ -4337,7 +4568,7 @@ definitions related external adc channel address,
 These constants map temperature sensors to specific channels in the telemetry system
 Maps voltage monitoring channels for solar panels or subsystems corresponding to satellite axes (+X, -Y, etc.).
 
-
+**Solar Panel Current & Power System Telemetry**
 ```c
 #define MINUS_X_SP_CURRENT 5
 #define MINUS_Y_SP_CURRENT 3
@@ -4363,8 +4594,39 @@ Represents telemetry values for monitoring the satellite's power system
 #use spi(MASTER, CLK = PIN_C3, DI = PIN_C4, DO = PIN_C5,ENABLE = PIN_C2, BAUD = 100000, BITS = 16, STREAM = SPIPORT, MODE = 2 )
 ```
 external adc spi port definition
+- MASTER:
+Configures the SPI module in Master mode. The microcontroller will generate the clock signal and control communication.
+- CLK = PIN_C3:
+Specifies the microcontroller pin used as the SPI clock (SCK).
+- DI = PIN_C4:
+Stands for Data In (MISO). This pin is used to receive data from the SPI slave device.
+- DO = PIN_C5:
+Stands for Data Out (MOSI). This pin is used to send data to the SPI slave device.
+- ENABLE = PIN_C2:
+This pin is used to control the chip select (CS) or slave select (SS) signal for the SPI slave device. Pulling this pin low enables communication with the slave device.
+- BAUD = 100000:
+Sets the SPI clock frequency to 100,000 bits per second (100 kHz).
+- BITS = 16:
+Specifies the bit width of each SPI data frame. In this case, each transfer is 16 bits wide.
+- STREAM = SPIPORT:
+Names this SPI configuration as SPIPORT. This allows referencing it in your code when using SPI functions, particularly useful when managing multiple SPI configurations.
+- MODE = 2:
+Specifies the SPI communication mode. Mode is defined by the clock polarity (CPOL) and clock phase (CPHA):
+Mode 2: Clock idle is high (CPOL = 1), and data is sampled on the falling edge of the clock (CPHA = 0).
+
+
+**SPI Modes Table**
+
+|  Mode   | CPOL  |  CPHA   |  Clock   |   Idle    |  State  | Data Sampling Edge |
+|---------|--------|---------|---------|-----------|----------|-----------|		  	
+|0	|0	|0	|Low	| Rising edge |
+|1	|0	|1	|Low	| Falling edge |
+|2	|1	|0	|High	| Falling edge |
+|3	|1	|1	|High	| Rising edge |
+
 
 #### READ_EXT_ADC_CHANELS(channel)
+using this function external ADC temperature channels can be read
 ```c
 unsigned int8 READ_EXT_ADC_CHANELS( unsigned int32 channel )
 {
@@ -4375,9 +4637,23 @@ unsigned int8 READ_EXT_ADC_CHANELS( unsigned int32 channel )
    return ADC_READING/16;                                             // converting to 8 bit
 }
 ```
-using this function external ADC temperature channels can be read
+This function takes a 32-bit integer as the channel parameter.
+It returns an 8-bit value (unsigned int8) representing the ADC reading.
+The base command 0x8330 (binary: 1000001100110000) is shifted and OR-ed with the channel parameter shifted 10 bits to the left.
+This step selects the desired ADC channel for reading.
+For example:
+
+If ```channel = 1```:
+```0x8330 | (1 << 10)``` results in ```0x8430```.
+Sends the command ```CNL_ADD``` to the external ADC via the SPI interface. This tells the ADC which channel to read.
+The second SPI transfer reads the ADC result.
+```& 0x0FFF``` masks out the upper 4 bits, leaving only the 12-bit ADC reading (common for many ADCs).
+Divides the 12-bit ADC reading by 16 to reduce it to 8 bits.
+This assumes the ADC's full range (12 bits, ```0-4095```) should be mapped to 8 bits (```0-255```).
+
 
 #### READ_FAB_PIC_ADC(port_name)
+designed to read an analog signal from a specified ADC channel on a PIC microcontroller.
 
 ```c
 unsigned int16 READ_FAB_PIC_ADC(int port_name)
@@ -4388,9 +4664,20 @@ unsigned int16 READ_FAB_PIC_ADC(int port_name)
    return READ_ADC();       
 }
 ```
+Input:
+port_name: An integer representing the ADC channel to be read.
+Output:
+A 16-bit unsigned integer (unsigned int16) containing the ADC reading.
+Routes the specified channel (port_name) to the ADC module.
+This function configures the multiplexer in the ADC hardware to select the appropriate input pin.
+Introduces a delay of 40 microseconds to allow the input voltage on the ADC channel to stabilize after switching.
+The delay duration depends on the ADC specifications (settling time) and the input impedance.
+Triggers the ADC conversion and retrieves the result.
+Returns the ADC reading as an unsigned 16-bit value. However, the actual resolution depends on the PIC's ADC module (commonly 10-bit or 12-bit).
+
 
 #### AVERAGE_PICADC_READING(channel, num_of_readings, timedelay)
-
+The AVERAGE_PICADC_READING function calculates the average ADC reading over a specified number of readings from a given channel, adding a time delay between each reading. It then converts the final result to an 8-bit value.
 ```c
 unsigned int8 AVERAGE_PICADC_READING(int channel, int16 num_of_readings, int16 timedelay)
 {
@@ -4407,9 +4694,22 @@ unsigned int8 AVERAGE_PICADC_READING(int channel, int16 num_of_readings, int16 t
    return (char)((val>>4)&0xFF);
 }
 ```
+Input Parameters:
+channel: The ADC channel to read from.
+num_of_readings: The number of ADC readings to take.
+timedelay: The delay (in microseconds) between successive readings.
+Return Value:
+Returns the averaged ADC value as an 8-bit unsigned integer.
+```val``` accumulates the sum of ADC readings over the loop iterations.
+The ADC channel is read num_of_readings times.
+Each reading is added to val.
+A delay is introduced between readings to allow for stabilization.
+The total accumulated ADC value is divided by the number of readings.
+The 16-bit averaged value (val) is right-shifted by 4 bits (effectively dividing by 16).
+Only the lower 8 bits are returned.
 
 #### AVERAGE_EXTADC_READING(channel, num_of_readings, timedelay)
-
+The AVERAGE_EXTADC_READING function computes the average reading from an external ADC channel over a specified number of readings, with a delay between each reading. It then returns the averaged value as an 8-bit unsigned integer.
 ```c
 unsigned int8 AVERAGE_EXTADC_READING(int channel, int16 num_of_readings, int16 timedelay)
 {
@@ -4426,9 +4726,21 @@ unsigned int8 AVERAGE_EXTADC_READING(int channel, int16 num_of_readings, int16 t
    return (char)val;
 }
 ```
+Input Parameters:
+channel: The external ADC channel to be read.
+num_of_readings: Number of readings to average.
+timedelay: Delay in microseconds between successive readings.
+Return Value:
+Returns the average reading as an 8-bit unsigned integer.
+val accumulates the sum of all readings.
+Each iteration reads the specified ADC channel and adds the result to val.
+A delay is introduced between readings to account for ADC stabilization.
+The total accumulated ADC value is divided by the number of readings to get the average.
+The final value is cast to an 8-bit type, which can result in truncation of higher bits if val exceeds 255.
+
 
 #### AVERAGE_HECS_READING(channel, num_of_readings, timedelay)
-
+The AVERAGE_HECS_READING function calculates the average ADC reading from a specified channel over a given number of readings with a delay between each. This function returns the averaged result as a 16-bit unsigned integer.
 ```c
 unsigned int16 AVERAGE_HECS_READING(int channel, int16 num_of_readings, int16 timedelay)
 {
@@ -4444,33 +4756,106 @@ unsigned int16 AVERAGE_HECS_READING(int channel, int16 num_of_readings, int16 ti
    return (unsigned int16)val;
 }
 ```
+Input Parameters:
+channel: ADC channel to read from.
+num_of_readings: Number of readings to average.
+timedelay: Time in microseconds between successive readings.
+Return Value:
+Returns the average reading as a 16-bit unsigned integer (unsigned int16).
+Accumulates the sum of all ADC readings. A 32-bit variable is used to prevent overflow during accumulation.
+Iterates num_of_readings times, reading from the ADC channel during each iteration and adding the result to VAL.
+Introduces a delay of timedelay microseconds between consecutive readings.
+Divides the accumulated total by the number of readings to compute the average.
+Casts the averaged value to unsigned int16 and returns it.
+
 
 ### Debug.c  
 
-####
+#### CHECK_UART_INCOMING_FROM_DEBUG_PORT()
+this functions will check debug port incoming
+
+#### PRINT_RECIVED_COMMAND_FROM_DEBUG_PORT()
+this functions will print received comand prom bebug port
+
+#### DEPLOY_ANTENNA_INSTANTLY()
+sending command to reset pic wait for respone we will try 10 times
+then we start antena deployment  
+
+#### SET_UP_ANTENNA_DEPLOYMENT_VALUES()
 
 
-####
+#### GET_ANTENNA_DEPLOYMENT_VALUES()
 
 
-####
+#### UPDATE_RESET_PIC_TIME()
+
+**kill switch handling**
+#### CLOSE_FAB_KILL_SWITCH_DB()
 
 
-####
+#### CLOSE_OBC_KILL_SWITCH_DB()
+
+
+#### OPEN_FAB_KILL_SWITCH_DB()
+
+
+#### OPEN_OBC_KILL_SWITCH_DB()
+
+
+#### POWER_LINE_CONTROL_USING_DEBUG_COMMAND_TO_RST_PIC()
+
+
+#### RESET_SATELLITE_CMD()
+
+
+#### SEND_COM_CMD_THROUGH_PC()
+
+
+#### READ_FM_DATA_THROUGH_PC()
 
 
 ### MPIC_CPIC.c 
 
-####
+#### CHECK_UART_INCOMING_FROM_COM_PIC()
 
 
-####
+#### PRINT_RECIVED_COMMAND_FROM_COM_PIC()
 
 
-####
+#### COMUNICATION_WITH_COM_PIC_AND_WAIT_FOR_RESPONE(numof_times, time_delay, wait_time = 70)
 
 
-####
+#### GIVE_COMFM_ACCESS_TO_COMPIC_FOR_DATA_DOWNLOAD()
+
+
+#### GIVE_CW_DATA_TO_COM_PIC()
+
+
+#### CHECK_COMFM_ACCES_RELEASING()
+
+
+#### DATA_COPY_FROM_MSN_FM_TO_CFM_USING_GS_CMD()
+
+
+#### DATA_COPY_FROM_MAIN_FM_TO_CFM_USING_GS_CMD()
+
+
+#### SECTOR_ERASE_USING_GS_COMMAND()
+
+
+#### CONTROL_KILL_SWITCHES()
+
+
+#### DEPLOY_ANTENNA_USING_GS_COMMAND()
+
+
+#### SET_ANTENNA_VALUES_USING_GS_COMMAND()
+
+
+#### LOAD_30DAY_COUNTER()
+
+
+#### RESET_30DAY_CONTER()
 
 
 ### MPIC_RPIC.c 
