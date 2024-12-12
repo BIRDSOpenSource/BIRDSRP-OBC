@@ -669,18 +669,6 @@ The RTC (Real-Time Clock) section defines control registers and bits for managin
    - ```WAITB0```
    - ```WAITB1```
  
-``` c
-#byte RTCVALL = 0xF5C
-#byte ALRMCFG = 0xF5B
-#bit    ALRMPTR0 = ALRMCFG.0
-#bit    ALRMPTR1 = ALRMCFG.1
-#bit    AMASK0 = ALRMCFG.2
-#bit    AMASK1 = ALRMCFG.3
-#bit    AMASK2 = ALRMCFG.4
-#bit    AMASK3 = ALRMCFG.5
-#bit    CHIME = ALRMCFG.6
-#bit    ALRMEN = ALRMCFG.7
-```
 - ```RTCVALL``` is the ... register for the RTC.
 - ```ALRMCFG``` is the ... register for the Alarm.
    - ```ALRMPTR0``` is a specific bit within the RTCVALH register, for configuring the ...
@@ -692,20 +680,6 @@ The RTC (Real-Time Clock) section defines control registers and bits for managin
    - ```CHIME```
    - ```ALRMEN```
  
-``` c
-#byte ALRMRPT = 0xF5A
-#byte ALRMVALH = 0xF59
-#byte ALRMVALL = 0xF58
-#byte RTCCON2 = 0xF57
-#bit    RTCSECSEL0 = RTCCON2.0
-#bit    RTCSECSEL1 = RTCCON2.1
-#bit    RTCCLKSEL0 = RTCCON2.2
-#bit    RTCCLKSEL1 = RTCCON2.3
-#bit    PWCSPRE = RTCCON2.4
-#bit    PWCCPRE = RTCCON2.5
-#bit    PWCPOL = RTCCON2.6
-#bit    PWCEN = RTCCON2.7
-```
 - ```ALRMRPT``` is the ... register for the RTC.
 - ```ALRMVALH``` is the ... register for the RTC.
 - ```ALRMVALL``` is the ... register for the RTC.
@@ -721,17 +695,6 @@ The RTC (Real-Time Clock) section defines control registers and bits for managin
 
 #### Other Control Registers
 
-``` c
-#byte EECON2 = 0xF7E
-#byte OSCCON = 0xFD3
-#byte T1CON = 0xFCD
-#bit  T1CON7 = T1CON.7
-#bit  T1CON6 = T1CON.6
-#bit  SOSCEN1 = T1CON.3
-#bit  TMR1ON = T1CON.0
-#byte T3CON = 0xFB1
-#bit  SOSCEN3 = T3CON.3
-```
 - These are control registers for various peripherals:
    - ```EECON2```: 
    - ```OSCCON```: Oscillator control.
@@ -744,274 +707,56 @@ The RTC (Real-Time Clock) section defines control registers and bits for managin
      - ```SOSCEN3``` refers to bit 3 of T3CON, enabling ... 
 
 #### Interrupt and Miscellaneous Registers
-
-``` c
-#byte PIE3 = 0xFA3
-#bit RC2IE = PIE3.5
-```
 - ```PIE3``` is an interrupt enable register for specific peripherals.
   - ```RC2IE``` refers to bit 5 of PIE3, enabling an interrupt for the RC2 peripheral.
-
 
 
 ### RPIC_CPIC.c
 
 #### CHECK_UART_INCOMING_FROM_COM_PIC()
  here we check main pic UART is available or not if available we save in MPIC_TO_RPIC array
-``` c
-void CHECK_UART_INCOMING_FROM_COM_PIC()
-{
-   if( CPic_Available() )
-   {
-      Delay_ms(100);
-      for( int i = 0; i<10; i++ )
-      {
-         if( CPic_Read() == 0xC0 )
-         {
-            CPIC_TO_RPIC_ARRAY[0] = 0xC0 ;
-            break;
-         }
-      }
 
-      for(int i = 1; i<=30; i++)
-      {
-         CPIC_TO_RPIC_ARRAY[i] = CPic_Read();
-      }
-   }
-}
-```
 
 #### PRINT_RECIVED_COMMAND_FROM_COM_PIC()
 this function will print recived command from com pic
-``` c
-void PRINT_RECIVED_COMMAND_FROM_COM_PIC()
-{
-   printline();
-   Fprintf(PC,"RCVD CMD FROM COM PIC >> ");
-   for(int i = 0; i<20; i++)
-   {
-      Fprintf(PC,"%X ",CPIC_TO_RPIC_ARRAY[i]);
-   }
-   printline();
-}
-```
+
 
 #### MONITOR_COM_PIC_90SEC_COMUNICATION(time)
 this functions monitor the com pic. if no response within 10min reset pic
 will restart the com pic
-``` c
-void MONITOR_COM_PIC_90SEC_COMUNICATION(int time)
-{
-   if( CPIC_TIME_COUNTER >= 600 )
-   {
-      CPIC_TIME_COUNTER = 0;
-      NUMOF_CPIC_RST++;
-      
-      ComPic_Power(0);   // turn off main pic
-      for( int i = 0; i<time ; i++)
-      {
-         Delay_ms(1000);
-        Fprintf(PC,"Waiting to turn on com Pic %02d Sec\n\r",i);
-      }
-      ComPic_Power(1);   // turn on main pic
-   }
-}
-```
+
 
 #### RESEPOND_TO_CPIC_90SEC_CMD()
-``` c
-void RESEPOND_TO_CPIC_90SEC_CMD()
-{
-   if(CPIC_TO_RPIC_ARRAY[1] == 0xE0)
-   {
-      Fprintf(PC,"90 seconds comunication command\n\r");
-      
-      CPIC_TIME_COUNTER = 0;             // because comunication happaned corretly
-      CLEAR_DATA_ARRAY( RPIC_TO_CPIC_ARRAY, 20);
-      RPIC_TO_CPIC_ARRAY[0]  = 0xC0   ;
-      RPIC_TO_CPIC_ARRAY[1]  = 0xE0   ; 
-      
-      RPIC_TO_CPIC_ARRAY[2]  = year   ;
-      RPIC_TO_CPIC_ARRAY[3]  = month  ;
-      RPIC_TO_CPIC_ARRAY[4]  = day    ;
-      RPIC_TO_CPIC_ARRAY[5]  = hour   ;
-      RPIC_TO_CPIC_ARRAY[6]  = minute ;
-      RPIC_TO_CPIC_ARRAY[7]  = second ;
-      
-      RPIC_TO_CPIC_ARRAY[19] = 0xC1   ;
-      for(int i = 0; i<20; i++)
-      {
-         fputc(RPIC_TO_CPIC_ARRAY[i],CPic);
-      }
-      printline();
-      //_______________________________________________________________________
-      
-   } 
-}
-```
+
 
 #### UPDATE_RTC_BY_COM_PIC_CMD()
-``` c
-Void UPDATE_RTC_BY_COM_PIC_CMD()
-{
-   if(CPIC_TO_RPIC_ARRAY[1] == 0xEA) //MP HF
-   {
-      Fprintf(PC,"Reset pic RTC update command Received from COM PIC\n\r");
-      
-      // Acknowleging to the comand____________________________________________
-      Delay_ms(10);
-      CLEAR_DATA_ARRAY( RPIC_TO_CPIC_ARRAY, 20);
-      RPIC_TO_CPIC_ARRAY[0]  = 0xC0   ;
-      RPIC_TO_CPIC_ARRAY[1]  = 0xEA   ;
-      RPIC_TO_CPIC_ARRAY[19] = 0xC1   ;
-      for(int i = 0; i<20; i++)
-      {
-         fputc(RPIC_TO_CPIC_ARRAY[i],CPic);
-      }
-      //_______________________________________________________________________
-      
-      //Updating the RTC
-      year   = CPIC_TO_RPIC_ARRAY[2]  ;
-      month  = CPIC_TO_RPIC_ARRAY[3]  ;
-      day    = CPIC_TO_RPIC_ARRAY[4]  ;
-      hour   = CPIC_TO_RPIC_ARRAY[5]  ;
-      minute = CPIC_TO_RPIC_ARRAY[6]  ;
-      second = CPIC_TO_RPIC_ARRAY[7]  ;
-     
 
-      //Printing New RTC value
-      Fprintf(PC,"Updated New Time >> ") ;
-      Fprintf(PC,"%u-", year)        ;
-      Fprintf(PC,"%u-", month)       ;
-      Fprintf(PC,"%u__", day)        ;
-      Fprintf(PC,"%u:", hour)        ;
-      Fprintf(PC,"%u:", minute)      ;
-      Fprintf(PC,"%u\n\r", second)   ;
-       
-   }
-}
-```
 
 #### SENDING_TIME_TO_COMPIC()
-``` c
-void SENDING_TIME_TO_COMPIC()
-{
-   if(CPIC_TO_RPIC_ARRAY[1] == 0xEB)
-   {
-      Fprintf(PC,"SENDING_TIME_TO_COMPIC\n\r");
-      
-      CPIC_TIME_COUNTER = 0;             // because comunication happaned corretly
-      CLEAR_DATA_ARRAY( RPIC_TO_CPIC_ARRAY, 20);
-      RPIC_TO_CPIC_ARRAY[0]  = 0xC0   ;
-      RPIC_TO_CPIC_ARRAY[1]  = 0xEB   ; 
-      
-      RPIC_TO_CPIC_ARRAY[2]  = year   ;
-      RPIC_TO_CPIC_ARRAY[3]  = month  ;
-      RPIC_TO_CPIC_ARRAY[4]  = day    ;
-      RPIC_TO_CPIC_ARRAY[5]  = hour   ;
-      RPIC_TO_CPIC_ARRAY[6]  = minute ;
-      RPIC_TO_CPIC_ARRAY[7]  = second ;
-      
-      RPIC_TO_CPIC_ARRAY[19] = 0xC1   ;
-      for(int i = 0; i<20; i++)
-      {
-         fputc(RPIC_TO_CPIC_ARRAY[i],CPic);
-      }
-      printline();
-      //_______________________________________________________________________
-      
-   } 
-}
-```
 
 
 ### RPIC_MPIC.c
-
 This code is designed for robust communication and control between the main PIC and the reset PIC (RPIC), with built-in redundancy and debugging features. 
 Each function focuses on a specific task, ensuring modularity and clarity. 
 
 
-#### CHECK_UART_INCOMING_FROM_MAIN_PIC
+#### CHECK_UART_INCOMING_FROM_MAIN_PIC()
 This function checks if data is available on the UART interface from the main PIC and saves it into an array.
+- ```if (MPic_Available())```: Checks if the UART data is available from the main PIC.
+- ```Delay_ms(100);```: Waits for 100 milliseconds to ensure data is fully received.
+- First for loop: Reads up to 10 bytes and looks for a specific header value (0xA0).
+- ```if (MPic_Read() == 0xA0)```: Verifies the header byte; if found, saves it in the array at index 0 and exits the loop.
+- Second for loop: Reads the next 30 bytes from the UART and stores them in MPIC_TO_RPIC_ARRAY.
+- ```fprintf(PC, "%X ", MPIC_TO_RPIC_ARRAY[i]);```: Logs each received byte to a PC for debugging.
+- ```printline();```: Prints a line break (likely for formatting the debug output).
 
-```c
-void CHECK_UART_INCOMING_FROM_MAIN_PIC()
-{
-   if( MPic_Available() )
-   {
-      Delay_ms(100);
-      for( int i = 0; i<10; i++ )
-      {
-         if( MPic_Read() == 0xA0 )
-         {
-            MPIC_TO_RPIC_ARRAY[0] = 0xA0 ;
-            break;
-         }
-      }
-
-      for(int i = 1; i<=30; i++)
-      {
-         MPIC_TO_RPIC_ARRAY[i] = MPic_Read();
-         fprintf(PC, "%X ", MPIC_TO_RPIC_ARRAY[i]);
-      }
-      printline();
-   }
-}
-```
-
-
-if (MPic_Available()): Checks if the UART data is available from the main PIC.
-Delay_ms(100);: Waits for 100 milliseconds to ensure data is fully received.
-First for loop: Reads up to 10 bytes and looks for a specific header value (0xA0).
-if (MPic_Read() == 0xA0): Verifies the header byte; if found, saves it in the array at index 0 and exits the loop.
-Second for loop: Reads the next 30 bytes from the UART and stores them in MPIC_TO_RPIC_ARRAY.
-fprintf(PC, "%X ", MPIC_TO_RPIC_ARRAY[i]);: Logs each received byte to a PC for debugging.
-printline();: Prints a line break (likely for formatting the debug output).
-
-#### PRINT_RECIVED_COMMAND_FROM_MAIN_PIC
+#### PRINT_RECIVED_COMMAND_FROM_MAIN_PIC()
 This function prints the command received from the main PIC to the PC.
-
-```c
-
-void PRINT_RECIVED_COMMAND_FROM_MAIN_PIC()
-{
-   printline();
-   Fprintf(PC,"RCVD CMD FROM MAIN PIC >> ");
-   for(int i = 0; i<10; i++)
-   {
-      Fprintf(PC,"%X ",MPIC_TO_RPIC_ARRAY[i]);
-   }
-   printline();
-}
-```
-
-Fprintf(PC, "RCVD CMD FROM MAIN PIC >> ");: Prints a header message to the PC.
+- ```Fprintf(PC, "RCVD CMD FROM MAIN PIC >> ");```: Prints a header message to the PC.
 for loop: Iterates over the first 10 bytes of MPIC_TO_RPIC_ARRAY and prints them in hexadecimal format.
 
-#### MONITOR_MAIN_PIC_90SEC_COMUNICATION
+#### MONITOR_MAIN_PIC_90SEC_COMUNICATION()
 Monitors communication with the main PIC. If there’s no response for 10 minutes, it resets the main PIC.
-
-```c
-void MONITOR_MAIN_PIC_90SEC_COMUNICATION(int time)
-{
-   if( MPIC_TIME_COUNTER >= 600 )
-   {
-      MPIC_TIME_COUNTER = 0;
-      NUMOF_MPIC_RST++;
-      
-      Fprintf(PC,"Hang up reset, MainPIC is turned off\n\r");
-      MainPic_Power(0);   // turn off main pic
-      for( int i = 0; i<time; i++)
-      {
-         Delay_ms(1000);
-         Fprintf(PC,"Waiting to turn on Main Pic %02d Sec\n\r",i);
-      }
-      MainPic_Power(1);   // turn on main pic
-      Fprintf(PC,"MainPIC is restarted\n\r");
-   }
-}
-```
-
 
 if (MPIC_TIME_COUNTER >= 600): Checks if the counter exceeds 10 minutes (assuming each increment is 1 second).
 Reset Procedure:
@@ -1023,340 +768,79 @@ Delay_ms(1000);: Waits for a specified duration (in seconds).
 MainPic_Power(1);: Turns the main PIC back on.
 
 
-#### RESEPOND_TO_MPIC_90SEC_CMD
+#### RESEPOND_TO_MPIC_90SEC_CMD()
 Responds to a 90-second communication command from the main PIC by sending housekeeping data.
 
 
-```c
-void RESEPOND_TO_MPIC_90SEC_CMD()
-{
-   if(MPIC_TO_RPIC_ARRAY[1] == 0x7A)
-   {
-      Fprintf(PC,"90 seconds comunication command\n\r");
-      
-      // we make main pic counter zero because succesful comunication
-      MPIC_TIME_COUNTER = 0;
-      
-      // clear RPIC_TO_MPIC array before putting new data______________________
-      CLEAR_DATA_ARRAY( RPIC_TO_MPIC_ARRAY, 32 );
-      
-      // reading ADC values____________________________________________________
-      _Raw_power_ADC_val       = Measure_Raw_voltage() ;          
-      _3V3_1_current_ADC_val   = Measure_3V3_1_current() ;          
-      _3V3_2_current_ADC_val   = Measure_3V3_2_current() ;
-      _5V0_current_ADC_val     = Measure_5V0_current() ;          
-      _UNREG_1_current_ADC_val = Measure_UNREG_1_current() ;      
-      _UNREG_2_current_ADC_val = Measure_UNREG_2_current() ; 
-      
-      RPIC_TO_MPIC_ARRAY[0]    = 0xA0   ;     // header
-      RPIC_TO_MPIC_ARRAY[1]    = 0x7A   ;
-      RPIC_TO_MPIC_ARRAY[2]    = year   ;
-      RPIC_TO_MPIC_ARRAY[3]    = month  ;
-      RPIC_TO_MPIC_ARRAY[4]    = day    ;
-      RPIC_TO_MPIC_ARRAY[5]    = hour   ;
-      RPIC_TO_MPIC_ARRAY[6]    = minute ;
-      RPIC_TO_MPIC_ARRAY[7]    = second ;     // sending reset pic RTC time to main pic
-      
-      RPIC_TO_MPIC_ARRAY[8]    = (unsigned int8)((_Raw_power_ADC_val>>8)     & 0xFF)     ;   
-      RPIC_TO_MPIC_ARRAY[9]    = (unsigned int8)((_Raw_power_ADC_val)        & 0xFF)     ;   
-      RPIC_TO_MPIC_ARRAY[10]   = (unsigned int8)((_3V3_1_current_ADC_val>>8) & 0xFF)     ;   
-      RPIC_TO_MPIC_ARRAY[11]   = (unsigned int8)((_3V3_1_current_ADC_val)    & 0xFF)     ; 
-      RPIC_TO_MPIC_ARRAY[12]   = (unsigned int8)((_3V3_2_current_ADC_val>>8) & 0xFF)     ;   
-      RPIC_TO_MPIC_ARRAY[13]   = (unsigned int8)((_3V3_2_current_ADC_val)    & 0xFF)     ; 
-      RPIC_TO_MPIC_ARRAY[14]   = (unsigned int8)((_5V0_current_ADC_val>>8)   & 0xFF)     ;   
-      RPIC_TO_MPIC_ARRAY[15]   = (unsigned int8)((_5V0_current_ADC_val)      & 0xFF)     ;
-      RPIC_TO_MPIC_ARRAY[16]   = (unsigned int8)((_UNREG_1_current_ADC_val>>8) & 0xFF)   ;   
-      RPIC_TO_MPIC_ARRAY[17]   = (unsigned int8)((_UNREG_1_current_ADC_val)    & 0xFF)   ;
-      RPIC_TO_MPIC_ARRAY[18]   = (unsigned int8)((_UNREG_2_current_ADC_val>>8) & 0xFF)   ;   
-      RPIC_TO_MPIC_ARRAY[19]   = (unsigned int8)((_UNREG_2_current_ADC_val) )            ;
-      
-      RPIC_TO_MPIC_ARRAY[20]   = NUMOF_MPIC_RST ;    // number of main pic reset
-      RPIC_TO_MPIC_ARRAY[21]   = NUMOF_CPIC_RST ;    // number of com pic reset
-      RPIC_TO_MPIC_ARRAY[22]   = POWER_LINE_STATUS ; // power line status
-      RPIC_TO_MPIC_ARRAY[23]   = (unsigned int8)((LAST_RESET_HOUR>>8) & 0xFF) ;
-      RPIC_TO_MPIC_ARRAY[24]   = (unsigned int8)((LAST_RESET_HOUR)    & 0xFF) ;
-      RPIC_TO_MPIC_ARRAY[25]   = 0xAA   ;  
-      
-      RPIC_TO_MPIC_ARRAY[31]  = 0xA1   ;  // footer  
-      // sending data to main pic______________________________________________
-      for(int i = 0; i<32; i++)
-      {
-         fputc( RPIC_TO_MPIC_ARRAY[i] , MPic);
-      }
-      
-      // just printing sent reply to main pic__________________________________
-      Fprintf(PC,"Reply sent to main pic >> ");
-      for(int i = 0; i<32; i++)
-      {
-         Fprintf(PC,"%X ",RPIC_TO_MPIC_ARRAY[i]);
-      }
-      printline();
-      printline();
-   }
-}
-```
+- if (MPIC_TO_RPIC_ARRAY[1] == 0x7A): Checks if the command byte is 0x7A (90-second communication command).
+- Reset Timer: Sets MPIC_TIME_COUNTER to 0 to indicate successful communication.
+- Clear Array: Calls CLEAR_DATA_ARRAY to clear RPIC_TO_MPIC_ARRAY.
+- Read ADC Values:
+- - Calls functions like Measure_Raw_voltage() to read sensor data (e.g., voltages, currents).
+- - Saves these values into the array as two bytes (high and low).
+- Time and Metadata:
+- - Adds RTC values (year, month, etc.) and reset counters to the array.
+- Send Data:
+- - Sends the array to the main PIC using fputc.
+- - Logs the data to the PC for debugging.
 
 
-if (MPIC_TO_RPIC_ARRAY[1] == 0x7A): Checks if the command byte is 0x7A (90-second communication command).
-Reset Timer: Sets MPIC_TIME_COUNTER to 0 to indicate successful communication.
-Clear Array: Calls CLEAR_DATA_ARRAY to clear RPIC_TO_MPIC_ARRAY.
-Read ADC Values:
-Calls functions like Measure_Raw_voltage() to read sensor data (e.g., voltages, currents).
-Saves these values into the array as two bytes (high and low).
-Time and Metadata:
-Adds RTC values (year, month, etc.) and reset counters to the array.
-Send Data:
-Sends the array to the main PIC using fputc.
-Logs the data to the PC for debugging.
-
-
-#### UPDATE_RTC_BY_MAIN_PIC_CMD
+#### UPDATE_RTC_BY_MAIN_PIC_CMD()
 Updates the RTC (Real-Time Clock) based on a command from the main PIC.
+- if (MPIC_TO_RPIC_ARRAY[1] == 0x7B): Checks for the RTC update command (0x7B).
+- Acknowledgment:
+- - Clears RPIC_TO_MPIC_ARRAY.
+- - Sends an acknowledgment array with 0xA0 (header), 0x7B (command), and 0xA1 (footer).
+- Update RTC:
+- - Updates the RTC variables (year, month, etc.) with the data from MPIC_TO_RPIC_ARRAY.
+- Log Update:
+- - Prints the updated RTC time to the PC.
 
 
-```c
-Void UPDATE_RTC_BY_MAIN_PIC_CMD()
-{
-   if(MPIC_TO_RPIC_ARRAY[1] == 0x7B) //MP HF
-   {
-      Fprintf(PC,"Reset pic RTC update command Received\n\r");
-      
-      // Acknowleging to the comand____________________________________________
-      CLEAR_DATA_ARRAY( RPIC_TO_MPIC_ARRAY, 32);
-      RPIC_TO_MPIC_ARRAY[0]  = 0xA0   ;
-      RPIC_TO_MPIC_ARRAY[1]  = 0x7B   ;
-      RPIC_TO_MPIC_ARRAY[31] = 0xA1   ;
-      for(int i = 0; i<32; i++)
-      {
-         fputc(RPIC_TO_MPIC_ARRAY[i],MPic);
-      }
-      //_______________________________________________________________________
-      
-      //Updating the RTC
-      year   = MPIC_TO_RPIC_ARRAY[2]  ;
-      month  = MPIC_TO_RPIC_ARRAY[3]  ;
-      day    = MPIC_TO_RPIC_ARRAY[4]  ;
-      hour   = MPIC_TO_RPIC_ARRAY[5]  ;
-      minute = MPIC_TO_RPIC_ARRAY[6]  ;
-      second = MPIC_TO_RPIC_ARRAY[7]  ;
-     
-
-      //Printing New RTC value
-      Fprintf(PC,"Updated New Time >> ") ;
-      Fprintf(PC,"%u-", year)        ;
-      Fprintf(PC,"%u-", month)       ;
-      Fprintf(PC,"%u__", day)        ;
-      Fprintf(PC,"%u:", hour)        ;
-      Fprintf(PC,"%u:", minute)      ;
-      Fprintf(PC,"%u\n\r", second)   ;
-       
-   }
-}
-```
-
-
-if (MPIC_TO_RPIC_ARRAY[1] == 0x7B): Checks for the RTC update command (0x7B).
-Acknowledgment:
-Clears RPIC_TO_MPIC_ARRAY.
-Sends an acknowledgment array with 0xA0 (header), 0x7B (command), and 0xA1 (footer).
-Update RTC:
-Updates the RTC variables (year, month, etc.) with the data from MPIC_TO_RPIC_ARRAY.
-Log Update:
-Prints the updated RTC time to the PC.
-
-
-#### POWER_LINE_CONTROL_USING_MAIN_PIC_CMD
+#### POWER_LINE_CONTROL_USING_MAIN_PIC_CMD()
 Controls power lines based on commands from the main PIC.
+- if (MPIC_TO_RPIC_ARRAY[1] == 0x7C): Checks for the power line control command (0x7C).
+- Acknowledgment:
+- - Clears RPIC_TO_MPIC_ARRAY and sends an acknowledgment to the main PIC.
+- - Control Logic:
+- - Reads specific bytes (e.g., MPIC_TO_RPIC_ARRAY[2]) to control power lines like _3V3Power_Line1.
 
 
-```c
-Void POWER_LINE_CONTROL_USING_MAIN_PIC_CMD()
-{
-   if(MPIC_TO_RPIC_ARRAY[1] == 0x7C) 
-   {
-      Fprintf(PC,"Power line control command Received from main pic\n\r");
-      // Acknowleging to the comand____________________________________________
-      CLEAR_DATA_ARRAY( RPIC_TO_MPIC_ARRAY, 32);
-      RPIC_TO_MPIC_ARRAY[0]  = 0xA0   ;
-      RPIC_TO_MPIC_ARRAY[1]  = 0x7C   ;
-      RPIC_TO_MPIC_ARRAY[31] = 0xA1   ;
-      for(int i = 0; i<32; i++)
-      {
-         fputc(RPIC_TO_MPIC_ARRAY[i],MPic);
-      }
-      //_______________________________________________________________________
-      
-      if(MPIC_TO_RPIC_ARRAY[2] == 0x01) _3V3Power_Line1(BB_ON_OCP_ON)  ;
-      else _3V3Power_Line1(BB_OFF_OCP_OFF)  ;
-      
-      if(MPIC_TO_RPIC_ARRAY[3] == 0x01) _3V3Power_Line2(BB_ON_OCP_ON)  ;
-      else _3V3Power_Line2(BB_OFF_OCP_OFF)   ;
-      
-      if(MPIC_TO_RPIC_ARRAY[4] == 0x01) _5V0Power_Line(BB_ON_OCP_ON)   ;
-      else _5V0Power_Line(BB_OFF_OCP_OFF)  ;
-      
-      if(MPIC_TO_RPIC_ARRAY[5] == 0x01) Unreg2_Line(ON)         ;
-      else Unreg2_Line(OFF)  ;
-      
-   }
-}
-```
-
-if (MPIC_TO_RPIC_ARRAY[1] == 0x7C): Checks for the power line control command (0x7C).
-Acknowledgment:
-Clears RPIC_TO_MPIC_ARRAY and sends an acknowledgment to the main PIC.
-Control Logic:
-Reads specific bytes (e.g., MPIC_TO_RPIC_ARRAY[2]) to control power lines like _3V3Power_Line1.
-
-
-#### RESET_SATELLITE_CMD
+#### RESET_SATELLITE_CMD()
 Resets the satellite when a command is received.
+- if (MPIC_TO_RPIC_ARRAY[1] == 0x7D): Checks for the reset command (0x7D).
+- SYSTEM_RESET();: Executes a system-wide reset.
+- Acknowledgment:
+- Sends an acknowledgment array back to the main PIC.
 
-
-```c
-Void RESET_SATELLITE_CMD()
-{
-   if(MPIC_TO_RPIC_ARRAY[1] == 0x7D)
-   {  
-      Fprintf(PC, "Reset satellite command Received from main PIC");
-      SYSTEM_RESET();
-   } 
-   // Acknowleging to the comand____________________________________________
-   CLEAR_DATA_ARRAY( RPIC_TO_MPIC_ARRAY, 32);
-   RPIC_TO_MPIC_ARRAY[0]  = 0xA0   ;
-   RPIC_TO_MPIC_ARRAY[1]  = 0x7C   ;
-   RPIC_TO_MPIC_ARRAY[31] = 0xA1   ;
-   for(int i = 0; i<32; i++)
-   {
-      fputc(RPIC_TO_MPIC_ARRAY[i],MPic);
-   }
-}
-```
-
-
-if (MPIC_TO_RPIC_ARRAY[1] == 0x7D): Checks for the reset command (0x7D).
-SYSTEM_RESET();: Executes a system-wide reset.
-Acknowledgment:
-Sends an acknowledgment array back to the main PIC.
-
-#### TURN_ON_UNREG_2_LINE_FOR_ANT_DEPLOYMENT
+#### TURN_ON_UNREG_2_LINE_FOR_ANT_DEPLOYMENT()
 Controls the unregulated power line to deploy an antenna.
-
-```c
-Void TURN_ON_UNREG_2_LINE_FOR_ANT_DEPLOYMENT()
-{
-   if(MPIC_TO_RPIC_ARRAY[1] == 0xDA) 
-   {
-      Fprintf(PC,"Antenna deployment command received\n\r"); 
-      // Acknowleging to the comand____________________________________________
-      
-      CLEAR_DATA_ARRAY( RPIC_TO_MPIC_ARRAY, 32);
-      RPIC_TO_MPIC_ARRAY[0]  = 0xA0   ;
-      RPIC_TO_MPIC_ARRAY[1]  = 0xDA   ;
-      RPIC_TO_MPIC_ARRAY[31] = 0xA1   ;
-      for(int i = 0; i<32; i++)
-      {
-         fputc(RPIC_TO_MPIC_ARRAY[i],MPic);
-      }
-      //_______________________________________________________________________
-      
-      int sec_count = 0 ;
-      Unreg2_Line(1);
-      Fprintf(PC,"UNREG-2 line is turned ON \n\r") ;
-            
-      for(int i = 0; i<120 ;i++)  // waiting 30 seconds, we can change this
-      { 
-         RST_EXT_WDT();
-         Delay_ms(250); 
-         Fprintf(PC,"Counting deployment time %02d Sec \n\r",sec_count++) ;
-      }
-      
-      Unreg2_Line(0);
-      Fprintf(PC,"UNREG-2 line is turned OFF \n\r") ;   
-   } 
-}
-```
-
-
-if (MPIC_TO_RPIC_ARRAY[1] == 0xDA): Checks for the antenna deployment command (0xDA).
-Acknowledgment:
-Clears RPIC_TO_MPIC_ARRAY and sends an acknowledgment.
-Deployment Procedure:
-Turns on the unregulated power line (Unreg2_Line(1)).
-Waits for a specified time (e.g., 30 seconds) while keeping the watchdog timer reset (RST_EXT_WDT()).
-Turns off the unregulated power line after deployment.
-
-
+- if (MPIC_TO_RPIC_ARRAY[1] == 0xDA): Checks for the antenna deployment command (0xDA).
+- Acknowledgment:
+- - Clears RPIC_TO_MPIC_ARRAY and sends an acknowledgment.
+- Deployment Procedure:
+- - Turns on the unregulated power line (Unreg2_Line(1)).
+- - Waits for a specified time (e.g., 30 seconds) while keeping the watchdog timer reset (RST_EXT_WDT()).
+- Turns off the unregulated power line after deployment.
 
 ### RPIC_STARTPIC.c
-
 This first section is commented out but nonetheless we will look at the use of it.
 
-
-#### CHECK_UART_INCOMING_FROM_START_PIC
+#### CHECK_UART_INCOMING_FROM_START_PIC()
 This function checks whether there is data available from the "START PIC" over UART and reads the data into an array if available.
+- SPic_available(): This function likely checks if there is data waiting in the UART receive buffer from the "START PIC."
+- Delay_ms(30): Introduces a 30-millisecond delay. This is likely used to ensure that the incoming data transmission is complete before reading it.
+- Reading loop: The for loop iterates 6 times (indexes 0 to 5) to read bytes from the "START PIC" via the SPic_Read() function and store them in the global array SPIC_TO_RPIC_ARRAY.
 
-
-```c
-//!// here we check START pic UART is available or not if available we save in MPIC_TO_RPIC array
-//!void CHECK_UART_INCOMING_FROM_START_PIC()
-//!{
-//!   if( SPic_available() )
-//!   {
-//!      Delay_ms(30);
-//!      for(int i = 0; i<=5; i++)
-//!      {
-//!         SPIC_TO_RPIC_ARRAY[i] = SPic_Read();
-//!      }
-//!   }
-//!}
-```
-
-
-SPic_available(): This function likely checks if there is data waiting in the UART receive buffer from the "START PIC."
-Delay_ms(30): Introduces a 30-millisecond delay. This is likely used to ensure that the incoming data transmission is complete before reading it.
-Reading loop: The for loop iterates 6 times (indexes 0 to 5) to read bytes from the "START PIC" via the SPic_Read() function and store them in the global array SPIC_TO_RPIC_ARRAY.
-
-
-#### PRINT_RECIVED_COMMAND_FROM_START_PIC
+#### PRINT_RECIVED_COMMAND_FROM_START_PIC()
 This function prints the contents of the received command from the "START PIC" to a PC console.
+- printline(): Assumes it prints a separator line or a newline for formatting purposes.
+- Fprintf(PC, ...): Outputs formatted data to the PC console via a predefined communication channel PC.
+- Hexadecimal printing: The loop prints each byte from SPIC_TO_RPIC_ARRAY in hexadecimal format (%X).
 
 
-```c
-//!// this function will print recived command from START pic_______________________
-//!void PRINT_RECIVED_COMMAND_FROM_START_PIC()
-//!{
-//!   printline();
-//!   Fprintf(PC,"RCVD CMD FROM START PIC >> ");
-//!   for(int i = 0; i<=5; i++)
-//!   {
-//!      Fprintf(PC,"%X ",SPIC_TO_RPIC_ARRAY[i]);
-//!   }
-//!   printline();
-//!}
-```
-
-
-printline(): Assumes it prints a separator line or a newline for formatting purposes.
-Fprintf(PC, ...): Outputs formatted data to the PC console via a predefined communication channel PC.
-Hexadecimal printing: The loop prints each byte from SPIC_TO_RPIC_ARRAY in hexadecimal format (%X).
-
-
-#### INFORM_WORKING_TO_START_PIC
+#### INFORM_WORKING_TO_START_PIC()
 This function appears to send a sequence of specific bytes (0xAA, 0xBB, 0xCC) to the "START PIC" microcontroller over UART, likely to signal its working status. After sending the bytes, it sets PIN_C6 to a low state, potentially as an additional signal to indicate the operation's completion.
-
-```c
-void INFORM_WORKING_TO_START_PIC()
-{
-   fputc(0xAA, SPic);
-   delay_ms(1);
-   fputc(0xBB, SPic);
-   delay_ms(1);
-   fputc(0xCC, SPic);
-   delay_ms(1);
-   output_low(PIN_C6);
-}
-```
 
 1. Byte Transmission Over UART:
 fputc(0xAA, SPic): Sends the byte 0xAA over the UART communication channel SPic.
@@ -1376,136 +860,19 @@ Reset a connected device or trigger a specific action.
 The code provided handles functions for a basic real-time clock (RTC) and includes utilities for updating and displaying time, as well as monitoring power line status. 
 Below is an analysis of the functions, their purpose, and suggestions for improvement.
 
-#### Set_RTC Function()
+#### Set_RTC()
 Initializes or updates the RTC with specific date and time values.
-
-```c
-void Set_RTC( char y, char mo, char d, char h, char mi, char s )
-{
-   year   = y  ;
-   month  = mo ;
-   day    = d  ;
-   hour   = h  ;
-   minute = mi ;
-   second = s  ;
-}
-```
 
 #### RTC_Function()
 Updates the RTC values every second, accounting for leap years, month boundaries, and year rollover.
-
-```c
-Void RTC_Function()
-{
-   if (second < 59)                                                            // updating seconds
-   {
-      second++;
-   }
-      
-   else
-   {
-      second = 0;
-      minute++;
-   }
-      
-   if (minute >= 60)                                                           // updating minutes
-   {
-      minute = 0;
-      hour++;
-      LAST_RESET_HOUR ++ ;
-   }
-      
-   if (hour >= 24)                                                             // updating day
-   {
-      hour = 0;
-      day++;
-   }
-   
-   if( (day >= 31) && (month == 4 || month == 6 || month == 9 || month == 11) )     // 30 days months
-   {
-      day = 1;
-      month++;
-   }
-   
-   if( (day >= 32) && (month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10) )  // 31 days months
-   {
-      day = 1;
-      month++;
-   }
-   
-   if(year%4 == 0)
-   {
-      if( (day >= 30) && (month == 2) )                                           // february
-      {
-         day = 1;
-         month++;
-      } 
-   }
-   
-   else
-   {
-      if( (day >= 29) && (month == 2) )                                           // february
-      {
-         day = 1;
-         month++;
-      } 
-   }
-   
-   
-   if( (day >= 32) && (month == 12) )                                          //december
-   {
-      day = 1;
-      month = 1;
-      year++;
-   }
-      
-}
-```
 
 
 #### PRINT_POWER_LINE_STATUS()
 Prints the status of various power lines by extracting bit information from a ```POWER_LINE_STATUS``` variable.
 
-```c
-void PRINT_POWER_LINE_STATUS()
-{
-   fprintf(PC,"M=%d,", (POWER_LINE_STATUS>>7) & 0x01 ); 
-   fprintf(PC,"C=%d,", (POWER_LINE_STATUS>>6) & 0x01 );
-   fprintf(PC,"3=%d,", (POWER_LINE_STATUS>>5) & 0x01 );
-   fprintf(PC,"3=%d,", (POWER_LINE_STATUS>>4) & 0x01 );
-   fprintf(PC,"5=%d,", (POWER_LINE_STATUS>>3) & 0x01 );
-   fprintf(PC,"U=%d,", (POWER_LINE_STATUS>>2) & 0x01 );
-   fprintf(PC,"U=%d" , (POWER_LINE_STATUS>>1) & 0x01 );
-   printline();
-}
-```
-
 #### Print_RTC()
 Prints the current RTC time and resets, with additional context like power line status and counters.
 
-```c
-void Print_RTC()
-{
-   if(previous_second != second )
-   {
-      fprintf(PC,"RP ");
-      fprintf(PC,"%02d", year);
-      fprintf(PC,"/%02d", month);
-      fprintf(PC,"/%02d", day);
-      fprintf(PC," %02d", hour);
-      fprintf(PC,":%02d", minute);
-      fprintf(PC,":%02d ", second);                                         // 20-01-01__05:20:22
-      
-      fprintf(PC,"%d>",NUMOF_MPIC_RST);
-      fprintf(PC,"%03Ld", MPIC_TIME_COUNTER);
-      fprintf(PC," %d>",NUMOF_CPIC_RST);
-      fprintf(PC,"%03Ld ", CPIC_TIME_COUNTER);
-      
-      PRINT_POWER_LINE_STATUS();
-   } 
-   previous_second = second ;
-}
-```
 
 ### ResetMain.c       
 The code is for a reset controller for a satellite with multiple PIC microcontrollers. Its primary role is managing communication, monitoring system health, and executing commands from other microcontrollers (MAIN_PIC and COM_PIC) while maintaining time synchronization using an RTC (Real-Time Clock). 
@@ -1543,19 +910,7 @@ unsigned int16 MLC = 0;
 #INT_TIMER1
 ```
 
-
 #### TIMER1_ISR() 
-
-```c
-Void TIMER1_ISR()                                                              
-{ 
-  set_timer1(0x8000);                                // Timer-1 preload
-  RTC_Function();                                    // updating RTC
-  
-  MPIC_TIME_COUNTER++;                               // this is main pic comunication time counter
-  CPIC_TIME_COUNTER++;                               // this is com  pic comunication time counter
-}
-```
 Timer-1 Interrupt
 The TIMER1_ISR() function is triggered periodically by Timer-1:
 
@@ -1563,159 +918,38 @@ Updates the RTC by calling RTC_Function().
 Increments counters for monitoring communication with MAIN_PIC and COM_PIC.
 
 #### settings()
-
-```c
-// here we set the reset pic initial setups____________________________________
-void settings()
-{
-   //output_low(PIN_C6);
-   MP_CP_BuckBoost(ON)              ;      // enable MP CP buck boost conveter
-   MainPic_Power(ON)                ;      // turn on main pic power
-   ComPic_Power(ON)                 ;      // turn on com pic power
-   _3V3Power_Line1(BB_ON_OCP_ON)    ;      // both obc and buck boost converters are ON
-   _3V3Power_Line2(BB_ON_OCP_ON)    ;      // both obc and buck boost converter are OFF
-   _5V0Power_Line(BB_ON_OCP_ON)     ;      // both obc and buck boost converters are OFF BB_ON_OCP_ON
-   
-   Unreg1_Line(ON)                  ;      // turn on unreg line 1
-   Unreg2_Line(ON)                  ;      // turn off unreg line 2
-
-   setup_timer_1(T1_EXTERNAL | T1_DIV_BY_1);         // timer-1 clock source ans prescaler value         
-   SOSCEN1 = 1;                                      // enabling timer 1
-   set_timer1(0x8000);                               // timer 1 preload
-   
-   enable_interrupts(INT_RDA2);                      // enabling com pic UART interupt
-   enable_interrupts(INT_RDA3);                      // enabling main pic UART interupt
-   enable_interrupts(INT_TIMER1);                    // enabling timer - 1 interupt
-   enable_interrupts(GLOBAL);                        // start interupt procesing
-   
-   SETUP_ADC(ADC_CLOCK_INTERNAL);
-   SETUP_ADC_PORTS(sAN2|sAN1|sAN0|sAN4|sAN6|sAN9);   // setting all analog ports
-   
-   Set_RTC(24,01,01, 00,00,06);
-   MPic_flush() ;
-   fprintf( PC, "Reset pic is booting.......\n\r");
-}
-```
 The settings() function configures the hardware peripherals and system state:
 
-Power Lines Control:
-
+- Power Lines Control:
 Enables the power to specific lines (MainPic_Power, ComPic_Power) and sets converters.
 Activates or deactivates unregulated power lines (Unreg1_Line, Unreg2_Line).
-Timer-1 Setup:
-
+- Timer-1 Setup:
 Configures Timer-1 as an external clock source with a preload value of 0x8000.
 Timer-1 is used for real-time operations (e.g., updating the RTC).
-Interrupts:
-
+- Interrupts:
 Enables UART receive interrupts for communication with MAIN_PIC and COM_PIC.
 Timer-1 interrupt is enabled for periodic tasks.
-ADC Ports:
-
+- ADC Ports:
 Configures specific pins as analog inputs.
-RTC Setup:
-
+- RTC Setup:
 Initializes the RTC with a starting date and time.
 Sends a boot message to the PC for debugging.
 
 
 #### main()
 The main() function contains the core operational logic:
-
-```c
-void main()
-{
-   settings();
-   while(true)
-   {  
-      // printing rtc__________________________________________________________
-      Print_RTC();  
-      
-      // this funtion will reset the system if time is 00:00:00________________
-      SYSTEM_RESET_24H();
-```
-
-
-RTC Management:
-
+- initialises settings function
+- RTC Management:
 Prints the current RTC time (Print_RTC()).
 Resets the system at midnight (SYSTEM_RESET_24H()).
-
-```c
-      // check uart incoming from main pic and compic__________________________
-      CHECK_UART_INCOMING_FROM_MAIN_PIC()  ;
-      CHECK_UART_INCOMING_FROM_COM_PIC()   ; 
-```
-UART Command Handling:
-
+- UART Command Handling:
 Checks for incoming UART data from MAIN_PIC and COM_PIC using dedicated functions.
 Processes valid command arrays from both sources and performs corresponding actions.
-
-```c
-      // monitoring 90 second comunication of compic and mainpic_______________
-      MONITOR_MAIN_PIC_90SEC_COMUNICATION(10)  ;   // 10 means how much turn off time before restart 
-      MONITOR_COM_PIC_90SEC_COMUNICATION(10)   ;   // 10 means how much turn off time before restart 
-```
-90-Second Communication Monitoring:
-
+- 90-Second Communication Monitoring:
 Monitors communication with MAIN_PIC and COM_PIC. If no communication is detected for 90 seconds, resets are triggered.
-
-
-```c     
-      // executing main pic comands____________________________________________
-      if( MPIC_TO_RPIC_ARRAY[0] == 0xA0 && MPIC_TO_RPIC_ARRAY[9] == 0xA1 )
-      {
-         PRINT_RECIVED_COMMAND_FROM_MAIN_PIC();
-         Delay_ms(5);   // just delay 5ms before execute
-         RST_EXT_WDT();
-         
-         RESEPOND_TO_MPIC_90SEC_CMD();                // 0x7A
-         UPDATE_RTC_BY_MAIN_PIC_CMD();                // 0x7B
-         POWER_LINE_CONTROL_USING_MAIN_PIC_CMD();     // 0x7C
-         RESET_SATELLITE_CMD();                       // 0x7D
-         TURN_ON_UNREG_2_LINE_FOR_ANT_DEPLOYMENT();   // 0xDA
-         
-         // finaly clear the data array received from main pic
-         CLEAR_DATA_ARRAY( MPIC_TO_RPIC_ARRAY, 10 );
-      }
-      
-      // executing com pic comands____________________________________________
-      if( CPIC_TO_RPIC_ARRAY[0] == 0xC0 && CPIC_TO_RPIC_ARRAY[19] == 0xC1 )
-      {
-         PRINT_RECIVED_COMMAND_FROM_COM_PIC();
-         Delay_ms(5);   // just delay 5ms before execute
-         RST_EXT_WDT();
-         
-         RESEPOND_TO_CPIC_90SEC_CMD()     ;           // 0xE0
-         UPDATE_RTC_BY_COM_PIC_CMD()      ;           // 0xEA
-         SENDING_TIME_TO_COMPIC()         ;           // 0xEB
-         
-         // finaly clear the data array received from main pic
-         CLEAR_DATA_ARRAY( CPIC_TO_RPIC_ARRAY, 20 );
-      }
-```
-Command Execution:
-
+- Command Execution:
 Handles specific commands received from MAIN_PIC and COM_PIC. Examples include updating the RTC, controlling power lines, and resetting the satellite.
-
-```c
-      if( (MLC%25) == 0 )  // every half sec
-      {        
-         Output_Toggle(PIN_F2); 
-         if(MLC>=500)
-         {
-            INFORM_WORKING_TO_START_PIC();
-            MLC = 0;
-         }
-      }
-
-      Delay_ms(10);
-      MLC++;
-   }
-}
-```
-Heartbeat Signal:
-
+- Heartbeat Signal:
 Toggles PIN_F2 every 0.5 seconds to indicate system activity.
 Sends a periodic message (INFORM_WORKING_TO_START_PIC()) every 5 seconds.
 
@@ -1894,20 +1128,6 @@ When a byte is received via UART3, this interrupt is triggered, and the ISR hand
 
 #### SERIAL_ISR3()   
 The code processes incoming bytes, stores them in a buffer, and manages the overflow condition.
-```c
-Void SERIAL_ISR3()         // MAIN PIC uart interupt loop
-{
-   if( kbhit(MPic) )
-   {
-      if( MP_Byte_Counter < MP_BFR_SIZE )
-      {
-         MP_Buffer[MP_Byte_Counter] = fgetc(MPic);
-         MP_Byte_Counter++;
-      }
-      else MP_Overflow = fgetc(MPic);
-   }
-}
-```
 Use of kbhit(MPic):
 
 kbhit(MPic) is used to check if there is data available to read from the UART stream. This is generally a good way to avoid blocking the program while waiting for data.
@@ -1923,40 +1143,12 @@ If an overflow occurs, the code reads the incoming byte and stores it in MP_Over
 
 
 #### MPic_Available()
-```c
-unsigned int8 MPic_Available()
-{
-   return MP_Byte_Counter ;
-}
-```
 The function returns the number of bytes that have been received and stored in the MP_Buffer by the interrupt handler (SERIAL_ISR3). This is useful for other parts of your program to know if there is data available to process.
 
 Return Value: The function returns the value of MP_Byte_Counter, which keeps track of the number of bytes that have been successfully received.
 
 
 #### MPic_Read()
-```c
-unsigned int8 MPic_Read()
-{
-   if (MP_Byte_Counter>0)
-   {    
-      MP_Temp_byte = MP_Buffer[MP_Read_Byte_counter];
-      
-      MP_Byte_Counter--;
-      MP_Read_Byte_counter++;
-      if(MP_Byte_Counter == 0) MP_Read_Byte_counter = 0;
-      return MP_Temp_byte; 
-   }
-   
-   if (MP_Byte_Counter == 0)
-   { 
-      MP_Read_Byte_counter = 0;
-      MP_Temp_byte = 0x00;
-      return MP_Temp_byte; 
-   }
- 
-}
-```
 - Check if Data is Available:
 
 The function first checks if there are any bytes available in the buffer (MP_Byte_Counter > 0).
@@ -1971,12 +1163,6 @@ It returns the byte from the buffer if there is data, or 0x00 if the buffer is e
 
 
 #### MPic_flush()
-```c
-void MPic_flush()
-{
-   while( MPic_Available() ) MPic_Read() ;
-}
-```
 - MPic_Available():
 
 This function checks how many bytes are available to be read from the buffer. If there are any bytes in the buffer (MPic_Available() returns a non-zero value), the loop continues.
@@ -2006,150 +1192,28 @@ unsigned int8  CP_Temp_byte = 0;
 ```
 
 #### SERIAL_ISR2()  
-```c
-Void SERIAL_ISR2()         // MAIN PIC uart interupt loop
-{
-   if( kbhit(CPic) )
-   {
-      if( CP_Byte_Counter < CP_BFR_SIZE )
-      {
-         CP_Buffer[CP_Byte_Counter] = fgetc(CPic);
-         CP_Byte_Counter++;
-      }
-      else CP_Overflow = fgetc(CPic);
-   }
-}
-```
 
 #### CPic_Available()
-```c
-unsigned int8 CPic_Available()
-{
-   return CP_Byte_Counter ;
-}
-```
-
 
 #### CPic_Read()
-```c
-unsigned int8 CPic_Read()
-{
-   if (CP_Byte_Counter>0)
-   {    
-      CP_Temp_byte = CP_Buffer[CP_Read_Byte_counter];
-      
-      CP_Byte_Counter--;
-      CP_Read_Byte_counter++;
-      if(CP_Byte_Counter == 0) CP_Read_Byte_counter = 0;
-      return CP_Temp_byte; 
-   }
-   
-   if (CP_Byte_Counter == 0)
-   { 
-      CP_Read_Byte_counter = 0;
-      CP_Temp_byte = 0x00;
-      return CP_Temp_byte; 
-   }
- 
-}
-```
 
 #### CPic_flush()
-```c
-void CPic_flush()
-{
-   while( CPic_Available() ) CPic_Read() ;
-}
-```
 
 #### UART port connection to start pic definitons
-```c
-#define SP_BFR_SIZE 5
-#pin_select TX1=PIN_C6  
-#pin_select RX1=PIN_C7  
-#use rs232(UART1, baud=38400, parity=N, bits=8, stream=SPic, errors) 
-
-unsigned int8  SP_Buffer[SP_BFR_SIZE];
-unsigned int16 SP_Byte_Counter = 0;
-unsigned int8  SP_Overflow = 0;
-unsigned int16 SP_Read_Byte_counter = 0;
-unsigned int8  SP_Temp_byte = 0;
-
-#INT_RDA
-```
 
 #### SERIAL_ISR()  
-```c
-Void SERIAL_ISR()         // MAIN PIC uart interupt loop
-{
-   if( SP_Byte_Counter < SP_BFR_SIZE )
-   {
-      SP_Buffer[SP_Byte_Counter] = fgetc(SPic);
-      SP_Byte_Counter++;
-   }
-   
-   else SP_Overflow = fgetc(SPic);
-}
-```
 
 #### SPic_Available()
-```c
-unsigned int8 SPic_Available()
-{
-   return SP_Byte_Counter ;
-}
-```
 
 #### SPic_Read()
-```c
-unsigned int8 SPic_Read()
-{
-   if (SP_Byte_Counter>0)
-   {    
-      SP_Temp_byte = SP_Buffer[SP_Read_Byte_counter];
-      
-      SP_Byte_Counter--;
-      SP_Read_Byte_counter++;
-      if(SP_Byte_Counter == 0) SP_Read_Byte_counter = 0;
-      return SP_Temp_byte; 
-   }
-   
-   if (SP_Byte_Counter == 0)
-   { 
-      SP_Read_Byte_counter = 0;
-      SP_Temp_byte = 0x00;
-      return SP_Temp_byte; 
-   }
- }
-```
 
 #### SPic_flush()
-```c
-void SPic_flush()
-{
-   while( SPic_Available() ) SPic_Read() ;
-}
-```
 
 #### printline()
-```c
-void printline()
-{
-   fprintf( PC, "\n\r");
-}
-```
 
 #### CLEAR_DATA_ARRAY(array, array_size)
 using this function we can make any data array clear
-```c
-void CLEAR_DATA_ARRAY(unsigned int8 array[], int array_size)
-{   
-   for(int i = 0; i < array_size; i++)
-   {
-      array[i] = 0 ;
-   }
-}
-```
+
 
 ## 3. MAIN PIC
 
@@ -2221,26 +1285,6 @@ These files implement modular functionalities, such as:
 Configures interrupt priorities for UART communication on different ports.
 
 #### setting()
-
-``` c
-Void setting()
-{
-   enable_interrupts(INT_RDA);
-   enable_interrupts(INT_RDA2);
-   enable_interrupts(INT_RDA3);
-   enable_interrupts(INT_RDA4);
-   enable_interrupts(GLOBAL);
-   
-   Output_Low(PIN_A4);
-   SETUP_RTC(RTC_ENABLE | RTC_CLOCK_SOSC, 0);
-   Write_OBC_RTC(23, 07, 28, 00, 00, 01);
-   
-   OUTPUT_HIGH(PIN_C5);
-   OUTPUT_HIGH(PIN_A5);
-   
-   output_HIGH(MBOSS_EN);
-}
-```
 - Enables UART interrupts for communication with other PICs.
 - Configures the RTC and initializes its values.
 - Sets up pins to enable or disable certain components like the On-Board Computer (OBC) and Mission Boss (MBOSS).
@@ -2249,64 +1293,17 @@ Void setting()
 The main() function orchestrates all operations.
 
 Initialization
-``` c
-Delay_ms(1000);
-setting();
-fprintf(PC, "MainPIC booting...........\n\r");
-```
 Delays for 1 second, initializes the system, and sends a debug message to the PC.
 System Initialization and Operations
-``` c
-LOAD_ANTENNA_DEPLOYMENT_VALUES();
-LOAD_RESERVATION_COMMANDS_ON_OFF_TIME_AT_BOOT();
-LOAD_30DAY_COUNTER();
-INCREACE_30DAY_COUNTER_ONCE_PER_DAY_AND_CHECK_30DAY_CW_STATUS();
-```
 Loads settings for antenna deployment, reservation commands, and counters for monitoring system status.
 Infinite Loop
-``` c
-while(true)
-{
-   READ_MP_RTC_AND_PRINT();
-   DEPLOY_ANTENNAS_SET_1(31, 5);
-   DEPLOY_ANTENNAS_SET_2(40, 5);
-   COMUNICATION_WITH_RST_PIC_90SEC(90);
-   CHECK_RESERVATION_COMMAND_ON_TIME_AND_OFF_TIME();
-   RESTARTING_MISSIONS_AFTER_SYSTEM_RESET();
-   CHECK_UART_INCOMING_FROM_DEBUG_PORT();
-   CHECK_UART_INCOMING_FROM_COM_PIC();
-}
-```
 - RTC Operations: Reads and prints the RTC values.
 - Antenna Deployment: Configures antenna deployment based on time and other parameters.
 - Communication: Interacts with the Reset PIC every 90 seconds and checks incoming UART commands.
-Command Handling
-Commands from COM PIC
-
-``` c
-if(CPIC_TO_MPIC_ARRAY[0] == 0xB0 && CPIC_TO_MPIC_ARRAY[39] == 0xB1)
-{
-   PRINT_RECIVED_COMMAND_FROM_COM_PIC();
-   Delay_ms(5);
-   GIVE_COMFM_ACCESS_TO_COMPIC_FOR_DATA_DOWNLOAD();
-   // Other operations...
-   CLEAR_DATA_ARRAY(CPIC_TO_MPIC_ARRAY, 32);
-}
-```
-
-Commands from Debug Port
-
-``` c
-if(DEBUG_TO_MPIC_ARRAY[0] == 0xD0 && DEBUG_TO_MPIC_ARRAY[12] == 0xD1)
-{
-   PRINT_RECIVED_COMMAND_FROM_DEBUG_PORT();
-   Delay_ms(5);
-   READ_FM_DATA_THROUGH_PC();
-   // Other operations...
-   CLEAR_DATA_ARRAY(DEBUG_TO_MPIC_ARRAY, 20);
-}
-```
-Handles specific command sequences received through UART, performs necessary tasks, and clears the command buffer.
+- - Command Handling
+- - Commands from COM PIC
+- - Commands from Debug Port
+- - Handles specific command sequences received through UART, performs necessary tasks, and clears the command buffer.
 
 
 ### MainPIC_Settings.c
@@ -2414,29 +1411,6 @@ Includes counters for communication failures and success rates, which can be use
 
 #### CHECK_UART_INCOMING_FROM_FAB_PIC()
 This function verifies and processes UART data received from the FAB PIC (Peripheral Interface Controller).
-
-``` c
-void CHECK_UART_INCOMING_FROM_FAB_PIC()
-{
-   if(FABPic_available())
-   {
-      Delay_ms(100);
-      for( int i = 0; i<5; i++)
-      {
-         if( FABPIC_Read() == 0xFA )
-         {
-            FAB_TO_MPIC_ARRAY[0] = 0xFA;
-            break;
-         }
-      }
-      
-      for (int i=1; i<=50; i++)
-      {
-         FAB_TO_MPIC_ARRAY[i] = FABPIC_Read();
-      }
-   }
-}
-```
 Steps:
 1. Checks if there is data available from FABPic_available().
 2. Introduces a 100 ms delay (Delay_ms(100)) to allow data to accumulate in the buffer.
@@ -2445,19 +1419,6 @@ Steps:
 
 #### PRINT_RECIVED_COMMAND_FROM_FAB_PIC()
 This function prints the data received from the FAB PIC.
-
-``` c
-void PRINT_RECIVED_COMMAND_FROM_FAB_PIC()
-{
-   Fprintf(PC,"Received command from FAB PIC >> ");
-   for(int i = 0; i<35; i++)
-   {
-      Fprintf(PC,"%X ",FAB_TO_MPIC_ARRAY[i]);
-   }
-   printline();
-   printline();
-}
-```
 Steps:
 1. Outputs a message indicating the data is being printed: "Received comand from FAB pic >> ".
 2. Iterates through the first 35 bytes of FAB_TO_MPIC_ARRAY and prints each in hexadecimal format.
@@ -2465,42 +1426,6 @@ Steps:
 
 #### COMUNICATION_WITH_FAB_PIC_AND_WAIT_FOR_RESPONE()
 Handles communication with the FAB PIC, sends a command, and waits for the response.
-
-``` c
-void COMUNICATION_WITH_FAB_PIC_AND_WAIT_FOR_RESPONE(int numof_times, int16 wait_time = 200, int16 time_delay = 70, int inc_array_length = 3)
-{
-   printline();
-   for(int j=0; j<numof_times; j++)
-   {
-      Fprintf(PC,"Num of communication tries to FAB PIC = %d\n\r", j+1);
-      FABPic_flush();
-      for( int i = 0; i<3; i++)
-      {
-         fputc(MPIC_TO_FAB_ARRAY[i], FAB);
-      }
-      Delay_ms(wait_time);
-      
-      CHECK_UART_INCOMING_FROM_FAB_PIC();
-      PRINT_RECIVED_COMMAND_FROM_FAB_PIC();
-      
-      if( FAB_TO_MPIC_ARRAY[0] == 0xFA && FAB_TO_MPIC_ARRAY[inc_array_length-1] == 0xFB )
-      {
-         Fprintf(PC,"FAB responded correctly\n\r");
-         break;
-      } 
-      else
-      {  
-         Delay_ms(time_delay);
-         Fprintf(PC,"Received wrong response from FAB PIC >> ");
-         for(int i = 0; i<inc_array_length; i++)
-         {
-            Fprintf(PC,"%X ",FAB_TO_MPIC_ARRAY[i]);
-         }
-         printline();  
-      }
-   }
-}
-```
 - Parameters:
   - numof_times: Number of communication attempts.
   - wait_time: Delay before checking the response (default: 200 ms).
@@ -2518,24 +1443,6 @@ void COMUNICATION_WITH_FAB_PIC_AND_WAIT_FOR_RESPONE(int numof_times, int16 wait_
  
 #### _CLOSE_FAB_KILL_SWITCH()
 Closes the FAB kill switch.
-
-``` c
-void _CLOSE_FAB_KILL_SWITCH()
-{
-   CLEAR_DATA_ARRAY(FAB_TO_MPIC_ARRAY, 10);
-   MPIC_TO_FAB_ARRAY[0] = 0xFA;
-   MPIC_TO_FAB_ARRAY[1] = 0xF1;
-   MPIC_TO_FAB_ARRAY[2] = 0xFB;
-   COMUNICATION_WITH_FAB_PIC_AND_WAIT_FOR_RESPONE(3, 500, 200);
-   
-   if(FAB_TO_MPIC_ARRAY[0] == 0xFA && FAB_TO_MPIC_ARRAY[1] == 0xF1 && FAB_TO_MPIC_ARRAY[2] == 0xFB)
-   {
-      Fprintf(PC,"FAB kill switch successfully closed\n\r");    
-   }
-   else Fprintf(PC,"FAB kill switch closing not successful\n\r");
-   printline();
-}
-```
 Steps:
 1. Clears FAB_TO_MPIC_ARRAY and prepares MPIC_TO_FAB_ARRAY with the command sequence [0xFA, 0xF1, 0xFB].
 2. Calls COMUNICATION_WITH_FAB_PIC_AND_WAIT_FOR_RESPONE() to communicate the command.
@@ -2545,28 +1452,6 @@ Steps:
 
 #### _CLOSE_OBC_KILL_SWITCH()
 Closes the OBC (Onboard Computer) kill switch.
-
-``` c
-void _CLOSE_OBC_KILL_SWITCH()
-{
-   CLEAR_DATA_ARRAY(FAB_TO_MPIC_ARRAY, 10);
-   MPIC_TO_FAB_ARRAY[0] = 0xFA;
-   MPIC_TO_FAB_ARRAY[1] = 0xF2;
-   MPIC_TO_FAB_ARRAY[2] = 0xFB;
-   COMUNICATION_WITH_FAB_PIC_AND_WAIT_FOR_RESPONE(3, 500, 200);
-   
-   if(FAB_TO_MPIC_ARRAY[0] == 0xFA && FAB_TO_MPIC_ARRAY[1] == 0xF2 && FAB_TO_MPIC_ARRAY[2] == 0xFB)
-   {
-      Output_high(PIN_A4);
-      Delay_ms(1000);
-      Output_low(PIN_A4);
-      Fprintf(PC,"OBC kill switch successfully closed\n\r");
-   }
-   else Fprintf(PC,"OBC kill switch closing not successful\n\r");
-   Output_low(PIN_A4);
-   printline();
-}
-```
 Steps:
 1. Clears FAB_TO_MPIC_ARRAY and prepares MPIC_TO_FAB_ARRAY with the command [0xFA, 0xF2, 0xFB].
 2. Calls COMUNICATION_WITH_FAB_PIC_AND_WAIT_FOR_RESPONE() to send the command.
@@ -2577,24 +1462,6 @@ Steps:
 
 #### _OPEN_FAB_KILL_SWITCH()
 Opens the FAB kill switch.
-
-``` c
-void _OPEN_FAB_KILL_SWITCH()
-{
-   CLEAR_DATA_ARRAY(FAB_TO_MPIC_ARRAY, 10);
-   MPIC_TO_FAB_ARRAY[0] = 0xFA;
-   MPIC_TO_FAB_ARRAY[1] = 0xF3;
-   MPIC_TO_FAB_ARRAY[2] = 0xFB;
-   COMUNICATION_WITH_FAB_PIC_AND_WAIT_FOR_RESPONE(1, 200, 200);
-   
-   if(FAB_TO_MPIC_ARRAY[0] == 0xFA && FAB_TO_MPIC_ARRAY[1] == 0xF3 && FAB_TO_MPIC_ARRAY[2] == 0xFB)
-   {
-      Fprintf(PC,"FAB kill open command successfully sent to FAB\n\r");
-   }
-   else Fprintf(PC,"Communication with FAB not successful\n\r"); 
-   printline();
-}
-```
 Steps:
 1. Clears FAB_TO_MPIC_ARRAY and prepares MPIC_TO_FAB_ARRAY with the command [0xFA, 0xF3, 0xFB].
 2. Calls COMUNICATION_WITH_FAB_PIC_AND_WAIT_FOR_RESPONE() to send the command.
@@ -2605,31 +1472,6 @@ Steps:
 #### _OPEN_OBC_KILL_SWITCH()
 
 Opens the OBC kill switch.
-``` c
-void _OPEN_OBC_KILL_SWITCH()
-{
-   CLEAR_DATA_ARRAY(FAB_TO_MPIC_ARRAY, 10);
-   MPIC_TO_FAB_ARRAY[0] = 0xFA;
-   MPIC_TO_FAB_ARRAY[1] = 0xF4;
-   MPIC_TO_FAB_ARRAY[2] = 0xFB;
-   COMUNICATION_WITH_FAB_PIC_AND_WAIT_FOR_RESPONE(1, 200, 200);
-   
-   if(FAB_TO_MPIC_ARRAY[0] == 0xFA && FAB_TO_MPIC_ARRAY[2] == 0xFB)
-   {
-      Fprintf(PC,"OBC kill open command successfully sent to FAB\n\r");
-      if(FAB_TO_MPIC_ARRAY[1] == 0xF4)
-      {
-         Output_high(PIN_A4);
-         Delay_ms(1000);
-         Output_low(PIN_A4);
-         Fprintf(PC,"OBC kill is opened\n\r");
-      }
-   }
-   else Fprintf(PC,"Communication with FAB not successful\n\r"); 
-   Output_low(PIN_A4);
-   printline();
-}
-```
 Steps:
 1. Clears FAB_TO_MPIC_ARRAY and prepares MPIC_TO_FAB_ARRAY with the command [0xFA, 0xF4, 0xFB].
 2. Calls COMUNICATION_WITH_FAB_PIC_AND_WAIT_FOR_RESPONE() to send the command.
@@ -2641,19 +1483,15 @@ Steps:
 
 #### Supporting Logic:
 - Data Arrays:
-
   - FAB_TO_MPIC_ARRAY: Buffer for storing received data.
   - MPIC_TO_FAB_ARRAY: Command data to be sent.
 - Serial Communication:
-
   - FABPic_available(): Checks if data is available on the FAB PIC UART.
   - FABPIC_Read(): Reads a byte from the FAB PIC.
   - Fprintf(PC, ...): Outputs data to the PC console.
 - Delays:
-
   - Delay_ms(): Introduces a delay in milliseconds for synchronization.
 - Hardware Interaction:
-
   - Output_high(PIN_A4) and Output_low(PIN_A4): Toggles a hardware pin for kill switch control.
 
 
@@ -2662,47 +1500,17 @@ Steps:
 This code is designed for managing UART communication between a microcontroller and a subsystem (OBC - On-Board Computer). Additionally, it provides functionality to control and monitor kill switches for solar panel connections. The kill switches are toggled via specific pins, enabling or disabling power transfer.
 
 #### Data Arrays for Communication
-``` c
-// Arrays used for communication with OBC
-unsigned int8 MPIC_TO_FAB_ARRAY[12];  // Only 3 bytes are used
-unsigned int8 FAB_TO_MPIC_ARRAY[50];
-```
 These arrays handle data exchange:
 - MPIC_TO_FAB_ARRAY: Stores outgoing data.
 - FAB_TO_MPIC_ARRAY: Stores incoming data from the FAB PIC.
 
 #### UART Ports and Debug Communication
-``` c
-#use rs232(baud=19200, xmit = PIN_B7, parity=N, bits=8, stream=PC, force_sw, ERRORS)
-```
 - Configures the UART port for communication.
 - Debug communication is established via the PC stream.
 
 #### UART Buffer and Interrupt
 
-``` c
-#define MP_BFR_SIZE 10  // UART buffer size
-unsigned int8 MP_Buffer[MP_BFR_SIZE];
-unsigned int16 MP_Byte_Counter = 0;
-unsigned int8 MP_Overflow = 0;
-unsigned int16 MP_Read_Byte_counter = 0;
-unsigned int8 MP_Temp_byte = 0;
-```
-
 #### SERIAL_ISR1()
-
-```c
-#INT_RDA
-Void SERIAL_ISR1()
-{
-   if (MP_Byte_Counter < MP_BFR_SIZE)
-   {
-      MP_Buffer[MP_Byte_Counter] = fgetc(MPIC);
-      MP_Byte_Counter++;
-   }
-   else MP_Overflow = fgetc(MPIC);  // Handle overflow
-}
-```
 - Purpose: Manages UART communication via interrupt service.
 - Key Points:
   - Incoming data is stored in a circular buffer (MP_Buffer).
@@ -2717,48 +1525,14 @@ Void SERIAL_ISR1()
 #### Utility Functions
 
 #### CLEAR_DATA_ARRAY()
-``` c
-void CLEAR_DATA_ARRAY(unsigned int8 array[], int array_size)
-{
-   for (int i = 0; i < array_size; i++) array[i] = 0;
-}
-```
 Clears any array, setting all elements to zero.
-
-``` c
-void printline()
-{
-   fprintf(PC, "\n\r");
-}
-```
-
+Description
+Function usage example
+#### printline()
 Prints a blank line for debug readability.
-
+Description
+Function usage example
 #### FAB_KILL_SWITCH()
-``` c
-void FAB_KILL_SWITCH(int status)
-{
-   Output_High(PIN_D4);    // Enable kill switch driver
-   Delay_ms(100);
-   
-   if (status == CLOSE)
-   {
-      Output_High(PIN_D5);    
-      Output_Low(PIN_D6);
-      fprintf(PC, "FAB Kill Switch Closing done\n\r");
-   }
-   
-   if (status == OPEN)
-   {
-      Output_Low(PIN_D5);      
-      Output_High(PIN_D6); 
-      fprintf(PC, "FAB Kill Switch Opening done\n\r");
-   }
-   
-   Delay_ms(100);
-   Output_Low(PIN_D4);  // Disable kill switch driver
-}
-```
 - Purpose: Controls the FAB kill switch, which disconnects or reconnects the solar panels.
 - Operation:
   - status == CLOSE: Connects solar panels.
@@ -2766,43 +1540,29 @@ void FAB_KILL_SWITCH(int status)
 - Pins:
   - PIN_D4: Enables kill switch driver.
   - PIN_D5/PIN_D6: Sets the switch state.
-
+Description
+Function usage example
 #### OBC_KILL_SWITCH()
-``` c
-void OBC_KILL_SWITCH(int status)
-{
-   if (status == CLOSE)
-   {
-      Output_High(PIN_D2);    
-      Output_Low(PIN_D1);
-      fprintf(PC, "OBC Kill Switch Closing done\n\r");
-   }
-   
-   if (status == OPEN)
-   {
-      Output_Low(PIN_D2);     
-      Output_High(PIN_D1);
-      fprintf(PC, "OBC Kill Switch Opening done\n\r");
-   }
-}
-```
 - Purpose: Controls the OBC kill switch, operating similarly to the FAB kill switch.
 - Pins:
   - PIN_D2/PIN_D1: Sets the switch state.
 - Operation:
   - status == CLOSE: Connects solar panels.
   - status == OPEN: Disconnects solar panels.
-
+Description
+Function usage example
 #### How the Code Works
 - UART Communication: Handles bidirectional communication via MP_Buffer and interrupt-driven logic.
 - Kill Switch Control: The FAB and OBC kill switches allow toggling the connection between solar panels and the system.
 - Debugging: Uses fprintf to print status messages for monitoring operations.
-
+Description
+Function usage example
 ### MPIC_MBOSS.c
 This code manages communication between a Mission Boss (MBOSS) system and an APRS (Automatic Packet Reporting System) setup. It includes functionality for sending commands, receiving responses, toggling system states, and handling APRS board numbers and flags.
-
 - Mission Boss Management: Use this code to interact with the Mission Boss system via UART communication.
 - APRS Command Handling: Ensure reliable transfer of commands and data validation.
+Description
+Function usage example
 
 #### Global Variables
 ``` c
@@ -2813,207 +1573,56 @@ unsigned int8 MissionBoss_flag = 0;
 - MissionBoss_flag: Tracks whether the Mission Boss is active (1) or inactive (0).
 
 #### CHECK_UART_INCOMING_FROM_MBOSS_PIC()
-``` c
-void CHECK_UART_INCOMING_FROM_MBOSS_PIC(unsigned int32 looping = 100000)
-{
-   int MBC = 0;
-   
-   for (unsigned int32 i = 0; i < looping; i++)
-   {
-      if (kbhit(MBOSS) && MissionBoss_flag == 1)
-      {
-         MBOSS_TO_MPIC_ARRAY[MBC] = fgetc(MBOSS);
-         MBC++;
-         if (MBC >= 13) break;
-      }
-   }
-   
-   fprintf(PC, "CHECK_UART_INCOMING_FROM_MBOSS_PIC\r\n");
-   fprintf(PC, "Data from MBOSS:");
-   
-   for (int i = 0; i < 13; i++)
-   {
-      fprintf(PC, "%X ", MBOSS_TO_MPIC_ARRAY[i]);
-   }
-   printline();
-}
-```
 - Purpose: Reads incoming UART data from MBOSS into MBOSS_TO_MPIC_ARRAY.
 - Loops for a specified count (looping) or until 13 bytes are read.
 - Prints received data to the debug interface.
+Description
+Function usage example
 
 #### PRINT_RECIVED_COMMAND_FROM_MISSION_BOSS()
-
-``` c
-void PRINT_RECIVED_COMMAND_FROM_MISSION_BOSS()
-{
-   fprintf(PC, "Received command from Mission Boss >> ");
-   for (int i = 0; i < 40; i++)
-   {
-      fprintf(PC, "%X ", MBOSS_TO_MPIC_ARRAY[i]);
-   }
-   printline();
-   printline();
-}
-```
 - Purpose: Outputs all received data from MBOSS in a human-readable format for debugging.
+Description
+Function usage example
 
 #### ACK_APRS_COMMAND_TO_COM()
-``` c
-void ACK_APRS_COMMAND_TO_COM(unsigned int board_number, unsigned int mission_number)
-{
-   CLEAR_DATA_ARRAY(MPIC_TO_CPIC_ARRAY, 32);
-   MPIC_TO_CPIC_ARRAY[0]  = 0xB0;   // Header
-   MPIC_TO_CPIC_ARRAY[1]  = board_number;
-   MPIC_TO_CPIC_ARRAY[2]  = mission_number;
-   MPIC_TO_CPIC_ARRAY[31] = 0xB1;   // Footer
-   
-   for (int i = 0; i < 32; i++)
-   {
-      fputc(MPIC_TO_CPIC_ARRAY[i], CPic);
-   }
-}
-```
 - Purpose: Sends an acknowledgment to the communication PIC (CPIC) with board and mission numbers.
+Description
+Function usage example
 
 #### APRS_BOARD_IDENTIFY()
-``` c
-int APRS_BOARD_IDENTIFY(unsigned int a)
-{
-   char c[3];
-   int bn;
-   sprintf(c, "%X", a);
-   bn = c[1] - '0';
-   
-   if (bn <= 7)
-   {
-      printf("Board Number --> %X", bn);
-   }
-   else
-   {
-      printf("Not correct board number");
-   }
-   return bn;
-}
-```
 - Purpose: Decodes the board number from a command and ensures it is valid.
+Description
+Function usage example
 
 #### TURN_ON_MISSIONBOSS()
-``` c
-void TURN_ON_MISSIONBOSS()
-{
-   output_high(PIN_D1);
-   MissionBoss_flag = 1;
-}
-```
 - TURN_ON_MISSIONBOSS: Activates the Mission Boss system.
+Description
+Function usage example
 
 #### TURN_OFF_MISSIONBOSS()
-
-```c
-void TURN_OFF_MISSIONBOSS()
-{
-   output_low(PIN_D1);
-   MissionBoss_flag = 0;
-}
-```
 - TURN_OFF_MISSIONBOSS: Deactivates the Mission Boss system.
+Description
+Function usage example
 
 #### GIVE_SFM_ACCESS_TO_MISSIONBOSS()
-``` c
-void GIVE_SFM_ACCESS_TO_MISSIONBOSS()
-{
-   fprintf(PC, "GIVE_SFM_ACCESS_TO\\MISSIONBOSS\n\r");
-   output_high(PIN_A5);
-}
-```
+Description
+Function usage example
 
 #### STOP_SFM_ACCESS_TO_MISSIONBOSS()
-```c
-void STOP_SFM_ACCESS_TO_MISSIONBOSS()
-{
-   fprintf(PC, "STOP_SFM_ACCESS_TO\\MISSIONBOSS\n\r");
-   output_low(PIN_A5);
-}
-```
 These functions control access to the Subsystem Function Module (SFM) for the Mission Boss.
+Description
+Function usage example
 
 #### RESET_ALL_APRSBOARD_NUMBER_FLAGS()
-``` c
-void RESET_ALL_APRSBOARD_NUMBER_FLAGS()
-{
-   if (MISSION_STATUS == 0)
-   {
-      APRS_REFERENSE_1_FLAG = 0;
-      APRS_REFERENSE_2_FLAG = 0;
-      APRS_PAYLOAD_1_FLAG = 0;
-      APRS_PAYLOAD_2_FLAG = 0;
-      APRS_PAYLOAD_3_FLAG = 0;
-      APRS_PAYLOAD_4_FLAG = 0;
-      APRS_PAYLOAD_5_FLAG = 0;
-   }
-}
-```
 Resets all APRS board flags when the mission is not active (MISSION_STATUS == 0).
+Description
+Function usage example
 
 #### SEND_APRS_COMMAND_TO_MISSIONBOSS_THROUGH_MAIN()
-``` c
-void SEND_APRS_COMMAND_TO_MISSIONBOSS_THROUGH_MAIN()
-{
-   if (CPIC_TO_MPIC_ARRAY[1] == 0x00 && (CPIC_TO_MPIC_ARRAY[2] & 0xF0) == 0xB0)
-   {
-      // Acknowledge to CPIC
-      CLEAR_DATA_ARRAY(MPIC_TO_CPIC_ARRAY, 32);
-      MPIC_TO_CPIC_ARRAY[0]  = 0xB0;
-      MPIC_TO_CPIC_ARRAY[1]  = 0xB0;
-      MPIC_TO_CPIC_ARRAY[31] = 0xB1;
-      
-      for (int i = 0; i < 32; i++)
-      {
-         fputc(MPIC_TO_CPIC_ARRAY[i], CPic);
-      }
-      
-      fprintf(PC, "Sending APRS command to Mission Boss\n\r");
-      TURN_ON_MISSIONBOSS();
-      delay_ms(1000);
-      
-      CLEAR_DATA_ARRAY(MPIC_TO_MBOSS_ARRAY, 40);
-      CLEAR_DATA_ARRAY(MBOSS_TO_MPIC_ARRAY, 40);
-
-      MPIC_TO_MBOSS_ARRAY[0] = CPIC_TO_MPIC_ARRAY[2];
-      MPIC_TO_MBOSS_ARRAY[1] = CPIC_TO_MPIC_ARRAY[3];
-      MPIC_TO_MBOSS_ARRAY[2] = 0xE0;
-
-      for (int i = 3; i < 10; i++)
-      {
-         MPIC_TO_MBOSS_ARRAY[i] = CPIC_TO_MPIC_ARRAY[i + 1];
-      }
-      MPIC_TO_MBOSS_ARRAY[10] = 0xED;
-      
-      fprintf(PC, "APRS command:");
-      fputc(0xAA, MBOSS); // Header for Mission Boss
-      for (int i = 0; i < 11; i++)
-      {
-         fputc(MPIC_TO_MBOSS_ARRAY[i], MBOSS);
-         fprintf(PC, "%X ", MPIC_TO_MBOSS_ARRAY[i]);
-      }
-
-      if (MPIC_TO_MBOSS_ARRAY[3] == 0x11) // Grant access if data transfer command
-      {
-         GIVE_SFM_ACCESS_TO_MISSIONBOSS();
-         delay_ms(5000);
-         STOP_SFM_ACCESS_TO_MISSIONBOSS();
-      }
-      
-      printline();
-      CHECK_UART_INCOMING_FROM_MBOSS_PIC(500000);
-   }
-}
-```
 - Sends an APRS command to Mission Boss.
 - Grants SFM access if the command is a data transfer request.
-
-
+Description
+Function usage example
 
 ### BIRDS-X_Mission_Boss.h
 
@@ -3031,93 +1640,25 @@ A software UART is configured on Pin C0 with a baud rate of 19200 for debugging 
 ```
 
 #### APRS Communication (UART2):
-``` c
-unsigned int8 APRS_RESPONSE[210];
 
-#define APRS_BFR_SIZE 200
-// UART PC functions___________________________________________________________
-#pin_select TX2 = PIN_G1   //MB1, CPLD(84)
-#pin_select RX2 = PIN_G0   //MB1, CPLD(83)                                                      
-#use rs232(baud=9600, parity=N, UART2, bits=8, stream=APRS, ERRORS)                     
-
-
-unsigned int8  APRS_Buffer[APRS_BFR_SIZE];
-unsigned int16 APRS_Byte_Counter = 0;
-unsigned int8  APRS_Overflow = 0;
-unsigned int16 APRS_Read_Byte_counter = 0;
-unsigned int8  APRS_Temp_byte = 0;
-#INT_RDA2
-```
 
 #### SERIAL_ISR2() 
-```c
-Void SERIAL_ISR2()                                                             // MAIN PIC uart interupt loop
-{
-   if( APRS_Byte_Counter < APRS_BFR_SIZE )
-   {
-      APRS_Buffer[APRS_Byte_Counter] = fgetc(APRS);
-      APRS_Byte_Counter++;
-   }
-   
-   else APRS_Overflow = fgetc(APRS);
-}
-```
+Description
+Function usage example
 
 #### APRS_Available()
-```c
-unsigned int8 APRS_Available()
-{
-   return APRS_Byte_Counter ;
-}
-```
+Description
+Function usage example
 
 #### APRS_Read()
-```c
-unsigned int8 APRS_Read()
-{
-   if (APRS_Byte_Counter>0)
-   {    
-      APRS_Temp_byte = APRS_Buffer[APRS_Read_Byte_counter];
-      
-      APRS_Byte_Counter--;
-      APRS_Read_Byte_counter++;
-      if(APRS_Byte_Counter == 0) APRS_Read_Byte_counter = 0;
-      return APRS_Temp_byte; 
-   }
-   
-   if (APRS_Byte_Counter == 0)
-   { 
-      APRS_Read_Byte_counter = 0;
-      APRS_Temp_byte = 0x00;
-      return APRS_Temp_byte; 
-   }
- 
-}
-```
+Description
+Function usage example
 
 #### APRS_flush()
-```c
-void APRS_flush()
-{
-   while( APRS_Available() ) APRS_Read() ;
-}
-```
+Description
+Function usage example
 
 #### GET_DATA_OR_ACK_FROM_APRS()
-
-```c
-void GET_DATA_OR_ACK_FROM_APRS()
-{
-   if( APRS_Available() )
-   {
-      delay_ms(300);
-      for(int i=0; i<200; i++)
-      {
-         APRS_RESPONSE[i] = APRS_READ();
-      }
-   }
-}
-```
 Configures UART communication with an Automatic Packet Reporting System (APRS) using:
 - TX2 = PIN_G1
 - RX2 = PIN_G0
@@ -3131,6 +1672,7 @@ Helper functions:
 - APRS_flush: Clears the buffer.
 - GET_DATA_OR_ACK_FROM_APRS: Reads and stores incoming data into the APRS_RESPONSE array after ensuring data availability.
 
+Function usage example
 
 
 #### OBC Communication (UART3):
@@ -3156,86 +1698,22 @@ int8 Flag_OBC = 0;
 ```
 
 #### SERIAL_ISR3()   
-```c
-Void SERIAL_ISR3()                                                             // MAIN PIC uart interupt loop
-{
-   if( OBC_Byte_Counter < OBC_BFR_SIZE )
-   {
-      OBC_Buffer[OBC_Byte_Counter] = fgetc(OBC);
-      OBC_Byte_Counter++;
-   }
-   
-   else OBC_Overflow = fgetc(OBC);
-}
-```
+Description
+Function usage example
 
 #### OBC_Available()
-```c
-unsigned int8 OBC_Available()
-{
-   return OBC_Byte_Counter ;
-}
-```
+Description
+Function usage example
 
 #### OBC_Read()
-```c
-unsigned int8 OBC_Read()
-{
-   if (OBC_Byte_Counter>0)
-   {    
-      OBC_Temp_byte = OBC_Buffer[OBC_Read_Byte_counter];
-      
-      OBC_Byte_Counter--;
-      OBC_Read_Byte_counter++;
-      if(OBC_Byte_Counter == 0) OBC_Read_Byte_counter = 0;
-      return OBC_Temp_byte; 
-   }
-   
-   if (OBC_Byte_Counter == 0)
-   { 
-      OBC_Read_Byte_counter = 0;
-      OBC_Temp_byte = 0x00;
-      return OBC_Temp_byte; 
-   }
- 
-}
-```
+Description
+Function usage example
 
 #### OBC_flush()
-
-```c
-void OBC_flush()
-{
-   while( OBC_Available() ) OBC_Read() ;
-}
-
-char header ;
-```
+Description
+Function usage example
 
 #### GET_COMMANDS_FROM_OBC()
-
-```c
-void GET_COMMANDS_FROM_OBC()
-{
-   if( OBC_Available() )
-   {
-      header = OBC_READ() ;
-      
-      if( (0xB0 <= header) && (header <= 0xB6) )
-      {    
-         delay_ms(100);
-         
-         command_data[0] = header ;
-         
-         for(int i=1; i<20; i++)
-         {
-            command_data[i] = OBC_READ();
-         }
-         Flag_OBC = 1;
-      }
-   }
-}
-```
 Configures communication with an On-Board Computer (OBC):
 - TX3 = PIN_E1
 - RX3 = PIN_E0
@@ -3244,6 +1722,8 @@ Similar to APRS, it uses a buffer and an ISR (#INT_RDA3) for data handling:
 - Stores OBC data in OBC_Buffer.
 - Implements helper functions (OBC_Available, OBC_Read, OBC_flush).
 - GET_COMMANDS_FROM_OBC: Processes specific header-based commands (0xB0 to 0xB6) and stores the command data.
+Description
+Function usage example
 
 #### SPI Interface for Shared Flash Memory
 
@@ -3255,74 +1735,14 @@ unsigned int8 _data;
 ```
 
 #### SHARED_FM_WRITE_ENABLE()
-```c
-void SHARED_FM_WRITE_ENABLE()
-{
-  Output_low(Pin_A3);
-  spi_xfer(SHARED_FM,0x06);                
-  Output_high(Pin_A3);
-  return;
-}
-```
+Description
+Function usage example
 
 #### SHARED_FM_SECTOR_ERASE()
-```c
-void SHARED_FM_SECTOR_ERASE(unsigned int32 sector_address,char sector_size, unsigned int16 delay = 1000)
-{
-   
-   address[0]  = (unsigned int8)((sector_address>>24) & 0xFF);   // 0x __ 00 00 00
-   address[1]  = (unsigned int8)((sector_address>>16) & 0xFF);   // 0x 00 __ 00 00
-   address[2]  = (unsigned int8)((sector_address>>8)  & 0xFF);   // 0x 00 00 __ 00
-   address[3]  = (unsigned int8)((sector_address)     & 0xFF);   // 0x 00 00 00 __
-   
-   SHARED_FM_WRITE_ENABLE();
-   Output_low(Pin_A3);             //lower the CS PIN
-
-   ///////////////////////////////////////////////////////////////////
-
-   if( Sector_size == 4  ) spi_xfer(SHARED_FM,0x21);                    // 4KB Sector erase
-   if( Sector_size == 32 ) spi_xfer(SHARED_FM,0x5C);                    // 32KB Sector erase
-   if( Sector_size == 64 ) spi_xfer(SHARED_FM,0xDC);                    // 64KB Sector erase
-   
-   spi_xfer(SHARED_FM,address[0]);   
-   spi_xfer(SHARED_FM,address[1]);    
-   spi_xfer(SHARED_FM,address[2]);    
-   spi_xfer(SHARED_FM,address[3]);
-   //////////////////////////////////////////////////////////////////
-   Output_high(Pin_A3);           //take CS PIN higher back
-
-   delay_ms(delay); 
-   return;
-}
-```
+Description
+Function usage example
 
 #### SHARED_FM_BYTE_WRITE()
-```c
-void SHARED_FM_BYTE_WRITE(unsigned int32 byte_address, unsigned int8 data)
-{
-   
-   //Byte extraction
-   address[0]  = (unsigned int8)((byte_address>>24) & 0xFF);   // 0x __ 00 00 00
-   address[1]  = (unsigned int8)((byte_address>>16) & 0xFF);   // 0x 00 __ 00 00
-   address[2]  = (unsigned int8)((byte_address>>8)  & 0xFF);   // 0x 00 00 __ 00
-   address[3]  = (unsigned int8)((byte_address)     & 0xFF);   // 0x 00 00 00 __
- 
-   SHARED_FM_WRITE_ENABLE();
-   Output_low(Pin_A3);             //lower the CS PIN
-   ///////////////////////////////////////////////////////////////////
-   spi_xfer(SHARED_FM,0x12);         //Byte WRITE COMAND  (0x12)
-   spi_xfer(SHARED_FM,address[0]);    
-   spi_xfer(SHARED_FM,address[1]);    
-   spi_xfer(SHARED_FM,address[2]);    
-   spi_xfer(SHARED_FM,address[3]);
-
-   spi_xfer(SHARED_FM,data); 
-   //////////////////////////////////////////////////////////////////
-   Output_high(Pin_A3);           //take CS PIN higher back 
-   
-   return;
-}
-```
 Configures SPI communication for shared flash memory:
 - SPI pins:
      - Clock = PIN_A0
@@ -3601,48 +2021,24 @@ The ```WRITE_ENABLE``` command (0x06) is a standard SPI flash memory command. Be
 This mechanism helps prevent accidental data overwrites.
 
 #### MAIN_FM_WRITE_ENABLE()
-
-```c
-void MAIN_FM_WRITE_ENABLE()
-{
-  Output_low(Pin_E2);
-  spi_xfer(MAIN_FM,0x06);                
-  Output_high(Pin_E2);
-  return;
-}Controls the main flash memory.
-```
-
+Controls the main flash memory.
 Pulls the chip select (CS) line (Pin_E2) low to begin communication.
 Sends the WRITE_ENABLE command (0x06) over the MAIN_FM SPI stream.
 Sets the CS line (Pin_E2) high to end communication.
+Description
+Function usage example
 
 #### COM_FM_WRITE_ENABLE()
-
-```c
-void COM_FM_WRITE_ENABLE()
-{
-  Output_low(Pin_B3);
-  spi_xfer(COM_FM,0x06);                
-  Output_high(Pin_B3);
-  return;
-}
-```
 Controls the communication flash memory.
 Operates similarly to MAIN_FM_WRITE_ENABLE() but uses Pin_B3 as the chip select line and the COM_FM SPI stream.
+Description
+Function usage example
 
 #### MSN_FM_WRITE_ENABLE()
-```c
-void MSN_FM_WRITE_ENABLE()
-{
-
-  Output_low(Pin_A2);
-  spi_xfer(MSN_FM,0x06);                
-  Output_high(Pin_A2);
-  return;
-}
-```
 Controls the mission flash memory.
 Uses Pin_A2 as the chip select line and the MSN_FM SPI stream.
+Description
+Function usage example
 
 **SPI Command Workflow**
 Activate Chip Select: Pulling the CS line (Output_low) tells the SPI device to pay attention to incoming data.
@@ -3684,7 +2080,7 @@ void MAIN_FM_SECTOR_ERASE(unsigned int32 sector_address,char sector_size,  int16
    return;
 }
 ```
-The MAIN_FM_SECTOR_ERASE function is intended to erase a specified sector of memory on a flash device using SPI communication. It does so by sending the appropriate erase command followed by the sector's address. The sector size is used to determine which erase command should be sent.
+The ```MAIN_FM_SECTOR_ERASE()``` function is intended to erase a specified sector of memory on a flash device using SPI communication. It does so by sending the appropriate erase command followed by the sector's address. The sector size is used to determine which erase command should be sent.
 
 Function Breakdown
 - Function Parameters:
@@ -3707,89 +2103,17 @@ delay: A delay in milliseconds after the erase operation (default 1000 ms if not
 
 #### Sector Erase COM FM (4KB,32KB,64KB )
 Same as above but for COM flash memory
-```c
-void COM_FM_SECTOR_ERASE(unsigned int32 sector_address, char sector_size, unsigned int16 delay = 1000)
-{
-   
-   adsress[0]  = (unsigned int8)((sector_address>>24) & 0xFF);   // 0x __ 00 00 00
-   adsress[1]  = (unsigned int8)((sector_address>>16) & 0xFF);   // 0x 00 __ 00 00
-   adsress[2]  = (unsigned int8)((sector_address>>8)  & 0xFF);   // 0x 00 00 __ 00
-   adsress[3]  = (unsigned int8)((sector_address)     & 0xFF);   // 0x 00 00 00 __
-   
-   COM_FM_WRITE_ENABLE();
-   Output_low(Pin_B3);             //lower the CS PIN
-   ///////////////////////////////////////////////////////////////////
-   if( Sector_size == 4  ) spi_xfer(COM_FM,0x21);                    // 4KB Sector erase
-   if( Sector_size == 32 ) spi_xfer(COM_FM,0x5C);                    // 32KB Sector erase
-   if( Sector_size == 64 ) spi_xfer(COM_FM,0xDC);                    // 64KB Sector erase
-      
-   spi_xfer(COM_FM,adsress[0]);   
-   spi_xfer(COM_FM,adsress[1]);    
-   spi_xfer(COM_FM,adsress[2]);    
-   spi_xfer(COM_FM,adsress[3]);
-   //////////////////////////////////////////////////////////////////
-   Output_high(Pin_B3);           //take CS PIN higher back
-   delay_ms(delay); 
-   return;
-}
-```
+```COM_FM_SECTOR_ERASE(sector_address, sector_size, delay = 1000)```
+Description
+Function usage example
 
 #### Sector Erase MSN FM (4KB,32KB,64KB )
 Same as above but for MSN flash memory
-```c
-void MSN_FM_SECTOR_ERASE(unsigned int32 sector_address,char sector_size, unsigned int16 delay = 1000)
-{
-   
-   adsress[0]  = (unsigned int8)((sector_address>>24) & 0xFF);   // 0x __ 00 00 00
-   adsress[1]  = (unsigned int8)((sector_address>>16) & 0xFF);   // 0x 00 __ 00 00
-   adsress[2]  = (unsigned int8)((sector_address>>8)  & 0xFF);   // 0x 00 00 __ 00
-   adsress[3]  = (unsigned int8)((sector_address)     & 0xFF);   // 0x 00 00 00 __
-   
-   MSN_FM_WRITE_ENABLE();
-   Output_low(Pin_A2);             //lower the CS PIN
-   ///////////////////////////////////////////////////////////////////
-   if( Sector_size == 4  ) spi_xfer(MSN_FM,0x21);                    // 4KB Sector erase
-   if( Sector_size == 32 ) spi_xfer(MSN_FM,0x5C);                    // 32KB Sector erase
-   if( Sector_size == 64 ) spi_xfer(MSN_FM,0xDC);                    // 64KB Sector erase
-   
-   spi_xfer(MSN_FM,adsress[0]);   
-   spi_xfer(MSN_FM,adsress[1]);    
-   spi_xfer(MSN_FM,adsress[2]);    
-   spi_xfer(MSN_FM,adsress[3]);
-   //////////////////////////////////////////////////////////////////
-   Output_high(Pin_A2);           //take CS PIN higher back
-   delay_ms(delay); 
-   return;
-}
-```
+```MSN_FM_SECTOR_ERASE(unsigned int32 sector_address,char sector_size, unsigned int16 delay = 1000)```
+Description
+Function usage example
 
 #### MAIN_FM_BYTE_WRITE(byte_address, data)
-```c
-void MAIN_FM_BYTE_WRITE(unsigned int32 byte_address, unsigned int8 data)
-{
-   
-   //Byte extraction
-   adsress[0]  = (unsigned int8)((byte_address>>24) & 0xFF);   // 0x __ 00 00 00
-   adsress[1]  = (unsigned int8)((byte_address>>16) & 0xFF);   // 0x 00 __ 00 00
-   adsress[2]  = (unsigned int8)((byte_address>>8)  & 0xFF);   // 0x 00 00 __ 00
-   adsress[3]  = (unsigned int8)((byte_address)     & 0xFF);   // 0x 00 00 00 __
- 
-   MAIN_FM_WRITE_ENABLE();
-   Output_low(Pin_E2);             //lower the CS PIN
-   ///////////////////////////////////////////////////////////////////
-   spi_xfer(MAIN_FM,0x12);         //Byte WRITE COMAND  (0x12)
-   spi_xfer(MAIN_FM,adsress[0]);    
-   spi_xfer(MAIN_FM,adsress[1]);    
-   spi_xfer(MAIN_FM,adsress[2]);    
-   spi_xfer(MAIN_FM,adsress[3]);
-
-   spi_xfer(MAIN_FM,data); 
-   //////////////////////////////////////////////////////////////////
-   Output_high(Pin_E2);           //take CS PIN higher back 
-   
-   return;
-}
-```
 The MAIN_FM_BYTE_WRITE function is designed to write a byte of data to a specific address in flash memory via SPI. The function performs the following tasks:
 
 Function Breakdown
@@ -3806,7 +2130,8 @@ data: The byte data to be written to the specified address.
 - SPI Write Command: The function sends the Byte Write command (0x12) followed by the address bytes (adsress[0], adsress[1], adsress[2], and adsress[3]). Afterward, it sends the byte of data (data) to be written.
 
 - Chip Select Reset: After the data is sent, the chip select pin is pulled high to deselect the flash memory.
-
+Description
+Function usage example
 
 
 #### 
