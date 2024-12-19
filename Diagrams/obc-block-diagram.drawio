@@ -2444,7 +2444,7 @@
     </mxGraphModel>
   </diagram>
   <diagram name="obc-block-diagram-dio" id="tkUbEqTCaeUvH7X2o611">
-    <mxGraphModel dx="2869" dy="1174" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" background="none" math="0" shadow="0">
+    <mxGraphModel dx="1605" dy="336" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" background="none" math="0" shadow="0">
       <root>
         <mxCell id="K0iDgTtEInipGCaVlX6p-0" />
         <mxCell id="K0iDgTtEInipGCaVlX6p-1" parent="K0iDgTtEInipGCaVlX6p-0" />
@@ -2776,6 +2776,36 @@
         <mxCell id="vrtaFohqGIsbvNrgEVSV-9" value="DIO" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=12;labelBackgroundColor=none;" vertex="1" connectable="0" parent="vrtaFohqGIsbvNrgEVSV-8">
           <mxGeometry x="0.2091" relative="1" as="geometry">
             <mxPoint x="20" y="-50" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="8QPA4DKhuX0sHHYPBoR6-0" value="" style="endArrow=classic;html=1;rounded=0;fontSize=12;startSize=8;endSize=8;exitX=0.952;exitY=-0.006;exitDx=0;exitDy=0;startArrow=classic;startFill=1;entryX=0.101;entryY=0.01;entryDx=0;entryDy=0;edgeStyle=orthogonalEdgeStyle;strokeColor=#000000;exitPerimeter=0;entryPerimeter=0;" edge="1" parent="K0iDgTtEInipGCaVlX6p-1" source="K0iDgTtEInipGCaVlX6p-5" target="K0iDgTtEInipGCaVlX6p-26">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="190" y="322.71000000000004" as="sourcePoint" />
+            <mxPoint x="335" y="195.9" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="211" y="170" />
+              <mxPoint x="370" y="170" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="8QPA4DKhuX0sHHYPBoR6-1" value="ANALOG DIO" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=12;labelBackgroundColor=none;" vertex="1" connectable="0" parent="8QPA4DKhuX0sHHYPBoR6-0">
+          <mxGeometry x="0.2091" relative="1" as="geometry">
+            <mxPoint x="-13" y="5" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="8QPA4DKhuX0sHHYPBoR6-2" value="" style="endArrow=classic;html=1;rounded=0;fontSize=12;startSize=8;endSize=8;exitX=0.848;exitY=0.006;exitDx=0;exitDy=0;startArrow=classic;startFill=1;entryX=0.25;entryY=0;entryDx=0;entryDy=0;edgeStyle=orthogonalEdgeStyle;strokeColor=#000000;exitPerimeter=0;" edge="1" parent="K0iDgTtEInipGCaVlX6p-1" source="K0iDgTtEInipGCaVlX6p-5" target="K0iDgTtEInipGCaVlX6p-26">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="221" y="341" as="sourcePoint" />
+            <mxPoint x="380" y="208" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="200" y="160" />
+              <mxPoint x="385" y="160" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="8QPA4DKhuX0sHHYPBoR6-3" value="ANALOG DIO" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=12;labelBackgroundColor=none;" vertex="1" connectable="0" parent="8QPA4DKhuX0sHHYPBoR6-2">
+          <mxGeometry x="0.2091" relative="1" as="geometry">
+            <mxPoint x="-13" y="5" as="offset" />
           </mxGeometry>
         </mxCell>
       </root>
