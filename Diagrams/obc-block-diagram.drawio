@@ -1539,7 +1539,7 @@
     </mxGraphModel>
   </diagram>
   <diagram name="Copy of obc-block-diagram" id="tkUbEqTCaeUvH7X2o611">
-    <mxGraphModel dx="1550" dy="299" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" background="none" math="0" shadow="0">
+    <mxGraphModel dx="2751" dy="1096" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" background="none" math="0" shadow="0">
       <root>
         <mxCell id="K0iDgTtEInipGCaVlX6p-0" />
         <mxCell id="K0iDgTtEInipGCaVlX6p-1" parent="K0iDgTtEInipGCaVlX6p-0" />
@@ -1695,7 +1695,7 @@
         </mxCell>
         <mxCell id="K0iDgTtEInipGCaVlX6p-34" value="DIO" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=12;labelBackgroundColor=none;" vertex="1" connectable="0" parent="K0iDgTtEInipGCaVlX6p-33">
           <mxGeometry x="0.2091" relative="1" as="geometry">
-            <mxPoint x="-75" y="-2" as="offset" />
+            <mxPoint x="-75" y="9" as="offset" />
           </mxGeometry>
         </mxCell>
         <mxCell id="K0iDgTtEInipGCaVlX6p-35" value="" style="endArrow=classic;html=1;rounded=0;fontSize=12;startSize=8;endSize=8;exitX=1;exitY=0.5;exitDx=0;exitDy=0;startArrow=classic;startFill=1;entryX=0;entryY=0.25;entryDx=0;entryDy=0;edgeStyle=orthogonalEdgeStyle;strokeColor=#000000;" edge="1" parent="K0iDgTtEInipGCaVlX6p-1" target="K0iDgTtEInipGCaVlX6p-26">
@@ -1710,7 +1710,7 @@
         </mxCell>
         <mxCell id="K0iDgTtEInipGCaVlX6p-36" value="DIO" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=12;labelBackgroundColor=none;" vertex="1" connectable="0" parent="K0iDgTtEInipGCaVlX6p-35">
           <mxGeometry x="0.2091" relative="1" as="geometry">
-            <mxPoint x="-30" y="5" as="offset" />
+            <mxPoint x="-13" y="5" as="offset" />
           </mxGeometry>
         </mxCell>
         <mxCell id="K0iDgTtEInipGCaVlX6p-37" value="" style="endArrow=classic;html=1;rounded=0;fontSize=12;startSize=8;endSize=8;entryX=0;entryY=0.5;entryDx=0;entryDy=0;startArrow=classic;startFill=1;exitX=0.25;exitY=1;exitDx=0;exitDy=0;edgeStyle=orthogonalEdgeStyle;strokeColor=#007FFF;" edge="1" parent="K0iDgTtEInipGCaVlX6p-1" source="K0iDgTtEInipGCaVlX6p-4" target="K0iDgTtEInipGCaVlX6p-62">
@@ -1967,7 +1967,7 @@
         </mxCell>
         <mxCell id="vrtaFohqGIsbvNrgEVSV-7" value="DIO" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=12;labelBackgroundColor=none;" vertex="1" connectable="0" parent="vrtaFohqGIsbvNrgEVSV-6">
           <mxGeometry x="0.2091" relative="1" as="geometry">
-            <mxPoint x="-65" y="5" as="offset" />
+            <mxPoint x="-10" y="-14" as="offset" />
           </mxGeometry>
         </mxCell>
         <mxCell id="vrtaFohqGIsbvNrgEVSV-8" value="" style="endArrow=classic;html=1;rounded=0;fontSize=12;startSize=8;endSize=8;exitX=1.009;exitY=0.865;exitDx=0;exitDy=0;startArrow=classic;startFill=1;entryX=0;entryY=0.75;entryDx=0;entryDy=0;edgeStyle=orthogonalEdgeStyle;strokeColor=#000000;exitPerimeter=0;" edge="1" parent="K0iDgTtEInipGCaVlX6p-1" target="K0iDgTtEInipGCaVlX6p-26">
@@ -1982,7 +1982,7 @@
         </mxCell>
         <mxCell id="vrtaFohqGIsbvNrgEVSV-9" value="DIO" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=12;labelBackgroundColor=none;" vertex="1" connectable="0" parent="vrtaFohqGIsbvNrgEVSV-8">
           <mxGeometry x="0.2091" relative="1" as="geometry">
-            <mxPoint x="-23" y="7" as="offset" />
+            <mxPoint x="20" y="-50" as="offset" />
           </mxGeometry>
         </mxCell>
       </root>
