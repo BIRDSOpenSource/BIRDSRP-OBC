@@ -2460,9 +2460,6 @@
         <mxCell id="K0iDgTtEInipGCaVlX6p-5" value="COM PIC" style="shape=rect;dashed=0;shadow=0;html=1;whiteSpace=wrap;rounded=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="K0iDgTtEInipGCaVlX6p-1" vertex="1">
           <mxGeometry x="110" y="330.93000000000006" width="106" height="50" as="geometry" />
         </mxCell>
-        <mxCell id="K0iDgTtEInipGCaVlX6p-6" value="MUX" style="shape=trapezoid;perimeter=trapezoidPerimeter;whiteSpace=wrap;html=1;fixedSize=1;rotation=90;size=14;" parent="K0iDgTtEInipGCaVlX6p-1" vertex="1">
-          <mxGeometry x="-44" y="414.25" width="50" height="23.37" as="geometry" />
-        </mxCell>
         <mxCell id="K0iDgTtEInipGCaVlX6p-7" value="" style="triangle;whiteSpace=wrap;html=1;rotation=90;" parent="K0iDgTtEInipGCaVlX6p-1" vertex="1">
           <mxGeometry x="535" y="141" width="60" height="80" as="geometry" />
         </mxCell>
@@ -2474,9 +2471,6 @@
         </mxCell>
         <mxCell id="K0iDgTtEInipGCaVlX6p-10" value="Shared COM&amp;nbsp;&lt;div&gt;FM&lt;/div&gt;" style="shape=rect;dashed=0;shadow=0;html=1;whiteSpace=wrap;rotation=0;rounded=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;fillColor=#d5e8d4;strokeColor=#82b366;" parent="K0iDgTtEInipGCaVlX6p-1" vertex="1">
           <mxGeometry x="20" y="400.94000000000005" width="100" height="50" as="geometry" />
-        </mxCell>
-        <mxCell id="K0iDgTtEInipGCaVlX6p-11" value="MUX" style="shape=trapezoid;perimeter=trapezoidPerimeter;whiteSpace=wrap;html=1;fixedSize=1;rotation=90;size=10;" parent="K0iDgTtEInipGCaVlX6p-1" vertex="1">
-          <mxGeometry x="-30" y="247.63" width="50" height="23.37" as="geometry" />
         </mxCell>
         <mxCell id="K0iDgTtEInipGCaVlX6p-24" value="ANTENNA&lt;div&gt;DEPLOYMENT&lt;/div&gt;" style="shape=rect;dashed=0;shadow=0;html=1;whiteSpace=wrap;rotation=0;rounded=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;fillColor=#ffe6cc;strokeColor=#d79b00;" parent="K0iDgTtEInipGCaVlX6p-1" vertex="1">
           <mxGeometry x="-1040" y="119.99999999999999" width="100" height="50" as="geometry" />
