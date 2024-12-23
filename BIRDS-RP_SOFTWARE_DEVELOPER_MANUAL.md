@@ -2118,51 +2118,19 @@ The MAIN_FM_BYTE_WRITE function is designed to write a byte of data to a specifi
 
 Function Breakdown
 - Parameters:
-
 byte_address: The 32-bit address where the byte data will be written.
 data: The byte data to be written to the specified address.
 - Address Extraction: The 32-bit byte_address is broken down into four 8-bit bytes and stored in the adsress[] array. This is done by shifting the address bits and applying a mask.
-
 - Write Enable: The function calls MAIN_FM_WRITE_ENABLE(), which is assumed to be another function that ensures the flash memory is in write-enabled mode.
-
 - Chip Select (CS): The function pulls the chip select pin (Pin_E2) low to select the flash memory for communication.
-
 - SPI Write Command: The function sends the Byte Write command (0x12) followed by the address bytes (adsress[0], adsress[1], adsress[2], and adsress[3]). Afterward, it sends the byte of data (data) to be written.
-
 - Chip Select Reset: After the data is sent, the chip select pin is pulled high to deselect the flash memory.
 Description
 Function usage example
 
 
-#### 
+#### COM_FM_BYTE_WRITE(byte_address, data)
 same as above for com
-```c
-void COM_FM_BYTE_WRITE(unsigned int32 byte_address, unsigned int8 data)
-{
-   
-   //Byte extraction
-   adsress[0]  = (unsigned int8)((byte_address>>24) & 0xFF);   // 0x __ 00 00 00
-   adsress[1]  = (unsigned int8)((byte_address>>16) & 0xFF);   // 0x 00 __ 00 00
-   adsress[2]  = (unsigned int8)((byte_address>>8)  & 0xFF);   // 0x 00 00 __ 00
-   adsress[3]  = (unsigned int8)((byte_address)     & 0xFF);   // 0x 00 00 00 __
- 
-   COM_FM_WRITE_ENABLE();
-   Output_low(Pin_B3);             //lower the CS PIN
-   ///////////////////////////////////////////////////////////////////
-   spi_xfer(COM_FM,0x12);         //Byte WRITE COMAND  (0x12)
-   spi_xfer(COM_FM,adsress[0]);    
-   spi_xfer(COM_FM,adsress[1]);    
-   spi_xfer(COM_FM,adsress[2]);    
-   spi_xfer(COM_FM,adsress[3]);
-
-   spi_xfer(COM_FM,data); 
-   //////////////////////////////////////////////////////////////////
-   Output_high(Pin_B3);           //take CS PIN higher back 
-   
-   return;
-}
-```
-
 
 
 ### ComPic_Settings.c 
@@ -2288,62 +2256,16 @@ unsigned int8  MP_Temp_byte = 0;
 
 
 #### SERIAL_ISR2()   
-```c
-Void SERIAL_ISR2()         // MAIN PIC uart interupt loop
-{
-   if( kbhit(MPic) )
-   {
-      if( MP_Byte_Counter < MP_BFR_SIZE )
-      {
-         MP_Buffer[MP_Byte_Counter] = fgetc(MPic);
-         MP_Byte_Counter++;
-      }
-      else MP_Overflow = fgetc(MPic);
-   }
-}
-```
 
 
 #### MPic_Available()
-```c
-unsigned int8 MPic_Available()
-{
-   if (MP_Byte_Counter > 0) return MP_Byte_Counter ;
-   else return 0;
-}
-```
 
 
 #### MPic_Read()
-```c
-unsigned int8 MPic_Read()
-{
-   if (MP_Byte_Counter>0)
-   {    
-      MP_Temp_byte = MP_Buffer[MP_Read_Byte_counter];
-      
-      MP_Byte_Counter--;
-      MP_Read_Byte_counter++;
-      if(MP_Byte_Counter == 0) MP_Read_Byte_counter = 0;
-      return MP_Temp_byte; 
-   }
-   
-   if (MP_Byte_Counter == 0)
-   { 
-      MP_Read_Byte_counter = 0;
-      MP_Temp_byte = 0x00;
-      return MP_Temp_byte; 
-   }
-}
-```
+
 
 #### MPic_flush()
-```c
-void MPic_flush()
-{
-   while( MPic_Available() ) MPic_Read() ;
-}
-```
+
 
 #### UART port connected to RESET pic
 pin select and constant definitions
@@ -2527,16 +2449,6 @@ Mode 2: Clock idle is high (CPOL = 1), and data is sampled on the falling edge o
 
 #### READ_EXT_ADC_CHANELS(channel)
 using this function external ADC temperature channels can be read
-```c
-unsigned int8 READ_EXT_ADC_CHANELS( unsigned int32 channel )
-{
-   unsigned int32 CNL_ADD = 0B1000001100110000 | (channel<<10) ;      // 0B1000001100110000 = 0x8330         
-   spi_xfer(SPIPORT, CNL_ADD); 
-   unsigned int16 ADC_READING = spi_xfer(SPIPORT) & 0x0FFF;           // reading ADC values and removing first address bits  
-   
-   return ADC_READING/16;                                             // converting to 8 bit
-}
-```
 This function takes a 32-bit integer as the channel parameter.
 It returns an 8-bit value (unsigned int8) representing the ADC reading.
 The base command 0x8330 (binary: 1000001100110000) is shifted and OR-ed with the channel parameter shifted 10 bits to the left.
@@ -2554,16 +2466,6 @@ This assumes the ADC's full range (12 bits, ```0-4095```) should be mapped to 8 
 
 #### READ_FAB_PIC_ADC(port_name)
 designed to read an analog signal from a specified ADC channel on a PIC microcontroller.
-
-```c
-unsigned int16 READ_FAB_PIC_ADC(int port_name)
-{
-   SET_ADC_CHANNEL(port_name); //  routing nth channel to adc
-   delay_us(40);      
-
-   return READ_ADC();       
-}
-```
 Input:
 port_name: An integer representing the ADC channel to be read.
 Output:
@@ -2578,27 +2480,11 @@ Returns the ADC reading as an unsigned 16-bit value. However, the actual resolut
 
 #### AVERAGE_PICADC_READING(channel, num_of_readings, timedelay)
 The AVERAGE_PICADC_READING function calculates the average ADC reading over a specified number of readings from a given channel, adding a time delay between each reading. It then converts the final result to an 8-bit value.
-```c
-unsigned int8 AVERAGE_PICADC_READING(int channel, int16 num_of_readings, int16 timedelay)
-{
-   unsigned int16 val = 0;
-   
-   for(int16 i=0; i<num_of_readings; i++)  
-   {
-      val = val + READ_FAB_PIC_ADC( channel ) ;
-      delay_us(timedelay);
-   }
-   
-   val = (val/num_of_readings);
-   
-   return (char)((val>>4)&0xFF);
-}
-```
-Input Parameters:
+- Input Parameters:
 channel: The ADC channel to read from.
 num_of_readings: The number of ADC readings to take.
 timedelay: The delay (in microseconds) between successive readings.
-Return Value:
+- Return Value:
 Returns the averaged ADC value as an 8-bit unsigned integer.
 ```val``` accumulates the sum of ADC readings over the loop iterations.
 The ADC channel is read num_of_readings times.
@@ -2610,27 +2496,11 @@ Only the lower 8 bits are returned.
 
 #### AVERAGE_EXTADC_READING(channel, num_of_readings, timedelay)
 The AVERAGE_EXTADC_READING function computes the average reading from an external ADC channel over a specified number of readings, with a delay between each reading. It then returns the averaged value as an 8-bit unsigned integer.
-```c
-unsigned int8 AVERAGE_EXTADC_READING(int channel, int16 num_of_readings, int16 timedelay)
-{
-   unsigned int32 val = 0;
-   
-   for(int16 i=0; i<num_of_readings; i++)  
-   {
-      val = val + READ_EXT_ADC_CHANELS( channel ) ;
-      delay_us(timedelay);
-   }
-   
-   val = val /num_of_readings;
-   
-   return (char)val;
-}
-```
-Input Parameters:
+- Input Parameters:
 channel: The external ADC channel to be read.
 num_of_readings: Number of readings to average.
 timedelay: Delay in microseconds between successive readings.
-Return Value:
+- Return Value:
 Returns the average reading as an 8-bit unsigned integer.
 val accumulates the sum of all readings.
 Each iteration reads the specified ADC channel and adds the result to val.
@@ -2641,26 +2511,11 @@ The final value is cast to an 8-bit type, which can result in truncation of high
 
 #### AVERAGE_HECS_READING(channel, num_of_readings, timedelay)
 The AVERAGE_HECS_READING function calculates the average ADC reading from a specified channel over a given number of readings with a delay between each. This function returns the averaged result as a 16-bit unsigned integer.
-```c
-unsigned int16 AVERAGE_HECS_READING(int channel, int16 num_of_readings, int16 timedelay)
-{
-   unsigned int32 VAL = 0;
-   
-   for(int16 i=0; i<num_of_readings; i++)  
-   {
-      val = val + READ_FAB_PIC_ADC( channel ) ;
-      delay_us(timedelay);
-   }
-   val = (val/num_of_readings); 
-   
-   return (unsigned int16)val;
-}
-```
-Input Parameters:
+- Input Parameters:
 channel: ADC channel to read from.
 num_of_readings: Number of readings to average.
 timedelay: Time in microseconds between successive readings.
-Return Value:
+- Return Value:
 Returns the average reading as a 16-bit unsigned integer (unsigned int16).
 Accumulates the sum of all ADC readings. A 32-bit variable is used to prevent overflow during accumulation.
 Iterates num_of_readings times, reading from the ADC channel during each iteration and adding the result to VAL.

@@ -12,22 +12,16 @@ typedef struct message_config {
 message_config mconfig[] = {
     { MSG_COMM, MSG_LENGTH_COMM, MSG_CHECKSUM_COMM },
     { MSG_PCIB, MSG_LENGTH_PCIB, MSG_CHECKSUM_PCIB },
-    { MSG_MCPIC, MSG_LENGTH_MCPIC, MSG_CHECKSUM_MCPIC },
     { MSG_RST, MSG_LENGTH_RST, MSG_CHECKSUM_RST },
     { MSG_FAB, MSG_LENGTH_FAB, MSG_CHECKSUM_FAB },
-    { MSG_ADCS, MSG_LENGTH_ADCS, MSG_CHECKSUM_ADCS },
-    { MSG_TMCR1, MSG_LENGTH_TMCR1, MSG_CHECKSUM_TMCR1 },
-    { MSG_TMCR2, MSG_LENGTH_TMCR2, MSG_CHECKSUM_TMCR2 }
+    { MSG_ADCS, MSG_LENGTH_ADCS, MSG_CHECKSUM_ADCS }
 };
 
 message_config* message_COMM = &mconfig[0];
 message_config* message_PCIB = &mconfig[1];
-message_config* message_MCPIC = &mconfig[2];
-message_config* message_RST = &mconfig[3];
-message_config* message_FAB = &mconfig[4];
-message_config* message_ADCS = &mconfig[5];
-message_config* message_TMCR1 = &mconfig[6];
-message_config* message_TMCR2 = &mconfig[7];
+message_config* message_RST = &mconfig[2];
+message_config* message_FAB = &mconfig[3];
+message_config* message_ADCS = &mconfig[4];
 
 typedef uint8_t (*bytes_available_fn)();
 typedef uint8_t (*get_char_fn)();
@@ -39,7 +33,7 @@ typedef struct uart_fn {
     put_char_fn* put_char;
 } uart_fn;
 
-#define uart_declare_fn(uart_stream)                   \
+#define uart_simple(uart_stream)                       \
     inline uint8_t bytes_available_##uart_stream()     \
     {                                                  \
         return kbhit(uart_stream);                     \
@@ -54,9 +48,10 @@ typedef struct uart_fn {
     }                                                  \
     uart_fn uart_port_##uart_stream = { bytes_available_##uart_stream, &get_character_##uart_stream, &put_character_##uart_stream }
 
-#define uart_use(uart_stream) \
-    uart uart_##uart_stream;  \
-    char buffer_##uart_stream[MSG_LENGTH_##uart_stream]
+#define uart_use(uart_stream)                            \
+    uart uart_##uart_stream;                             \
+    char buffer_##uart_stream[MSG_LENGTH_##uart_stream]; \
+    uart_simple(uart_stream)
 
 #define uart_init(uart_stream)                          \
     uart_##uart_stream.data = &buffer_##uart_stream;    \

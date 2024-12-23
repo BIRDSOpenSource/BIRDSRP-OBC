@@ -1,21 +1,19 @@
-#include <16F1789.h>
+#include <18F67J94.h>
 #device adc = 16
-#fuses NOMCLR, WDT, NOPUT, NOBROWNOUT
+#fuses WDT, NOBROWNOUT
 #use delay(crystal = 16mhz)
 
 #ifndef EM
 #warning "Building for FM"
-#define SPACECRAFT_ID 0x53
+#define SPACECRAFT_ID 0x55
 #else
 #warning "Building for EM"
-
-#define SPACECRAFT_ID 0x54
+#define SPACECRAFT_ID 0x56
 #endif // !EM
 
 int8 next_in = 0;
 int cw_enabled = true; // Current state of CW
 
-#include <compicreg.h>       // Com pic registers header.
 #include <compic_main_sri.h> // Com main header file.
 
 #INT_RDA
@@ -28,7 +26,7 @@ void serial_isr()
 void main(void)
 {
     settings(); // Initial settings of COM PIC goes here.
-    setup_wdt(wdt_256s);
+    setup_wdt(WDT_128S);
     restart_wdt();
     delay_ms(5000L); // Just a delay before starting.
     rx_on();
@@ -49,11 +47,13 @@ void main(void)
             if (main_to_com[23] == 0x0C)
                 break;
         }
-        const int8 ok_to_send_cw_index = 8; // After header and CW: 2 (header,cmd) + 6 (cw length)
-        int8 ok_to_send_cw = main_to_com[ok_to_send_cw_index];
-        if(ok_to_send_cw && cw_enabled){
-            send_cw();
-        }
+        // const int8 ok_to_send_cw_index = 8; // After header and CW: 2 (header,cmd) + 6 (cw length)
+        // int8 ok_to_send_cw = main_to_com[ok_to_send_cw_index];
+        // if(ok_to_send_cw && cw_enabled){
+            // send_cw();
+        // }
+        send_cw();
+        send_heartbeat_to_reset();
 
         restart_wdt(); //***********************//
         rx_on();
@@ -87,6 +87,8 @@ void main(void)
                 case 0x41: set_of_packets_download(); break;        // 40 00 00 00 00    00 00 setsize setnumber
                 case 0x42: get_sfm_access_given_time(); break;
                 case 0x44: set_of_packets_download_with_access(); break;
+                case 0xFA: reset_reset_pic(); break;
+                case 0xFB: dc_dc_conv_main_com(); break;
                 default: cmd_to_mpic(); break; // Previously A0.
                 }
             }

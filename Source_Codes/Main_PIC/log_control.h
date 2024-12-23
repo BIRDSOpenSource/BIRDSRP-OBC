@@ -2,8 +2,8 @@
 #define LOG_CONTROL_H
 
 #include <string.h>
-#include <definitions.h>
-#include <flash_memory.h>
+#include "definitions.h"
+#include "flash_memory.h"
 
 // Adds a log entry to buffer in RAM
 void log_add(log_entry e)

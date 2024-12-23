@@ -1,23 +1,21 @@
 #ifndef MEMORY_SETUP_H
 #define MEMORY_SETUP_H
 
-#include <definitions.h>
-#include <flash_memory.h>
-#include <boot_command.h>
-#include <interpreter.h>
+#include "definitions.h"
+#include "flash_memory.h"
+#include "boot_command.h"
+#include "interpreter.h"
 
 void initialize_memory()
 {
     uint8_t* boot_flag_ptr = (uint8_t*)&boot_flags;
     uint8_t* obc_flag_ptr = (uint8_t*)&obc_flags;
 
-    // Initialize flags
     boot_flags.deployment_flag = 0;
     flash_initialize_flash_ctrl(FLASH_ADDR_START, FLASH_ADDR_END, FLASH_ADDR_START, FLASH_ADDR_DELTA, &addr_flags.flash_addr);
     flash_initialize_flash_ctrl(FLASH_LOG_START, FLASH_LOG_END, FLASH_LOG_START, FLASH_LOG_DELTA, &addr_flags.flash_log);
+    // flash_initialize_flash_ctrl(FLASH_TELEMETRY_START, FLASH_TELEMETRY_END, FLASH_TELEMETRY_START, FLASH_TELEMETRY_DELTA, &addr_flags.flash_telemetry);
     flash_initialize_flash_ctrl_from_memory_date_based(FLASH_TELEMETRY_SECTORS_PER_DAY, boot_flags.deployment_flag, 0xFFFFFFFF, FLASH_TELEMETRY_START, FLASH_TELEMETRY_DELTA, false, &addr_flags.flash_telemetry);
-    flash_initialize_flash_ctrl(FLASH_SEL_ZES_START, FLASH_SEL_ZES_END, FLASH_SEL_ZES_START, FLASH_SEL_ZES_DELTA, &addr_flags.flash_sel_zes);
-    flash_initialize_flash_ctrl(FLASH_SEL_REF_START, FLASH_SEL_REF_END, FLASH_SEL_REF_START, FLASH_SEL_REF_DELTA, &addr_flags.flash_sel_ref);
 
     // Save boot flags
     flash_erase_pages(&spi_port_COM_FM, BOOT_FLAGS_ADDRESS, BOOT_FLAGS_ADDRESS + sizeof(boot_flags));
@@ -32,17 +30,16 @@ void initialize_memory()
     boot_commands_write();
 
     // Save addresses
-    address_rotation addr;
+    struct addr {
+        uint32_t flash_log_current;
+        uint32_t flash_telemetry_current;
+    } addr;
 
     uint8_t* addr_flag_ptr = (uint8_t*)&addr;
     addr.flash_log_current = addr_flags.flash_log.current;
     addr.flash_telemetry_current = addr_flags.flash_telemetry.current;
-    addr.flash_sel_zes_current = addr_flags.flash_sel_zes.current;
-    addr.flash_sel_ref_current = addr_flags.flash_sel_ref.current;
-
     flash_erase_pages(&spi_port_COM_FM, ADDR_FLAGS_ADDRESS, ADDR_FLAGS_ADDRESS + sizeof(addr));
     flash_cycle_write(&spi_port_COM_FM, addr_flag_ptr, &addr_flags.flash_addr);
-    // [!] Addresses are also saved in interpreter.h in command_save_telemetry
 }
 
 void retrieve_memory()
@@ -66,8 +63,10 @@ void retrieve_memory()
     }
 
     // Load addresses
-    address_rotation addr;
-
+    struct addr {
+        uint32_t flash_log_current;
+        uint32_t flash_telemetry_current;
+    } addr;
     uint8_t* addr_flag_ptr = (uint8_t*)&addr;
     flash_transfer_data_to_ram(
         &spi_port_COM_FM,
@@ -75,9 +74,8 @@ void retrieve_memory()
         addr_flag_ptr,
         sizeof(addr));
     flash_initialize_flash_ctrl(FLASH_LOG_START, FLASH_LOG_END, addr.flash_log_current, FLASH_LOG_DELTA, &addr_flags.flash_log);
+    // flash_initialize_flash_ctrl(FLASH_TELEMETRY_START, FLASH_TELEMETRY_END, addr.flash_telemetry_current, FLASH_TELEMETRY_DELTA, &addr_flags.flash_telemetry);
     flash_initialize_flash_ctrl_from_memory_date_based(FLASH_TELEMETRY_SECTORS_PER_DAY, boot_flags.deployment_flag, addr.flash_telemetry_current, FLASH_TELEMETRY_START, FLASH_TELEMETRY_DELTA, false, &addr_flags.flash_telemetry);
-    flash_initialize_flash_ctrl(FLASH_SEL_ZES_START, FLASH_SEL_ZES_END, addr.flash_sel_zes_current, FLASH_SEL_ZES_DELTA, &addr_flags.flash_sel_zes);
-    flash_initialize_flash_ctrl(FLASH_SEL_REF_START, FLASH_SEL_REF_END, addr.flash_sel_ref_current, FLASH_SEL_REF_DELTA, &addr_flags.flash_sel_ref);
     boot_commands_read();
 }
 
@@ -87,6 +85,7 @@ void initial_deployment_setup()
     // Antenna deployment schedule
     scheduler_initialize();
     flash_transfer_data_from_ram(&spi_port_COM_FM, SCHEDULED_CMD_ADDRESS, cmd_ptr, sizeof(scheduled_commands));
+
     current_time = T0 + (time_t)boot_flags.deployment_flag * 24L * 60L * 60L; // Set clock to as early as possible (Jan 1st 2000, 00:00:00), increasing every day by the deployment flag;
     SetTimeSec(current_time);
     previous_time = current_time;

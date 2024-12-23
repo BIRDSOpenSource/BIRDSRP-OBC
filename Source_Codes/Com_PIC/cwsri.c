@@ -1,7 +1,7 @@
 //___character_space_function___///////////////////////////////////
 void ch_space()
 {
-    LATD3 = 0;
+    output_low(PIN_D1);
     delay_ms(180);
     return;
 }
@@ -9,7 +9,7 @@ void ch_space()
 //___Word_space_function___////////////////////////////////////////
 void word_space()
 {
-    LATD3 = 0;
+    output_low(PIN_D1);
     delay_ms(420);
     return;
 }
@@ -17,9 +17,9 @@ void word_space()
 //___dit_function___///////////////////////////////////////////////
 void dit()
 {
-    LATD3 = 1;
+    output_high(PIN_D1);
     delay_ms(60);
-    LATD3 = 0;
+    output_low(PIN_D1);
     delay_ms(60);
     return;
 }
@@ -27,9 +27,9 @@ void dit()
 //___dit_function___///////////////////////////////////////////////
 void dah()
 {
-    LATD3 = 1;
+    output_high(PIN_D1);
     delay_ms(180);
-    LATD3 = 0;
+    output_low(PIN_D1);
     delay_ms(60);
     return;
 }
@@ -382,27 +382,25 @@ void cw_0()
     ch_space();
 }
 
-void cw_leopard()
+void cw_curtis()
 {
-    cw_l();
-    cw_e();
-    cw_o();
-    cw_p();
-    cw_a();
+    cw_c();
+    cw_u();
     cw_r();
-    cw_d();
+    cw_t();
+    cw_i();
+    cw_s();
     return;
 }
 
 void call_sign()
 {
+    cw_0();
+    cw_p();
     cw_k();
-    cw_y();
-    cw_u();
+    cw_s();
+    cw_a();
     cw_t();
-    cw_e();
-    cw_c();
-    cw_h();
     return;
 }
 
@@ -497,7 +495,7 @@ void cw_pckt()
 
     delay_ms(500); // KITSUNE part the CW
 
-    cw_leopard();
+    cw_curtis();
     delay_ms(500);
 
     // cw_msn();

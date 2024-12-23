@@ -1,7 +1,7 @@
 #ifndef FLASH_MEMORY_H
 #define FLASH_MEMORY_H
 
-#include <definitions.h>
+#include "definitions.h"
 
 // Driver for the MT25QL01GBBB flash memory
 

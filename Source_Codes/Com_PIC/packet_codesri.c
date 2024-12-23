@@ -89,12 +89,12 @@ void send_success_ack()
     ack_pckt[6] = 0x30; //char 0
 
     //    Satellite Call Sign-------------------[ 7-----12 ]
-    ack_pckt[7] = 'L';
-    ack_pckt[8] = 'E';
-    ack_pckt[9] = 'O';
-    ack_pckt[10] = 'P';
+    ack_pckt[7] = 'P';
+    ack_pckt[8] = 'K';
+    ack_pckt[9] = '-';
+    ack_pckt[10] = 'S';
     ack_pckt[11] = 'A';
-    ack_pckt[12] = 'R';
+    ack_pckt[12] = 'T';
 
     //    Source SSID---------------------------[ 13 ]
     ack_pckt[13] = 0x30; //char 0
@@ -138,14 +138,14 @@ void send_success_ack()
     ack_pckt[31] = outdata >> 8;
 
     //    Send pckt------------------------------
-    output_high(pin_d1);
+    output_high(PIN_D3);
     delay_ms(2000);
     for (int ih = 0; ih < ACK_LENGTH; ih++) //buffer print
     {
         fputc(ack_pckt[ih], TR_CP);
     }
     delay_ms(500);
-    output_low(pin_d1);
+    output_low(PIN_D3);
 }
 //___________________________________________________________________________<<
 
@@ -166,12 +166,12 @@ void send_not_success_ack()
     ack_pckt[6] = 0x30; //char 0
 
     //    Satellite Call Sign-------------------[ 7-----12 ]
-    ack_pckt[7] = 'L';
-    ack_pckt[8] = 'E';
-    ack_pckt[9] = 'O';
-    ack_pckt[10] = 'P';
+    ack_pckt[7] = 'P';
+    ack_pckt[8] = 'K';
+    ack_pckt[9] = '-';
+    ack_pckt[10] = 'S';
     ack_pckt[11] = 'A';
-    ack_pckt[12] = 'R';
+    ack_pckt[12] = 'T';
 
     //    Source SSID---------------------------[ 13 ]
     ack_pckt[13] = 0x30; //char 0
@@ -215,14 +215,14 @@ void send_not_success_ack()
     ack_pckt[31] = outdata >> 8;
 
     //    Send pckt------------------------------
-    output_high(pin_d1);
+    output_high(PIN_D3);
     delay_ms(2000);
     for (int ih = 0; ih < ACK_LENGTH; ih++) //buffer print
     {
         fputc(ack_pckt[ih], TR_CP);
     }
     delay_ms(500);
-    output_low(pin_d1);
+    output_low(PIN_D3);
 }
 //_____________________________________________________________________________________<<
 
@@ -258,12 +258,12 @@ void send_data_packets(unsigned int32 start_address, unsigned int32 data_size, u
         data_pckt[6] = 0x30;  //char 0
                               //===================Satellite Call Sign====================================
                               //========================= 7 --- 12  ======================================
-        data_pckt[7] = 'L';
-        data_pckt[8] = 'E';
-        data_pckt[9] = 'O';
-        data_pckt[10] = 'P';
+        data_pckt[7] = 'P';
+        data_pckt[8] = 'K';
+        data_pckt[9] = '-';
+        data_pckt[10] = 'S';
         data_pckt[11] = 'A';
-        data_pckt[12] = 'R';
+        data_pckt[12] = 'T';
                               //========================Source SSID=======================================
                               //=========================   13   =========================================
         data_pckt[13] = 0x30; //char 0
@@ -337,12 +337,12 @@ void pckt_set_send(unsigned int32 initial_address, unsigned int8 packet_set_size
         data_pckt[6] = 0x30;  //char 0
                               //===================Satellite Call Sign====================================
                               //========================= 7 --- 12  ======================================
-        data_pckt[7] = 'L';
-        data_pckt[8] = 'E';
-        data_pckt[9] = 'O';
-        data_pckt[10] = 'P';
+        data_pckt[7] = 'P';
+        data_pckt[8] = 'K';
+        data_pckt[9] = '-';
+        data_pckt[10] = 'S';
         data_pckt[11] = 'A';
-        data_pckt[12] = 'R';
+        data_pckt[12] = 'T';
                               //========================Source SSID=======================================
                               //=========================   13   =========================================
         data_pckt[13] = 0x30; //char 0
@@ -413,12 +413,12 @@ void send_a_packet(int1 x)
     data_pckt[6] = 0x30;  //char 0
                           //===================Satellite Call Sign====================================
                           //========================= 7 --- 12  ======================================
-    data_pckt[7] = 'L';
-    data_pckt[8] = 'E';
-    data_pckt[9] = 'O';
-    data_pckt[10] = 'P';
+    data_pckt[7] = 'P';
+    data_pckt[8] = 'K';
+    data_pckt[9] = '-';
+    data_pckt[10] = 'S';
     data_pckt[11] = 'A';
-    data_pckt[12] = 'R';
+    data_pckt[12] = 'T';
                           //========================Source SSID=======================================
                           //=========================   13   =========================================
     data_pckt[13] = 0x30; //char 0
@@ -586,12 +586,12 @@ void send_com_data()
     ack_pckt[6] = 0x30; //char 0
 
     //    Satellite Call Sign-------------------[ 7-----12 ]
-    ack_pckt[7] = 'L';
-    ack_pckt[8] = 'E';
-    ack_pckt[9] = 'O';
-    ack_pckt[10] = 'P';
+    ack_pckt[7] = 'P';
+    ack_pckt[8] = 'K';
+    ack_pckt[9] = '-';
+    ack_pckt[10] = 'S';
     ack_pckt[11] = 'A';
-    ack_pckt[12] = 'R';
+    ack_pckt[12] = 'T';
 
     //    Source SSID---------------------------[ 13 ]
     ack_pckt[13] = 0x30; //char 0
@@ -646,14 +646,14 @@ void send_com_data()
     ack_pckt[31] = outdata >> 8;
 
     //    Send pckt------------------------------
-    output_high(pin_d1);
+    output_high(PIN_D3);
     delay_ms(2000);
     for (int ih = 0; ih < ACK_LENGTH; ih++) //buffer print
     {
         fputc(ack_pckt[ih], tr_cp);
     }
     delay_ms(500);
-    output_low(pin_d1);
+    output_low(PIN_D3);
 }
 
 unsigned int16 rssi_read()

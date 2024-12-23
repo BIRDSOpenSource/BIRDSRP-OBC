@@ -1,0 +1,11 @@
+main.ccspjt
+main.cod
+main.err
+main.lst
+main.sym
+main.hex
+main.cof
+log.*
+MPLABXLog.xml*
+.vscode
+__history

@@ -2,7 +2,7 @@
 #define SCHEDULER_H
 
 #include <string.h>
-#include <definitions.h>
+#include "definitions.h"
 
 void command_execute(uint8_t* data, uint8_t origin, uint8_t log_enabled);
 

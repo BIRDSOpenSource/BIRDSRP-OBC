@@ -8,15 +8,16 @@ SET PATH=%PATH%;C:\Program Files (x86)\PICC
 
 SET TARGET=compic_main
 
-SET CFLAGS=+FM +Y9 +EA -E +DF +GEM=""
-REM +FM : Selects PCM compiler
+SET CFLAGS=+FH +Y9 +EA -E +DF +EX +GEM=""
+REM +FH : Selects PCH compiler
 REM +Y9 : Selects optimization level
 REM +EA : Enable all errors
 REM -E  : Show only the first error
 REM +DF : Enable debug
+REM +EX : Enable gcc error/warning output format
 
 Ccsc.exe %CFLAGS% %TARGET%.c
 
 type %TARGET%.err
 
-pause
+timeout 10

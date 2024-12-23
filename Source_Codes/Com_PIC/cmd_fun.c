@@ -293,20 +293,15 @@ void cw_send_bgsc()
 {
     cw_on();
 
-    if (cmd_pckt[4]) {
-        LATD3 = 1;
-        delay_ms(30000);
-        LATD3 = 0;
-    } else {
-        for (int try = 0; try < 5; try++) {
-            communicate_with_main_pic(1, 0); // Asking CW Data.
-            wait_for_main_pic_response();
-            if (main_to_com[23] == 0x0C)
-                break;
-        }
-        cw_pckt();
-        delay_ms(500);
+    for (int try = 0; try < 5; try ++) {
+        communicate_with_main_pic(1, 0); // Asking CW Data.
+        wait_for_main_pic_response();
+        if (main_to_com[23] == 0x0C)
+            break;
     }
+
+    cw_pckt();
+    delay_ms(500);
 
     rx_on();
     rx_bfr_zero();
@@ -344,6 +339,24 @@ void disable_cw()
     rx_bfr_zero();
 }
 
+//__________________Reset the reset PIC__________________________________________________
+void reset_reset_pic()
+{
+    send_success_ack();
+    output_high(PIN_F7);
+    delay_ms(5000);
+    output_low(PIN_F7);
+}
+
+void dc_dc_conv_main_com()
+{
+    send_success_ack();
+    make_reset_pic_buffr_zero();
+    com_to_reset[0] = 0xC0;
+    com_to_reset[COM_TO_RESET_LENGTH - 1] = 0xC1;
+    com_to_reset[1] = 0xFB;
+    send_cmd_to_reset_pic();
+}
 //_______________________________SEND temp rssi__________________________________________
 void send_com_temp_rssi_to_gs()
 {

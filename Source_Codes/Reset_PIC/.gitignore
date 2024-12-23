@@ -1,0 +1,8 @@
+*.cof
+*.hex
+.program
+.program-remote
+*.ccspjt
+*.err
+*.lst
+*.sym

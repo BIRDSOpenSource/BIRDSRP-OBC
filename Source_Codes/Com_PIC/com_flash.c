@@ -7,19 +7,19 @@
 //______________________Write Enable Codes____________________________________________________
 void cf_write_enable()
 {
-    LATD5 = 0;
+    output_low(PIN_E2);
     delay_us(50);
     spi_xfer(CFM, ENABLE_WRITE); //Send 0x06
-    LATD5 = 1;
+    output_high(PIN_E2);
     return;
 }
 
 void sf_write_enable()
 {
-    LATC2 = 0;
+    output_low(PIN_B3);
     delay_us(50);
     spi_xfer(SFM, ENABLE_WRITE); //Send 0x06
-    LATC2 = 1;
+    output_high(PIN_B3);
     return;
 }
 //----------------------------------------------------------------------------------------------
@@ -37,7 +37,7 @@ void cf_sector_erase(unsigned int32 sector_address)
 
     cf_write_enable();
 
-    LATD5 = 0; //lower the CS PIN
+    output_low(PIN_E2);//lower the CS PIN
     delay_us(2);
     ///////////////////////////////////////////////////////////////////
     spi_xfer(CFM, ERASE_SECTOR); //SECTOR ERASE COMAND   (0xDC)
@@ -47,7 +47,7 @@ void cf_sector_erase(unsigned int32 sector_address)
     spi_xfer(CFM, address[3]);
     //////////////////////////////////////////////////////////////////
     delay_us(2);
-    LATD5 = 1; //take CS PIN higher back
+    output_high(PIN_E2);//take CS PIN higher back
     delay_ms(3000);
     return;
 }
@@ -63,7 +63,7 @@ void sf_sector_erase(unsigned int32 sector_address)
 
     sf_write_enable();
 
-    LATC2 = 0; //lower the CS PIN
+    output_low(PIN_B3);//lower the CS PIN
     delay_us(2);
     ///////////////////////////////////////////////////////////////////
     spi_xfer(SFM, ERASE_SECTOR); //SECTOR ERASE COMAND   (0xDC)
@@ -73,7 +73,7 @@ void sf_sector_erase(unsigned int32 sector_address)
     spi_xfer(SFM, address[3]);
     //////////////////////////////////////////////////////////////////
     delay_us(2);
-    LATC2 = 1; //take CS PIN higher back
+    output_high(PIN_B3);//take CS PIN higher back
     delay_ms(3000);
     return;
 }
@@ -93,7 +93,7 @@ void cf_byte_write(unsigned int32 byte_address, int8 data)
 
     cf_write_enable();
 
-    LATD5 = 0; //lower the CS PIN
+    output_low(PIN_E2);//lower the CS PIN
     delay_us(2);
 
     ////////////////////////////////////////////////////////////////
@@ -106,7 +106,7 @@ void cf_byte_write(unsigned int32 byte_address, int8 data)
     spi_xfer(CFM, data);
     ////////////////////////////////////////////////////////////////
 
-    LATD5 = 1; //take CS PIN higher back
+    output_high(PIN_E2);//take CS PIN higher back
 
     return;
 }
@@ -123,7 +123,7 @@ void sf_byte_write(unsigned int32 byte_address, int8 data)
 
     sf_write_enable();
 
-    LATC2 = 0; //lower the CS PIN
+    output_low(PIN_B3);//lower the CS PIN
     delay_us(2);
 
     ////////////////////////////////////////////////////////////////
@@ -136,7 +136,7 @@ void sf_byte_write(unsigned int32 byte_address, int8 data)
     spi_xfer(SFM, data);
     ////////////////////////////////////////////////////////////////
 
-    LATC2 = 1; //take CS PIN higher back
+    output_high(PIN_B3);//take CS PIN higher back
 
     return;
 }
@@ -154,7 +154,7 @@ unsigned int8 cf_byte_read(unsigned int32 address)
     address_[2] = (unsigned int8)((address >> 8) & 0xFF);  // 0x 00 00 _ _ 00
     address_[3] = (unsigned int8)((address)&0xFF);         // 0x 00 00 00 _ _
 
-    LATD5 = 0; //lower the CS PIN
+    output_low(PIN_E2);//lower the CS PIN
     delay_us(2);
     //////////////////////////////////////////////////////////////////
     int8 data;
@@ -167,7 +167,7 @@ unsigned int8 cf_byte_read(unsigned int32 address)
     data = spi_xfer(CFM);
     //////////////////////////////////////////////////////////////////
 
-    LATD5 = 1; //take CS PIN higher back
+    output_high(PIN_E2);//take CS PIN higher back
     return data;
 }
 
@@ -181,7 +181,7 @@ unsigned int8 sf_byte_read(unsigned int32 address)
     address_[2] = (unsigned int8)((address >> 8) & 0xFF);  // 0x 00 00 _ _ 00
     address_[3] = (unsigned int8)((address)&0xFF);         // 0x 00 00 00 _ _
 
-    LATC2 = 0; //lower the CS PIN
+    output_low(PIN_B3);//lower the CS PIN
     delay_us(2);
     //////////////////////////////////////////////////////////////////
     int8 data;
@@ -194,7 +194,7 @@ unsigned int8 sf_byte_read(unsigned int32 address)
     data = spi_xfer(SFM);
     //////////////////////////////////////////////////////////////////
 
-    LATC2 = 1; //take CS PIN higher back
+    output_high(PIN_B3);//take CS PIN higher back
     return data;
 }
 //-----------------------------------------------------------------------------------------------
