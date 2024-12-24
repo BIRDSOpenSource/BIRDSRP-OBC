@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36" version="25.0.3" pages="4">
   <diagram name="obc-detailed-block-diagram" id="099fd60b-425b-db50-ffb0-6b813814b670">
-    <mxGraphModel dx="1704" dy="454" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" background="none" math="0" shadow="0">
+    <mxGraphModel dx="2678" dy="1188" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" background="none" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -820,7 +820,7 @@
         <mxCell id="G_C1A0YrndC_dQLqVXNu-1" value="ADCS" style="shape=rect;dashed=0;shadow=0;html=1;whiteSpace=wrap;rotation=0;rounded=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;fillColor=#CDA2BE;strokeColor=#6c8ebf;" parent="1" vertex="1">
           <mxGeometry x="-210" y="189.89" width="60" height="50" as="geometry" />
         </mxCell>
-        <mxCell id="G_C1A0YrndC_dQLqVXNu-2" value="ASIL" style="shape=rect;dashed=0;shadow=0;html=1;whiteSpace=wrap;rotation=0;rounded=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+        <mxCell id="G_C1A0YrndC_dQLqVXNu-2" value="OSIL" style="shape=rect;dashed=0;shadow=0;html=1;whiteSpace=wrap;rotation=0;rounded=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
           <mxGeometry x="-450" y="189.89" width="60" height="50" as="geometry" />
         </mxCell>
         <mxCell id="G_C1A0YrndC_dQLqVXNu-3" value="CABUREI-3S" style="shape=rect;dashed=0;shadow=0;html=1;whiteSpace=wrap;rotation=0;rounded=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
@@ -1463,7 +1463,7 @@
     </mxGraphModel>
   </diagram>
   <diagram name="obc-block-diagram-power" id="9DLWBGIG1lDjm0loeKGd">
-    <mxGraphModel dx="2810" dy="1287" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" background="none" math="0" shadow="0">
+    <mxGraphModel dx="1889" dy="594" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" background="none" math="0" shadow="0">
       <root>
         <mxCell id="Db9tNpV2vVKDl8DxG0bE-0" />
         <mxCell id="Db9tNpV2vVKDl8DxG0bE-1" parent="Db9tNpV2vVKDl8DxG0bE-0" />
@@ -1941,7 +1941,7 @@
         <mxCell id="Db9tNpV2vVKDl8DxG0bE-166" value="ADCS" style="shape=rect;dashed=0;shadow=0;html=1;whiteSpace=wrap;rotation=0;rounded=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;fillColor=#CDA2BE;strokeColor=#6c8ebf;" parent="Db9tNpV2vVKDl8DxG0bE-1" vertex="1">
           <mxGeometry x="-210" y="189.89" width="60" height="50" as="geometry" />
         </mxCell>
-        <mxCell id="Db9tNpV2vVKDl8DxG0bE-167" value="ASIL" style="shape=rect;dashed=0;shadow=0;html=1;whiteSpace=wrap;rotation=0;rounded=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="Db9tNpV2vVKDl8DxG0bE-1" vertex="1">
+        <mxCell id="Db9tNpV2vVKDl8DxG0bE-167" value="OSIL" style="shape=rect;dashed=0;shadow=0;html=1;whiteSpace=wrap;rotation=0;rounded=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="Db9tNpV2vVKDl8DxG0bE-1" vertex="1">
           <mxGeometry x="-450" y="189.89" width="60" height="50" as="geometry" />
         </mxCell>
         <mxCell id="Db9tNpV2vVKDl8DxG0bE-168" value="CABUREI-3S" style="shape=rect;dashed=0;shadow=0;html=1;whiteSpace=wrap;rotation=0;rounded=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="Db9tNpV2vVKDl8DxG0bE-1" vertex="1">
@@ -2428,7 +2428,7 @@
     </mxGraphModel>
   </diagram>
   <diagram name="obc-block-diagram-data" id="TC_7gF009FaTznl-eXFX">
-    <mxGraphModel dx="2251" dy="702" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" background="none" math="0" shadow="0">
+    <mxGraphModel dx="2965" dy="1404" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" background="none" math="0" shadow="0">
       <root>
         <mxCell id="VjFzP0MdVxrGOhV14fMl-0" />
         <mxCell id="VjFzP0MdVxrGOhV14fMl-1" parent="VjFzP0MdVxrGOhV14fMl-0" />
@@ -2673,7 +2673,7 @@
         <mxCell id="WOTOblxhDH8KSwbVvbS5-164" value="ADCS" style="shape=rect;dashed=0;shadow=0;html=1;whiteSpace=wrap;rotation=0;rounded=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;fillColor=#CDA2BE;strokeColor=#6c8ebf;" parent="VjFzP0MdVxrGOhV14fMl-1" vertex="1">
           <mxGeometry x="-460" y="119.99999999999999" width="60" height="50" as="geometry" />
         </mxCell>
-        <mxCell id="WOTOblxhDH8KSwbVvbS5-165" value="ASIL" style="shape=rect;dashed=0;shadow=0;html=1;whiteSpace=wrap;rotation=0;rounded=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="VjFzP0MdVxrGOhV14fMl-1" vertex="1">
+        <mxCell id="WOTOblxhDH8KSwbVvbS5-165" value="OSIL" style="shape=rect;dashed=0;shadow=0;html=1;whiteSpace=wrap;rotation=0;rounded=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="VjFzP0MdVxrGOhV14fMl-1" vertex="1">
           <mxGeometry x="-700" y="119.99999999999999" width="60" height="50" as="geometry" />
         </mxCell>
         <mxCell id="WOTOblxhDH8KSwbVvbS5-166" value="CABUREI-3S" style="shape=rect;dashed=0;shadow=0;html=1;whiteSpace=wrap;rotation=0;rounded=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="VjFzP0MdVxrGOhV14fMl-1" vertex="1">
@@ -2824,7 +2824,7 @@
     </mxGraphModel>
   </diagram>
   <diagram name="obc-block-diagram-dio" id="tkUbEqTCaeUvH7X2o611">
-    <mxGraphModel dx="1921" dy="618" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" background="none" math="0" shadow="0">
+    <mxGraphModel dx="2810" dy="1287" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" background="none" math="0" shadow="0">
       <root>
         <mxCell id="K0iDgTtEInipGCaVlX6p-0" />
         <mxCell id="K0iDgTtEInipGCaVlX6p-1" parent="K0iDgTtEInipGCaVlX6p-0" />
@@ -2960,7 +2960,7 @@
         <mxCell id="K0iDgTtEInipGCaVlX6p-49" value="ADCS" style="shape=rect;dashed=0;shadow=0;html=1;whiteSpace=wrap;rotation=0;rounded=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;fillColor=#CDA2BE;strokeColor=#6c8ebf;" parent="K0iDgTtEInipGCaVlX6p-1" vertex="1">
           <mxGeometry x="-460" y="119.99999999999999" width="60" height="50" as="geometry" />
         </mxCell>
-        <mxCell id="K0iDgTtEInipGCaVlX6p-50" value="ASIL" style="shape=rect;dashed=0;shadow=0;html=1;whiteSpace=wrap;rotation=0;rounded=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="K0iDgTtEInipGCaVlX6p-1" vertex="1">
+        <mxCell id="K0iDgTtEInipGCaVlX6p-50" value="OSIL" style="shape=rect;dashed=0;shadow=0;html=1;whiteSpace=wrap;rotation=0;rounded=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="K0iDgTtEInipGCaVlX6p-1" vertex="1">
           <mxGeometry x="-700" y="119.99999999999999" width="60" height="50" as="geometry" />
         </mxCell>
         <mxCell id="K0iDgTtEInipGCaVlX6p-51" value="CABUREI-3S" style="shape=rect;dashed=0;shadow=0;html=1;whiteSpace=wrap;rotation=0;rounded=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="K0iDgTtEInipGCaVlX6p-1" vertex="1">
