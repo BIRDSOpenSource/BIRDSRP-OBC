@@ -597,7 +597,7 @@
     </mxGraphModel>
   </diagram>
   <diagram name="Copy of BIRDSRP_SYSTEM_BLOCK_DIAGRAM" id="5l2mY9vJrV_iz_Xx1hpM">
-    <mxGraphModel dx="1762" dy="498" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" math="0" shadow="0">
+    <mxGraphModel dx="3380" dy="1716" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" math="0" shadow="0">
       <root>
         <mxCell id="D1lxtY-NhazvWAT9w847-0" />
         <mxCell id="D1lxtY-NhazvWAT9w847-1" parent="D1lxtY-NhazvWAT9w847-0" />
@@ -1507,13 +1507,12 @@
         <mxCell id="ZAg-GX-HOkNbY3oFl-5d-73" value="3.3V_src1" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=16;" vertex="1" parent="D1lxtY-NhazvWAT9w847-1">
           <mxGeometry x="1060" y="1430" width="100" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="ZAg-GX-HOkNbY3oFl-5d-74" value="" style="endArrow=classic;html=1;rounded=0;fontSize=12;startSize=8;endSize=8;strokeColor=#FF0000;edgeStyle=orthogonalEdgeStyle;startArrow=oval;startFill=1;jumpStyle=arc;jumpSize=6;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="D1lxtY-NhazvWAT9w847-1" target="ZAg-GX-HOkNbY3oFl-5d-11">
+        <mxCell id="ZAg-GX-HOkNbY3oFl-5d-74" value="" style="endArrow=classic;html=1;rounded=0;fontSize=12;startSize=8;endSize=8;strokeColor=#FF0000;edgeStyle=orthogonalEdgeStyle;startArrow=oval;startFill=1;jumpStyle=arc;jumpSize=6;entryX=0.561;entryY=-0.005;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="D1lxtY-NhazvWAT9w847-1" target="D1lxtY-NhazvWAT9w847-58">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="-530" y="1760" as="sourcePoint" />
             <mxPoint x="-440" y="1070" as="targetPoint" />
             <Array as="points">
-              <mxPoint x="-530" y="1420" />
-              <mxPoint x="-530" y="1420" />
+              <mxPoint x="-530" y="1899" />
             </Array>
           </mxGeometry>
         </mxCell>
