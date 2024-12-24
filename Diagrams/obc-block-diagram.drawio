@@ -1219,7 +1219,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="nzSfxHuyAxKnrN2LHhAF-10" value="DIO_KS" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=12;labelBackgroundColor=none;" parent="nzSfxHuyAxKnrN2LHhAF-9" vertex="1" connectable="0">
+        <mxCell id="nzSfxHuyAxKnrN2LHhAF-10" value="KS_OBC" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=12;labelBackgroundColor=none;" parent="nzSfxHuyAxKnrN2LHhAF-9" vertex="1" connectable="0">
           <mxGeometry x="0.2091" relative="1" as="geometry">
             <mxPoint x="-17" y="9" as="offset" />
           </mxGeometry>
