@@ -2430,7 +2430,7 @@
     </mxGraphModel>
   </diagram>
   <diagram name="obc-block-diagram-data" id="TC_7gF009FaTznl-eXFX">
-    <mxGraphModel dx="2965" dy="1404" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" background="none" math="0" shadow="0">
+    <mxGraphModel dx="1546" dy="336" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" background="none" math="0" shadow="0">
       <root>
         <mxCell id="VjFzP0MdVxrGOhV14fMl-0" />
         <mxCell id="VjFzP0MdVxrGOhV14fMl-1" parent="VjFzP0MdVxrGOhV14fMl-0" />
@@ -2808,18 +2808,19 @@
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="Rw7ehlBot8oannRaV3fo-0" value="" style="endArrow=classic;html=1;rounded=0;fontSize=12;startSize=8;endSize=8;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;edgeStyle=orthogonalEdgeStyle;startArrow=classic;startFill=1;strokeColor=#007FFF;" edge="1" parent="VjFzP0MdVxrGOhV14fMl-1">
+        <mxCell id="Rw7ehlBot8oannRaV3fo-0" value="" style="endArrow=classic;html=1;rounded=0;fontSize=12;startSize=8;endSize=8;exitX=0.25;exitY=1;exitDx=0;exitDy=0;edgeStyle=orthogonalEdgeStyle;startArrow=classic;startFill=1;strokeColor=#007FFF;entryX=0.75;entryY=1;entryDx=0;entryDy=0;" parent="VjFzP0MdVxrGOhV14fMl-1" edge="1" target="WOTOblxhDH8KSwbVvbS5-165" source="WOTOblxhDH8KSwbVvbS5-164">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="-460" y="150.11" as="sourcePoint" />
-            <mxPoint x="-499" y="234.31" as="targetPoint" />
+            <mxPoint x="-670" y="170" as="targetPoint" />
             <Array as="points">
-              <mxPoint x="-499" y="150.11" />
+              <mxPoint x="-445" y="210" />
+              <mxPoint x="-655" y="210" />
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="Rw7ehlBot8oannRaV3fo-1" value="UART" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=12;" vertex="1" connectable="0" parent="Rw7ehlBot8oannRaV3fo-0">
+        <mxCell id="Rw7ehlBot8oannRaV3fo-1" value="UART" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=12;" parent="Rw7ehlBot8oannRaV3fo-0" vertex="1" connectable="0">
           <mxGeometry x="-0.26" relative="1" as="geometry">
-            <mxPoint y="25" as="offset" />
+            <mxPoint x="-88" as="offset" />
           </mxGeometry>
         </mxCell>
       </root>
