@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36" version="26.0.4" pages="2">
   <diagram name="BIRDSRP_SYSTEM_BLOCK_DIAGRAM" id="RyTt8miqXWO4tbNBZ-sP">
-    <mxGraphModel dx="1484" dy="234" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" math="0" shadow="0">
+    <mxGraphModel dx="2201" dy="671" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -215,7 +215,8 @@
             <mxPoint x="230" y="298.93" as="sourcePoint" />
             <mxPoint x="350" y="298.93" as="targetPoint" />
             <Array as="points">
-              <mxPoint y="93" />
+              <mxPoint x="20" y="114" />
+              <mxPoint x="20" y="93" />
               <mxPoint x="240" y="93" />
               <mxPoint x="240" y="276" />
             </Array>
@@ -231,7 +232,8 @@
             <mxPoint x="327.26" y="61" as="sourcePoint" />
             <mxPoint x="352.26" y="121" as="targetPoint" />
             <Array as="points">
-              <mxPoint y="80" />
+              <mxPoint x="20" y="89" />
+              <mxPoint x="20" y="80" />
               <mxPoint x="515" y="80" />
             </Array>
           </mxGeometry>
