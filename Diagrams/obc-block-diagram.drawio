@@ -1126,7 +1126,7 @@
             <mxPoint x="155" y="410.89" as="targetPoint" />
             <Array as="points">
               <mxPoint x="245" y="170" />
-              <mxPoint x="-271" y="170" />
+              <mxPoint x="-296" y="170" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -1462,7 +1462,18 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="4FCSQUdz7R3xzxr6csey-1" value="CPLD" style="shape=rect;dashed=0;shadow=0;html=1;whiteSpace=wrap;rotation=0;rounded=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
-          <mxGeometry x="-335" y="189.89" width="100" height="50" as="geometry" />
+          <mxGeometry x="-360" y="200.82" width="100" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="4FCSQUdz7R3xzxr6csey-2" value="" style="endArrow=classic;html=1;rounded=0;fontSize=12;startSize=8;endSize=8;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;startArrow=classic;startFill=1;edgeStyle=orthogonalEdgeStyle;strokeColor=#007FFF;" edge="1" parent="1" source="G_C1A0YrndC_dQLqVXNu-1" target="4FCSQUdz7R3xzxr6csey-1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="105" y="364" as="sourcePoint" />
+            <mxPoint x="105" y="411" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="4FCSQUdz7R3xzxr6csey-3" value="SPI" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=12;" vertex="1" connectable="0" parent="4FCSQUdz7R3xzxr6csey-2">
+          <mxGeometry x="0.0971" y="1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
         </mxCell>
       </root>
     </mxGraphModel>
