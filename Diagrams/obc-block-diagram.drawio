@@ -2455,7 +2455,7 @@
     </mxGraphModel>
   </diagram>
   <diagram name="obc-block-diagram-data" id="TC_7gF009FaTznl-eXFX">
-    <mxGraphModel dx="3040" dy="1370" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" background="none" math="0" shadow="0">
+    <mxGraphModel dx="2293" dy="1370" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" background="none" math="0" shadow="0">
       <root>
         <mxCell id="VjFzP0MdVxrGOhV14fMl-0" />
         <mxCell id="VjFzP0MdVxrGOhV14fMl-1" parent="VjFzP0MdVxrGOhV14fMl-0" />
@@ -2822,15 +2822,16 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="SqIYXc4Gu_GtUIG6vCBQ-0" value="" style="endArrow=classic;html=1;rounded=0;fontSize=12;startSize=8;endSize=8;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;edgeStyle=orthogonalEdgeStyle;startArrow=classic;startFill=1;strokeColor=#007FFF;" parent="VjFzP0MdVxrGOhV14fMl-1" edge="1" target="WOTOblxhDH8KSwbVvbS5-65">
+        <mxCell id="SqIYXc4Gu_GtUIG6vCBQ-0" value="" style="endArrow=classic;html=1;rounded=0;fontSize=12;startSize=8;endSize=8;exitX=0;exitY=0.5;exitDx=0;exitDy=0;edgeStyle=orthogonalEdgeStyle;startArrow=classic;startFill=1;strokeColor=#007FFF;" parent="VjFzP0MdVxrGOhV14fMl-1" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="-7.039999999999964" y="239" as="sourcePoint" />
-            <mxPoint x="-512.04" y="234" as="targetPoint" />
+            <mxPoint x="42.960000000000036" y="218.94" as="sourcePoint" />
+            <mxPoint x="-610" y="670" as="targetPoint" />
             <Array as="points">
-              <mxPoint x="-7" y="110" />
-              <mxPoint x="-490" y="110" />
-              <mxPoint x="-490" y="427" />
-              <mxPoint x="-660" y="427" />
+              <mxPoint x="43" y="90" />
+              <mxPoint x="-440" y="90" />
+              <mxPoint x="-440" y="407" />
+              <mxPoint x="-590" y="407" />
+              <mxPoint x="-590" y="670" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -2908,7 +2909,8 @@
             <mxPoint x="-820" y="160.93" as="sourcePoint" />
             <mxPoint x="-574" y="473.93" as="targetPoint" />
             <Array as="points">
-              <mxPoint x="-817" y="161" />
+              <mxPoint x="-820" y="190" />
+              <mxPoint x="-817" y="190" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -2917,12 +2919,15 @@
             <mxPoint x="-14" y="-17" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="kFb6LGnfPy7YlmqjwXLw-9" value="" style="endArrow=classic;html=1;rounded=0;fontSize=12;startSize=8;endSize=8;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.581;entryY=-0.022;entryDx=0;entryDy=0;edgeStyle=orthogonalEdgeStyle;startArrow=classic;startFill=1;strokeColor=#007FFF;entryPerimeter=0;" edge="1" parent="VjFzP0MdVxrGOhV14fMl-1">
+        <mxCell id="kFb6LGnfPy7YlmqjwXLw-9" value="" style="endArrow=classic;html=1;rounded=0;fontSize=12;startSize=8;endSize=8;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;edgeStyle=orthogonalEdgeStyle;startArrow=classic;startFill=1;strokeColor=#007FFF;" edge="1" parent="VjFzP0MdVxrGOhV14fMl-1" source="WOTOblxhDH8KSwbVvbS5-65" target="kFb6LGnfPy7YlmqjwXLw-0">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="-1200" y="437.6199999999996" as="sourcePoint" />
             <mxPoint x="-1008.6800000000001" y="212.63" as="targetPoint" />
             <Array as="points">
-              <mxPoint x="-980" y="211.69" />
+              <mxPoint x="-660" y="560" />
+              <mxPoint x="-680" y="560" />
+              <mxPoint x="-680" y="360" />
+              <mxPoint x="-685" y="360" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -3320,7 +3325,7 @@
       </root>
     </mxGraphModel>
   </diagram>
-  <diagram name="Copy of obc-block-diagram-dio" id="ruRQA-AWz_0hIWEw0YDB">
+  <diagram name="obc-board-dimensions" id="ruRQA-AWz_0hIWEw0YDB">
     <mxGraphModel dx="716" dy="822" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" background="none" math="0" shadow="0">
       <root>
         <mxCell id="UJX1RMMtexOLVu9kqp7T-0" />
