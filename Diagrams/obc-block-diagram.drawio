@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36" version="26.0.5" pages="5">
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36" version="26.0.5" pages="6">
   <diagram name="obc-detailed-block-diagram" id="099fd60b-425b-db50-ffb0-6b813814b670">
     <mxGraphModel dx="2433" dy="813" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" background="none" math="0" shadow="0">
       <root>
@@ -3317,6 +3317,19 @@
             <mxPoint x="-17" y="9" as="offset" />
           </mxGeometry>
         </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram name="Copy of obc-block-diagram-dio" id="ruRQA-AWz_0hIWEw0YDB">
+    <mxGraphModel dx="716" dy="822" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" background="none" math="0" shadow="0">
+      <root>
+        <mxCell id="UJX1RMMtexOLVu9kqp7T-0" />
+        <mxCell id="UJX1RMMtexOLVu9kqp7T-1" parent="UJX1RMMtexOLVu9kqp7T-0" />
+        <UserObject label="&lt;b style=&quot;font-weight:normal;&quot; id=&quot;docs-internal-guid-9955d9bf-7fff-8935-184f-3a283f4678b1&quot;&gt;&lt;span style=&quot;font-size:12pt;font-family:Arial,sans-serif;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;&quot;&gt;&lt;span style=&quot;border:none;display:inline-block;overflow:hidden;width:308px;height:297px;&quot;&gt;&lt;img src=&quot;https://lh7-rt.googleusercontent.com/docsz/AD_4nXck9v39_OPZV9BOs2qc1ldxG3iCXxmSxJQmYMRWK-tQH52CTXkLuWth4sZcoiuvOTrB0yGZVkZiHBaeSOyBxk-zzaPoJDpWDVRlJ0lBtHTQ_IM7m1ryallBlbARQPU7ulggwRh3RQ?key=Ubj90chbY7ZffADzl_K7W0xo&quot; width=&quot;308&quot; height=&quot;297&quot; style=&quot;margin-left:0px;margin-top:0px;&quot;&gt;&lt;/span&gt;&lt;/span&gt;&lt;/b&gt;" link="&lt;b style=&quot;font-weight:normal;&quot; id=&quot;docs-internal-guid-9955d9bf-7fff-8935-184f-3a283f4678b1&quot;&gt;&lt;span style=&quot;font-size:12pt;font-family:Arial,sans-serif;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;&quot;&gt;&lt;span style=&quot;border:none;display:inline-block;overflow:hidden;width:308px;height:297px;&quot;&gt;&lt;img src=&quot;https://lh7-rt.googleusercontent.com/docsz/AD_4nXck9v39_OPZV9BOs2qc1ldxG3iCXxmSxJQmYMRWK-tQH52CTXkLuWth4sZcoiuvOTrB0yGZVkZiHBaeSOyBxk-zzaPoJDpWDVRlJ0lBtHTQ_IM7m1ryallBlbARQPU7ulggwRh3RQ?key=Ubj90chbY7ZffADzl_K7W0xo&quot; width=&quot;308&quot; height=&quot;297&quot; style=&quot;margin-left:0px;margin-top:0px;&quot;&gt;&lt;/span&gt;&lt;/span&gt;&lt;/b&gt;" id="UGMIqd4uTtDBv7kQTwhY-0">
+          <mxCell style="text;whiteSpace=wrap;html=1;" vertex="1" parent="UJX1RMMtexOLVu9kqp7T-1">
+            <mxGeometry x="270" y="130" width="340" height="320" as="geometry" />
+          </mxCell>
+        </UserObject>
       </root>
     </mxGraphModel>
   </diagram>
