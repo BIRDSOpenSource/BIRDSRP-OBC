@@ -2455,7 +2455,7 @@
     </mxGraphModel>
   </diagram>
   <diagram name="obc-block-diagram-data" id="TC_7gF009FaTznl-eXFX">
-    <mxGraphModel dx="1405" dy="498" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" background="none" math="0" shadow="0">
+    <mxGraphModel dx="3040" dy="1370" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" background="none" math="0" shadow="0">
       <root>
         <mxCell id="VjFzP0MdVxrGOhV14fMl-0" />
         <mxCell id="VjFzP0MdVxrGOhV14fMl-1" parent="VjFzP0MdVxrGOhV14fMl-0" />
@@ -2916,12 +2916,12 @@
             <mxPoint x="-14" y="-17" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="kFb6LGnfPy7YlmqjwXLw-9" value="" style="endArrow=classic;html=1;rounded=0;fontSize=12;startSize=8;endSize=8;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.581;entryY=-0.022;entryDx=0;entryDy=0;edgeStyle=orthogonalEdgeStyle;startArrow=classic;startFill=1;strokeColor=#007FFF;entryPerimeter=0;" edge="1" parent="VjFzP0MdVxrGOhV14fMl-1" source="WOTOblxhDH8KSwbVvbS5-65">
+        <mxCell id="kFb6LGnfPy7YlmqjwXLw-9" value="" style="endArrow=classic;html=1;rounded=0;fontSize=12;startSize=8;endSize=8;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.581;entryY=-0.022;entryDx=0;entryDy=0;edgeStyle=orthogonalEdgeStyle;startArrow=classic;startFill=1;strokeColor=#007FFF;entryPerimeter=0;" edge="1" parent="VjFzP0MdVxrGOhV14fMl-1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="-470" y="452.04" as="sourcePoint" />
-            <mxPoint x="-518.6800000000001" y="450.94" as="targetPoint" />
+            <mxPoint x="-1200" y="437.6199999999996" as="sourcePoint" />
+            <mxPoint x="-1008.6800000000001" y="212.63" as="targetPoint" />
             <Array as="points">
-              <mxPoint x="-490" y="450" />
+              <mxPoint x="-980" y="211.69" />
             </Array>
           </mxGeometry>
         </mxCell>
