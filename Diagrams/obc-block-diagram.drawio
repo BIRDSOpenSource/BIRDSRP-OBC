@@ -2455,7 +2455,7 @@
     </mxGraphModel>
   </diagram>
   <diagram name="obc-block-diagram-data" id="TC_7gF009FaTznl-eXFX">
-    <mxGraphModel dx="2691" dy="2677" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" background="none" math="0" shadow="0">
+    <mxGraphModel dx="2532" dy="2494" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" background="none" math="0" shadow="0">
       <root>
         <mxCell id="VjFzP0MdVxrGOhV14fMl-0" />
         <mxCell id="VjFzP0MdVxrGOhV14fMl-1" parent="VjFzP0MdVxrGOhV14fMl-0" />
@@ -2784,9 +2784,7 @@
             <Array as="points">
               <mxPoint x="43" y="90" />
               <mxPoint x="-490" y="90" />
-              <mxPoint x="-490" y="407" />
-              <mxPoint x="-590" y="407" />
-              <mxPoint x="-590" y="400" />
+              <mxPoint x="-490" y="400" />
             </Array>
           </mxGeometry>
         </mxCell>
