@@ -2455,7 +2455,7 @@
     </mxGraphModel>
   </diagram>
   <diagram name="obc-block-diagram-data" id="TC_7gF009FaTznl-eXFX">
-    <mxGraphModel dx="2532" dy="2494" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" background="none" math="0" shadow="0">
+    <mxGraphModel dx="2691" dy="2677" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" background="none" math="0" shadow="0">
       <root>
         <mxCell id="VjFzP0MdVxrGOhV14fMl-0" />
         <mxCell id="VjFzP0MdVxrGOhV14fMl-1" parent="VjFzP0MdVxrGOhV14fMl-0" />
@@ -2659,7 +2659,8 @@
             <mxPoint x="-420" y="425" as="sourcePoint" />
             <mxPoint x="-180" y="370" as="targetPoint" />
             <Array as="points">
-              <mxPoint x="-420" y="425" />
+              <mxPoint x="-670" y="460" />
+              <mxPoint x="-420" y="460" />
               <mxPoint x="-420" y="370" />
             </Array>
           </mxGeometry>
@@ -2777,12 +2778,12 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="SqIYXc4Gu_GtUIG6vCBQ-0" value="" style="endArrow=classic;html=1;rounded=0;fontSize=12;startSize=8;endSize=8;exitX=0;exitY=0.5;exitDx=0;exitDy=0;edgeStyle=orthogonalEdgeStyle;startArrow=classic;startFill=1;strokeColor=#007FFF;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="VjFzP0MdVxrGOhV14fMl-1" edge="1" target="WOTOblxhDH8KSwbVvbS5-65">
+        <mxCell id="SqIYXc4Gu_GtUIG6vCBQ-0" value="" style="endArrow=classic;html=1;rounded=0;fontSize=12;startSize=8;endSize=8;exitX=0;exitY=0.5;exitDx=0;exitDy=0;edgeStyle=orthogonalEdgeStyle;startArrow=classic;startFill=1;strokeColor=#007FFF;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="VjFzP0MdVxrGOhV14fMl-1" edge="1" target="WOTOblxhDH8KSwbVvbS5-65" source="WOTOblxhDH8KSwbVvbS5-9">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="42.960000000000036" y="218.94" as="sourcePoint" />
             <mxPoint x="-610" y="670" as="targetPoint" />
             <Array as="points">
-              <mxPoint x="43" y="90" />
+              <mxPoint x="-5" y="90" />
               <mxPoint x="-490" y="90" />
               <mxPoint x="-490" y="400" />
             </Array>
