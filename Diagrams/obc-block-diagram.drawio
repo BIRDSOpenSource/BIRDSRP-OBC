@@ -2455,11 +2455,11 @@
     </mxGraphModel>
   </diagram>
   <diagram name="obc-block-diagram-data" id="TC_7gF009FaTznl-eXFX">
-    <mxGraphModel dx="2691" dy="2677" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" background="none" math="0" shadow="0">
+    <mxGraphModel dx="1832" dy="1265" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" background="none" math="0" shadow="0">
       <root>
         <mxCell id="VjFzP0MdVxrGOhV14fMl-0" />
         <mxCell id="VjFzP0MdVxrGOhV14fMl-1" parent="VjFzP0MdVxrGOhV14fMl-0" />
-        <mxCell id="rOz4-BqvkbQZCG9lO-Lo-3" value="&lt;blockquote style=&quot;margin: 700px 0px 0px 40px; border: none; padding: 0px;&quot;&gt;&lt;font style=&quot;font-size: 45px;&quot;&gt;BPB&lt;/font&gt;&lt;/blockquote&gt;" style="whiteSpace=wrap;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=right;" vertex="1" parent="VjFzP0MdVxrGOhV14fMl-1">
+        <mxCell id="rOz4-BqvkbQZCG9lO-Lo-3" value="&lt;blockquote style=&quot;margin: 300px 500px 0px 40px; border: none; padding: 0px;&quot;&gt;&lt;font style=&quot;font-size: 45px;&quot;&gt;BPB&lt;/font&gt;&lt;/blockquote&gt;" style="whiteSpace=wrap;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=right;" vertex="1" parent="VjFzP0MdVxrGOhV14fMl-1">
           <mxGeometry x="-870" y="60" width="570" height="440" as="geometry" />
         </mxCell>
         <mxCell id="WOTOblxhDH8KSwbVvbS5-0" value="" style="whiteSpace=wrap;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;" parent="VjFzP0MdVxrGOhV14fMl-1" vertex="1">
@@ -2944,6 +2944,37 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="ChEeBsvdFcOIs5_fZ8Fn-15" value="SPI" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=12;" vertex="1" connectable="0" parent="ChEeBsvdFcOIs5_fZ8Fn-14">
+          <mxGeometry x="0.0971" y="1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ChEeBsvdFcOIs5_fZ8Fn-17" value="" style="endArrow=classic;html=1;rounded=0;fontSize=12;startSize=8;endSize=8;startArrow=classic;startFill=1;edgeStyle=orthogonalEdgeStyle;strokeColor=#007FFF;exitX=0.313;exitY=1.017;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="VjFzP0MdVxrGOhV14fMl-1" source="WOTOblxhDH8KSwbVvbS5-65">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-660" y="435" as="sourcePoint" />
+            <mxPoint x="-180" y="380" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="-689" y="470" />
+              <mxPoint x="-410" y="470" />
+              <mxPoint x="-410" y="380" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ChEeBsvdFcOIs5_fZ8Fn-18" value="SPI" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=12;" vertex="1" connectable="0" parent="ChEeBsvdFcOIs5_fZ8Fn-17">
+          <mxGeometry x="0.2091" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ChEeBsvdFcOIs5_fZ8Fn-19" value="" style="endArrow=classic;html=1;rounded=0;fontSize=12;startSize=8;endSize=8;startArrow=classic;startFill=1;edgeStyle=orthogonalEdgeStyle;strokeColor=#007FFF;" edge="1" parent="VjFzP0MdVxrGOhV14fMl-1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-700" y="307.63" as="sourcePoint" />
+            <mxPoint x="-700" y="377.56" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="-700" y="367.56" />
+              <mxPoint x="-700" y="367.56" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ChEeBsvdFcOIs5_fZ8Fn-20" value="UART" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=12;" vertex="1" connectable="0" parent="ChEeBsvdFcOIs5_fZ8Fn-19">
           <mxGeometry x="0.0971" y="1" relative="1" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
