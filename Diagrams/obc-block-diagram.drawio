@@ -2455,7 +2455,7 @@
     </mxGraphModel>
   </diagram>
   <diagram name="obc-block-diagram-data" id="TC_7gF009FaTznl-eXFX">
-    <mxGraphModel dx="3851" dy="1716" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" background="none" math="0" shadow="0">
+    <mxGraphModel dx="2403" dy="813" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" background="none" math="0" shadow="0">
       <root>
         <mxCell id="VjFzP0MdVxrGOhV14fMl-0" />
         <mxCell id="VjFzP0MdVxrGOhV14fMl-1" parent="VjFzP0MdVxrGOhV14fMl-0" />
@@ -2782,8 +2782,8 @@
             <mxPoint x="-610" y="670" as="targetPoint" />
             <Array as="points">
               <mxPoint x="-5" y="90" />
-              <mxPoint x="-490" y="90" />
-              <mxPoint x="-490" y="360" />
+              <mxPoint x="-850" y="90" />
+              <mxPoint x="-850" y="360" />
               <mxPoint x="-645" y="360" />
             </Array>
           </mxGeometry>
@@ -2929,6 +2929,20 @@
         <mxCell id="ChEeBsvdFcOIs5_fZ8Fn-13" value="UART" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=12;" parent="ChEeBsvdFcOIs5_fZ8Fn-12" vertex="1" connectable="0">
           <mxGeometry x="0.0971" y="1" relative="1" as="geometry">
             <mxPoint x="-1" y="-17" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="h8zYco1Zi-l-l4c4uejB-0" value="" style="endArrow=classic;html=1;rounded=0;fontSize=12;startSize=8;endSize=8;startArrow=classic;startFill=1;edgeStyle=orthogonalEdgeStyle;strokeColor=#007FFF;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" edge="1" parent="VjFzP0MdVxrGOhV14fMl-1" source="kFb6LGnfPy7YlmqjwXLw-0">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-360" y="424" as="sourcePoint" />
+            <mxPoint x="-180" y="380" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="-685" y="380" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="h8zYco1Zi-l-l4c4uejB-1" value="UART" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=12;" vertex="1" connectable="0" parent="h8zYco1Zi-l-l4c4uejB-0">
+          <mxGeometry x="0.2091" relative="1" as="geometry">
+            <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
       </root>
