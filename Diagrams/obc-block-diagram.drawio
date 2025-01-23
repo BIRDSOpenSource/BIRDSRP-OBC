@@ -2957,7 +2957,7 @@
     </mxGraphModel>
   </diagram>
   <diagram name="obc-block-diagram-dio" id="tkUbEqTCaeUvH7X2o611">
-    <mxGraphModel dx="3502" dy="1404" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" background="none" math="0" shadow="0">
+    <mxGraphModel dx="3783" dy="965" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" background="none" math="0" shadow="0">
       <root>
         <mxCell id="K0iDgTtEInipGCaVlX6p-0" />
         <mxCell id="K0iDgTtEInipGCaVlX6p-1" parent="K0iDgTtEInipGCaVlX6p-0" />
@@ -3366,6 +3366,24 @@
         <mxCell id="ULvppB_gXSIk_IEol08P-7" value="CPLD_CTRL3" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=12;labelBackgroundColor=none;" parent="ULvppB_gXSIk_IEol08P-6" vertex="1" connectable="0">
           <mxGeometry x="0.2091" relative="1" as="geometry">
             <mxPoint x="-17" y="9" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="IATgOzUfdlTwWAstoHL0-0" value="LED" style="shape=rect;dashed=0;shadow=0;html=1;whiteSpace=wrap;rotation=0;rounded=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="K0iDgTtEInipGCaVlX6p-1">
+          <mxGeometry x="-1080" y="430" width="100" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="IATgOzUfdlTwWAstoHL0-1" value="" style="endArrow=classic;html=1;rounded=0;fontSize=12;startSize=8;endSize=8;exitX=1;exitY=0.5;exitDx=0;exitDy=0;startArrow=classic;startFill=1;edgeStyle=orthogonalEdgeStyle;" edge="1" parent="K0iDgTtEInipGCaVlX6p-1" source="IATgOzUfdlTwWAstoHL0-0">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-980" y="180.93" as="sourcePoint" />
+            <mxPoint x="-180" y="420" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="-980" y="450" />
+              <mxPoint x="-180" y="450" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="IATgOzUfdlTwWAstoHL0-2" value="DIO" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=12;" vertex="1" connectable="0" parent="IATgOzUfdlTwWAstoHL0-1">
+          <mxGeometry x="0.2091" relative="1" as="geometry">
+            <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
       </root>
