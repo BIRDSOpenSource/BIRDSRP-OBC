@@ -2652,15 +2652,14 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="WOTOblxhDH8KSwbVvbS5-65" value="MISSION&lt;div&gt;BOSS&lt;/div&gt;" style="shape=rect;dashed=0;shadow=0;html=1;whiteSpace=wrap;rotation=0;rounded=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;fillColor=#fff2cc;strokeColor=#d6b656;" parent="VjFzP0MdVxrGOhV14fMl-1" vertex="1">
-          <mxGeometry x="-420" y="414.24999999999994" width="100" height="50" as="geometry" />
+          <mxGeometry x="-420" y="387.61999999999995" width="100" height="50" as="geometry" />
         </mxCell>
-        <mxCell id="WOTOblxhDH8KSwbVvbS5-70" value="" style="endArrow=classic;html=1;rounded=0;fontSize=12;startSize=8;endSize=8;startArrow=classic;startFill=1;edgeStyle=orthogonalEdgeStyle;strokeColor=#007FFF;entryX=0.031;entryY=0.994;entryDx=0;entryDy=0;entryPerimeter=0;" parent="VjFzP0MdVxrGOhV14fMl-1" target="kFb6LGnfPy7YlmqjwXLw-0" edge="1">
+        <mxCell id="WOTOblxhDH8KSwbVvbS5-70" value="" style="endArrow=classic;html=1;rounded=0;fontSize=12;startSize=8;endSize=8;startArrow=classic;startFill=1;edgeStyle=orthogonalEdgeStyle;strokeColor=#007FFF;entryX=0.031;entryY=0.994;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0.12;exitY=0.008;exitDx=0;exitDy=0;exitPerimeter=0;" parent="VjFzP0MdVxrGOhV14fMl-1" target="kFb6LGnfPy7YlmqjwXLw-0" edge="1" source="WOTOblxhDH8KSwbVvbS5-65">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="-410" y="414" as="sourcePoint" />
+            <mxPoint x="-410" y="380" as="sourcePoint" />
             <mxPoint x="-180" y="370" as="targetPoint" />
             <Array as="points">
-              <mxPoint x="-410" y="414" />
-              <mxPoint x="-410" y="230" />
+              <mxPoint x="-408" y="230" />
               <mxPoint x="-549" y="230" />
             </Array>
           </mxGeometry>
